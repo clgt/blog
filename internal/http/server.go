@@ -40,6 +40,10 @@ func NewServer(cfg *config.Config) *Server {
 	}
 
 	s.router.HandleFunc("/", s.showHome, "GET")
+	s.router.HandleFunc("/register", s.userRegister, "GET")
+	s.router.HandleFunc("/login", s.userLogin, "GET")
+	s.router.HandleFunc("/change-password", s.userChangePassword, "GET")
+	s.router.HandleFunc("/forgot-password", s.userForgotPassword, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.showPost, "GET")
 
 	return s
@@ -87,4 +91,20 @@ func (s *Server) showPost(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) showHome(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, "home.html", nil)
+}
+
+func (s *Server) userRegister(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "register.html", nil)
+}
+
+func (s *Server) userLogin(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "login.html", nil)
+}
+
+func (s *Server) userChangePassword(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "password.change.html", nil)
+}
+
+func (s *Server) userForgotPassword(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "password.forgot.html", nil)
 }
