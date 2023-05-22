@@ -2,9 +2,9 @@ package sql
 
 import (
 	"context"
-	"embed"
 	"fmt"
 	"io/fs"
+	"os"
 	"sort"
 
 	"github.com/clgt/blog/internal/config"
@@ -13,11 +13,12 @@ import (
 
 	// sqlx "database/sql"
 
-	_ "github.com/lib/pq"
+	"github.com/lib/pq"
 )
 
 // go:embed migration/*.sql
-var migrationFS embed.FS
+// var migrationFS embed.FS
+var migrationFS fs.FS = os.DirFS("internal/sql")
 
 type DB struct {
 	conn   *sqlx.DB
@@ -75,8 +76,12 @@ func (db *DB) Run(file string) error {
 	defer tx.Rollback()
 
 	var n int
-	if err := tx.QueryRow(`select count(*) from migrations where name = ?`, file).Scan(&n); err != nil {
-		return err
+	if err := db.conn.QueryRow(`select count(*) from migrations where name = $1`, file).Scan(&n); err != nil {
+		if e, ok := err.(*pq.Error); !ok {
+			return err
+		} else if e.Code.Name() != "undefined_table" {
+			return err
+		}
 	} else if n != 0 {
 		return nil
 	}
@@ -87,7 +92,7 @@ func (db *DB) Run(file string) error {
 		return err
 	}
 
-	if _, err := tx.Exec(`insert into migrations (name) values(?);`, file); err != nil {
+	if _, err := tx.Exec(`insert into migrations (name) values($1);`, file); err != nil {
 		return err
 	}
 
