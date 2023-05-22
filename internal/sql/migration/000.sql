@@ -1,0 +1,1 @@
+create table if not exists migrations ( name text not null default '' );
