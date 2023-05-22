@@ -3,6 +3,7 @@ package http
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
@@ -17,6 +18,7 @@ import (
 type Server struct {
 	sever  *http.Server
 	router *flow.Mux
+	html   map[string]*template.Template
 
 	// services
 	PostService *sql.PostService
@@ -34,35 +36,25 @@ func NewServer(cfg *config.Config) *Server {
 			Handler:      mux,
 		},
 		router: mux,
+		html:   make(map[string]*template.Template),
 	}
 
-	s.router.HandleFunc("/", s.home, "GET")
+	s.router.HandleFunc("/", s.showHome, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.showPost, "GET")
 
 	return s
 }
 
-func (s *Server) Open() error {
+func (s *Server) Open() (err error) {
 	go s.sever.ListenAndServe()
-	return nil
-}
-
-func (s *Server) Close() error {
-	return nil
-}
-
-func (s *Server) home(w http.ResponseWriter, r *http.Request) {
-	filter := models.PostFilter{
-		// ID: 19,
-	}
-	posts, _, err := s.PostService.FindPosts(r.Context(), filter)
-	if err != nil {
-		handleError(w, r, err)
+	if s.html, err = parseTheme("basic"); err != nil {
 		return
 	}
-	for _, p := range posts {
-		fmt.Fprintf(w, "%s\n", p.Title)
-	}
+	return
+}
+
+func (s *Server) Close() (err error) {
+	return
 }
 
 func (s *Server) showPost(w http.ResponseWriter, r *http.Request) {
@@ -91,4 +83,8 @@ func (s *Server) showPost(w http.ResponseWriter, r *http.Request) {
 	for _, p := range posts {
 		fmt.Fprint(w, p)
 	}
+}
+
+func (s *Server) showHome(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "home.html", nil)
 }
