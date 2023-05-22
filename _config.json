@@ -1,3 +1,0 @@
-{
-    "Datasource": "dbname=blog user=bloguser password=blogpassword port=5432 sslmode=disable"
-}
