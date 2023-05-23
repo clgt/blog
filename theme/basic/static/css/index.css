@@ -1,14 +1,13 @@
 :root {
-    --background-body: red;
-  }
-  
-  html {
-    box-sizing: border-box !important;
-  }
-  
-  input,
-  a,
-  button {
-    display: block;
-  }
-  
+  --background-body: red;
+}
+
+html {
+  box-sizing: border-box !important;
+}
+
+input,
+a,
+button {
+  display: block;
+}
