@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -45,6 +46,9 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/change-password", s.userChangePassword, "GET")
 	s.router.HandleFunc("/forgot-password", s.userForgotPassword, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.showPost, "GET")
+
+	fs := http.FileServer(http.Dir(filepath.Join("theme", "basic", "static")))
+	s.router.Handle("/static/", http.StripPrefix("/static", fs))
 
 	return s
 }
