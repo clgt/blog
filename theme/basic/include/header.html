@@ -1,5 +1,31 @@
 {{- define "header"}}
-<header>
-  <h1>This is header</h1>
+<style>
+  .header {
+    background-color: rgb(230, 248, 248);
+    height: 80px;
+  }
+  .header-container {
+    max-width: 800px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo-img {
+    display: block;
+    height: 100%;
+    width: auto;
+  }
+</style>
+<header class="header">
+  <div class="header-container">
+    <img class="logo-img" src="/static/image/logo.png" alt="logo" />
+    <!-- <h1>LOGO</h1> -->
+    <div class="nav-bar">
+      <a href="/register">Register</a>
+      <a href="/login">Login</a>
+    </div>
+  </div>
 </header>
 {{- end}}
