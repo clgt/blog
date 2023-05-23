@@ -2,6 +2,10 @@
   --background-body: red;
 }
 
+html {
+  box-sizing: border-box;
+}
+
 input,
 a,
 button {
