@@ -2,12 +2,19 @@ package http
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/clgt/blog/internal/form"
+	"github.com/clgt/blog/internal/models"
 )
 
 type templateData struct {
+	Form *form.Form
+	User *models.User
 }
 
 var functions = template.FuncMap{}
@@ -44,6 +51,19 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, td 
 	if !ok {
 		http.Error(w, "missing template:"+name, 500)
 		return
+	}
+	id := s.session.GetInt(r, "user")
+	if id > 0 {
+		// Get user by id
+		u, err := s.UserService.ID(fmt.Sprint(id))
+		if err != nil {
+			log.Println(err)
+			// user has been deleted? remove session anyway
+			s.session.Remove(r, "user")
+		} else {
+			log.Println("user", u)
+			td.User = u
+		}
 	}
 
 	buf := new(bytes.Buffer)

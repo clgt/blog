@@ -1,18 +1,42 @@
-{{template "layout.html"}} {{- define "main"}}
+{{template "layout.html" .}} {{define "main" -}}
 <div>
-  <h1>LOGIN</h1>
-  <form action="submit_form.php" method="post">
-    <div class="form-group">
-      <label for="username">User Name:</label>
-      <input type="text" id="username" name="username" required />
-    </div>
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required />
-    </div>
-    <div class="form-group">
-      <input type="submit" value="Submit" />
-    </div>
-  </form>
+	<h1>LOGIN</h1>
+	{{if .Form.Errors.Get `err`}}
+	<div class="rounded-md bg-red-50 p-4 mb-4" id="register-form-error">
+		<div class="flex">
+			<div class="ml-3">
+				<h3 class="text-sm font-bold text-red-600">
+					{{.Form.Errors.Get `err`}}
+				</h3>
+			</div>
+		</div>
+	</div>
+	{{end}}{{with .Form}}
+	<form method="post">
+		<div class="form-group">
+			<label for="username">User Name:</label>
+			<input
+				type="text"
+				id="username"
+				name="Username"
+				value="{{.Get `Username`}}"
+				required
+			/>
+		</div>
+		<div class="form-group">
+			<label for="password">Password:</label>
+			<input
+				type="password"
+				id="password"
+				name="Password"
+				value="{{.Get `Passowrd`}}"
+				required
+			/>
+		</div>
+		<div class="form-group">
+			<input type="submit" value="Submit" />
+		</div>
+	</form>
+	{{end}}
 </div>
 {{- end}}

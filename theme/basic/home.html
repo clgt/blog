@@ -1,4 +1,4 @@
-{{template "layout.html"}}
-{{define "main"}}
-home page here
-{{end}}
+{{template "layout.html" .}} {{define "main" -}} Home{{if .User}}Hello
+{{.User.Username}}<a href="./logout">Logout</a>{{else}}<a href="./login"
+	>Log in</a
+><a href="./register">Register</a>{{end}} {{- end}}
