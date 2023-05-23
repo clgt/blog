@@ -1,0 +1,9 @@
+:root {
+  --background-body: red;
+}
+
+input,
+a,
+button {
+  display: block;
+}
