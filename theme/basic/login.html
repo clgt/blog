@@ -1,18 +1,65 @@
 {{template "layout.html"}} {{- define "main"}}
-<div>
-  <h1>LOGIN</h1>
-  <form action="submit_form.php" method="post">
-    <div class="form-group">
-      <label for="username">User Name:</label>
-      <input type="text" id="username" name="username" required />
-    </div>
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required />
-    </div>
-    <div class="form-group">
-      <input type="submit" value="Submit" />
-    </div>
-  </form>
+<style>
+  .login-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .login-content {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
+  }
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+  }
+  .form-group input {
+    display: block;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .submit-btn {
+    margin-top: 12px;
+  }
+</style>
+<div class="login-container">
+  <div class="login-content">
+    <h3>LOGIN</h3>
+    <form class="login-form" action="submit_form.php" method="post">
+      <div class="form-group">
+        <label for="username">User Name</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Your username"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Your password"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <input class="submit-btn" type="submit" value="Submit" />
+      </div>
+    </form>
+  </div>
 </div>
 {{- end}}
