@@ -1,0 +1,10 @@
+{{template "layout.html" .}} {{define "main" -}}
+<div>
+	Hello {{.User.Username}} <br />
+	{{.User.Email}} <br />
+	{{.User.FirstName}} <br />
+	{{.User.LastName}} <br />
+	<a href="/logout">Logout</a> <br />
+	<a href="/change-password">Change Password</a>
+</div>
+{{- end}}

@@ -24,7 +24,7 @@
 		<!-- <h1>LOGO</h1> -->
 		<div class="nav-bar">
 			{{if .User}}
-			<span>Hello, {{.User.Username}}</span>
+			<span>Hello, <a href="/profile">{{.User.Username}}</a></span>
 			<a href="/logout">Log Out</a>
 			{{else}}
 			<a href="/register">Register</a>

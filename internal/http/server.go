@@ -55,7 +55,9 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/login", s.login, "GET")
 	s.router.HandleFunc("/login", s.login, "POST")
 	s.router.HandleFunc("/logout", s.logout, "GET")
+	s.router.HandleFunc("/profile", s.profile, "GET")
 	s.router.HandleFunc("/change-password", s.changePassword, "GET")
+	s.router.HandleFunc("/change-password", s.changePassword, "POST")
 	s.router.HandleFunc("/forgot-password", s.forgotPassword, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.showPost, "GET")
 
@@ -138,11 +140,17 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		f.Values = r.PostForm
-		f.Required("Username", "Password", "FirstName", "LastName")
+		f.Required("Username", "Password", "PasswordConfirmation", "Email", "FirstName", "LastName")
 
 		if !f.Valid() {
 			log.Println("form invalid", f.Errors)
 			f.Errors.Add("err", "err_invalid_form")
+			return
+		}
+
+		// check password
+		if f.Get("Password") != f.Get("PasswordConfirmation") {
+			f.Errors.Add("err", "err_password_not_match")
 			return
 		}
 
@@ -251,10 +259,83 @@ func (s *Server) logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+func (s *Server) profile(w http.ResponseWriter, r *http.Request) {
+	userId := s.session.GetInt(r, "user")
+	user, err := s.UserService.ID(fmt.Sprint(userId))
+
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	s.render(w, r, "profile.html", &templateData{
+		User: user,
+	})
+}
+
 func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
-	s.render(w, r, "password.change.html", nil)
+	f := form.New(nil)
+	ok := false
+
+	userId := s.session.GetInt(r, "user")
+
+	if userId <= 0 {
+		ok = true
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	defer func() {
+		if !ok {
+			s.render(w, r, "password.change.html", &templateData{
+				Form: f,
+			})
+		}
+	}()
+
+	if r.Method == "POST" {
+		if err := r.ParseForm(); err != nil {
+			f.Errors.Add("err", "err_parse_form")
+			return
+		}
+
+		f.Values = r.PostForm
+		f.Required("OldPassword", "Password", "PasswordConfirmation")
+
+		if f.Get("Password") != f.Get("PasswordConfirmation") {
+			f.Errors.Add("err", "err_password_not_match")
+			return
+		}
+
+		if !f.Valid() {
+			log.Println("form invalid", f.Errors)
+			f.Errors.Add("err", "err_invalid_form")
+			return
+		}
+
+		user, _ := s.UserService.ID(fmt.Sprint(userId))
+		if user != nil {
+			err := s.UserService.CompareHashAndPassword(user.Password, f.Get("OldPassword"))
+			if err != nil {
+				log.Println("Old password invalid", f.Get("OldPassword"))
+				f.Errors.Add("err", "err_invalid_old_password")
+				return
+			}
+
+			err = s.UserService.CompareHashAndPassword(user.Password, f.Get("Password"))
+			if err == nil {
+				log.Println("New password invalid", f.Get("Password"))
+				f.Errors.Add("err", "err_invalid_new_password")
+				return
+			}
+
+			s.UserService.UpdateNewPassword(r.Context(), fmt.Sprint(user.ID), f.Get("Password"))
+		}
+
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
 }
 
 func (s *Server) forgotPassword(w http.ResponseWriter, r *http.Request) {
-	s.render(w, r, "password.forgot.html", nil)
+	s.render(w, r, "password.forgot.html", &templateData{})
 }

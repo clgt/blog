@@ -39,10 +39,10 @@ func scanUser(r interface {
 	if err := r.Scan(
 		&o.ID,
 		&o.Username,
-		&o.FirstName,
-		&o.LastName,
 		&o.Email,
 		&o.Password,
+		&o.FirstName,
+		&o.LastName,
 		pq.Array(&o.Roles),
 		&o.EmailToken,
 		&o.CreatedAt,
@@ -113,4 +113,28 @@ func (s *UserService) Create(ctx context.Context, f *form.Form) (*models.User, e
 	}
 
 	return o, nil
+}
+
+func (s *UserService) UpdateNewPassword(ctx context.Context, userId string, password string) error {
+	hashedPassword, err := s.HashPassword(password)
+
+	if err != nil {
+		return err
+	}
+
+	q := `
+		UPDATE users SET
+			updated_at = now(),
+			password = $2,
+			rpt_expired_at = '0001-01-01 00:00:00',
+			reset_pwd_token = ''
+		WHERE id = $1
+	`
+
+	_, qerr := s.db.conn.ExecContext(ctx, q,
+		userId,
+		hashedPassword,
+	)
+
+	return qerr
 }
