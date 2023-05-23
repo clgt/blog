@@ -1,6 +1,7 @@
 package http
 
 import (
+	"crypto/md5"
 	"errors"
 	"fmt"
 	"html/template"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/alexedwards/flow"
 	"github.com/clgt/blog/internal/config"
+	"github.com/clgt/blog/internal/email"
 	"github.com/clgt/blog/internal/form"
 	"github.com/clgt/blog/internal/models"
 	"github.com/clgt/blog/internal/sql"
@@ -20,7 +22,7 @@ import (
 )
 
 type Server struct {
-	sever   *http.Server
+	server  *http.Server
 	router  *flow.Mux
 	html    map[string]*template.Template
 	session *sessions.Session
@@ -37,7 +39,7 @@ func NewServer(cfg *config.Config) *Server {
 	session.Lifetime = 24 * time.Hour * 30 // 1 month
 
 	s := &Server{
-		sever: &http.Server{
+		server: &http.Server{
 			Addr:         cfg.ListenAddress,
 			ReadTimeout:  15 * time.Second,
 			WriteTimeout: 30 * time.Second,
@@ -59,6 +61,7 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/change-password", s.changePassword, "GET")
 	s.router.HandleFunc("/change-password", s.changePassword, "POST")
 	s.router.HandleFunc("/forgot-password", s.forgotPassword, "GET")
+	s.router.HandleFunc("/verify-email", s.verifyEmailResult, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.showPost, "GET")
 
 	fs := http.FileServer(http.Dir(filepath.Join("theme", "basic", "static")))
@@ -68,7 +71,7 @@ func NewServer(cfg *config.Config) *Server {
 }
 
 func (s *Server) Open() (err error) {
-	go s.sever.ListenAndServe()
+	go s.server.ListenAndServe()
 	if s.html, err = parseTheme("basic"); err != nil {
 		return
 	}
@@ -165,36 +168,22 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 
 		s.session.Put(r, "user", user.ID)
 
-		// // nếu user có nhập email thì gởi verify email luôn
-		// if f.Get("Email") != "" {
-		// 	// nhớ email
-		// 	user.Email = f.Get("Email")
+		if err := s.UserService.LogSendVerifyEmail(r.Context(), user); err != nil {
+			log.Println(err)
+		}
 
-		// 	if err := a.App.Users.LogSendVerifyEmail(user); err != nil {
-		// 		log.Println(err)
-		// 	}
+		// reload user
+		user, err = s.UserService.ID(fmt.Sprint(user.ID))
+		if err != nil {
+			log.Println(err)
+		}
 
-		// 	// gởi email verify
-		// 	email.PostmarkApiToken = a.App.Config.PostmarkApiToken
-		// 	email.Domain = a.App.Config.Domain
-		// 	if err := email.SendVerifyEmail(user); err != nil {
-		// 		log.Println(err)
-		// 	}
-		// }
-
-		// log := fmt.Sprintf(
-		// 	"%s %s user_id = %d đăng ký thành công.",
-		// 	user.FirstName,
-		// 	user.LastName,
-		// 	user.ID,
-		// )
-		// a.App.Log.Add(
-		// 	fmt.Sprint(user.ID),
-		// 	log,
-		// )
-		// if a.App.Config.TelegramToken != "" && a.App.Config.TelegramChatID != "" {
-		// 	a.App.Telegram.Msg(r.Context(), log)
-		// }
+		// gởi email verify
+		email.PostmarkApiToken = "?"
+		email.Domain = "http://localhost:3000"
+		if err := email.SendVerifyEmail(user); err != nil {
+			log.Println(err)
+		}
 
 		ok = true
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -338,4 +327,61 @@ func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) forgotPassword(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, "password.forgot.html", &templateData{})
+}
+
+func (s *Server) verifyEmailResult(w http.ResponseWriter, r *http.Request) {
+	f := form.New(nil)
+
+	defer func() {
+		s.render(w, r, "result.email.html", &templateData{
+			Form: f,
+		})
+	}()
+
+	// check hash
+	iat := r.URL.Query().Get("iat")
+	log.Println("DEBUG", "verifyEmailResult", "iat", iat)
+	token := r.URL.Query().Get("token")
+	log.Println("DEBUG", "verifyEmailResult", "token", token)
+	sign := r.URL.Query().Get("sign")
+	log.Println("DEBUG", "verifyEmailResult", "sign", sign)
+
+	qs := fmt.Sprintf("blog:%s:%s:blog", token, iat)
+	log.Println("DEBUG", "verifyEmailResult", "qs", qs)
+
+	if fmt.Sprintf("%x", md5.Sum([]byte(qs))) != sign {
+		log.Println("url sign không đúng")
+		f.Errors.Add("err", "err_token_invalid")
+		return
+	}
+
+	// nếu ko có, hoặc ko parse dc iat, thì xem như expired
+	issueAt, err := strconv.ParseInt(iat, 10, 64)
+
+	if err != nil {
+		log.Println(err)
+		f.Errors.Add("err", "err_token_missing")
+		return
+	}
+
+	// token của email sẽ expired sau 1 tuần
+	isExpired := time.Unix(issueAt+3600*24*7, 0).UTC().Before(time.Now().UTC())
+	if isExpired {
+		log.Println(time.Unix(issueAt+3600*24*7, 0).UTC())
+		f.Errors.Add("err", "err_token_expired")
+		return
+	}
+
+	// tìm user với cái token này
+	user, err := s.UserService.FindByEmailToken(r.Context(), token)
+	if err != nil {
+		log.Println(err)
+		f.Errors.Add("err", "err_token_invalid")
+	}
+
+	// update user đã verify email
+	if err := s.UserService.AddRole(r.Context(), user, "verified_email"); err != nil {
+		log.Println(err)
+		f.Errors.Add("err", "err_could_not_verified_email")
+	}
 }

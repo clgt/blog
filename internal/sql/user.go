@@ -138,3 +138,37 @@ func (s *UserService) UpdateNewPassword(ctx context.Context, userId string, pass
 
 	return qerr
 }
+
+func (s *UserService) LogSendVerifyEmail(ctx context.Context, user *models.User) error {
+	user.EmailToken = helper.RandString(6)
+	q := `
+		update users set
+			email = $2,
+			send_verified_email_at = now(),
+			email_token = $3
+		where id = $1
+	`
+	_, err := s.db.conn.ExecContext(ctx, q, user.ID, user.Email, user.EmailToken)
+	return err
+}
+
+func (s *UserService) AddRole(ctx context.Context, user *models.User, role string) error {
+	for _, s := range user.Roles {
+		if s == role {
+			return errors.New("err_duplicated_role")
+		}
+	}
+	q := `update users set roles = array_append(roles, $2) where id = $1`
+	_, err := s.db.conn.ExecContext(ctx, q, user.ID, role)
+	return err
+}
+
+func (s *UserService) FindByEmailToken(ctx context.Context, token string) (*models.User, error) {
+	q := `select * from users where users.email_token = $1`
+	row := s.db.conn.QueryRow(q, token)
+	o := new(models.User)
+	if err := scanUser(row, o); err != nil {
+		return nil, err
+	}
+	return o, nil
+}

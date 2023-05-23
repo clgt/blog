@@ -1,0 +1,44 @@
+{{template "layout.html" .}} {{define "main" -}}
+<div>
+	{{if .Form.Errors.Get `err`}}
+	<main class="sm:flex">
+		<p class="text-4xl font-bold tracking-tight text-sky-600 sm:text-5xl">
+			Error {{.Form.Errors.Get `err`}}
+		</p>
+		<div class="sm:ml-6">
+			<div class="sm:border-l sm:border-gray-200 sm:pl-6">
+				<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+					Link không đúng
+				</h1>
+			</div>
+		</div>
+	</main>
+	{{else}}
+	<main class="sm:flex">
+		<p class="text-4xl font-bold tracking-tight text-sky-600 sm:text-5xl">
+			Success
+		</p>
+		<div class="sm:ml-6">
+			<div class="sm:border-l sm:border-gray-200 sm:pl-6">
+				<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+					Email đã xác thực
+				</h1>
+				<p class="mt-1 text-base text-gray-500">
+					Chúc mừng, email của bạn đã xác thực thành công.
+				</p>
+			</div>
+			<div
+				class="mt-10 flex space-x-3 sm:border-l sm:border-transparent sm:pl-6"
+			>
+				<a
+					href="/"
+					class="inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+				>
+					Quay về trang chủ
+				</a>
+			</div>
+		</div>
+	</main>
+	{{end}}
+</div>
+{{- end}}
