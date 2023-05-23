@@ -1,31 +1,36 @@
 {{- define "header"}}
 <style>
-  .header {
-    background-color: rgb(230, 248, 248);
-    height: 80px;
-  }
-  .header-container {
-    max-width: 800px;
-    height: 100%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .logo-img {
-    display: block;
-    height: 100%;
-    width: auto;
-  }
+	.header {
+		background-color: rgb(230, 248, 248);
+		height: 80px;
+	}
+	.header-container {
+		max-width: 800px;
+		height: 100%;
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.logo-img {
+		display: block;
+		height: 100%;
+		width: auto;
+	}
 </style>
 <header class="header">
-  <div class="header-container">
-    <img class="logo-img" src="/static/image/logo.png" alt="logo" />
-    <!-- <h1>LOGO</h1> -->
-    <div class="nav-bar">
-      <a href="/register">Register</a>
-      <a href="/login">Login</a>
-    </div>
-  </div>
+	<div class="header-container">
+		<img class="logo-img" src="/static/image/logo.png" alt="logo" />
+		<!-- <h1>LOGO</h1> -->
+		<div class="nav-bar">
+			{{if .User}}
+			<span>Hello, {{.User.Username}}</span>
+			<a href="/logout">Log Out</a>
+			{{else}}
+			<a href="/register">Register</a>
+			<a href="/login">Login</a>
+			{{end}}
+		</div>
+	</div>
 </header>
 {{- end}}

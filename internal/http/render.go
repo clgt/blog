@@ -61,7 +61,6 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, td 
 			// user has been deleted? remove session anyway
 			s.session.Remove(r, "user")
 		} else {
-			log.Println("user", u)
 			td.User = u
 		}
 	}

@@ -124,11 +124,11 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	// nếu đã login thì ko show nữa
-	// if a.session.GetInt(r, "user") > 0 {
-	// 	ok = true
-	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	// 	return
-	// }
+	if s.session.GetInt(r, "user") > 0 {
+		ok = true
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 
 	if r.Method == "POST" {
 		if err := r.ParseForm(); err != nil {
