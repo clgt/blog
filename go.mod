@@ -9,5 +9,7 @@ require (
 
 require (
 	github.com/jmoiron/sqlx v1.3.5 // indirect
+	github.com/mozillazg/go-slugify v0.2.0 // indirect
+	github.com/mozillazg/go-unidecode v0.2.0 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 )

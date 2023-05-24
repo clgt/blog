@@ -80,9 +80,10 @@ func (s *PostService) FindPostByID(ctx context.Context, id int) (*models.Post, e
 
 func (s *PostService) CreatePost(ctx context.Context, post *models.Post) error {
 	const q = `
-		insert into posts (title, slug, poster, tags, short, body)
-		values ($1, $2, $3, $4, $5, $6)
-		returning id
+	insert into posts (title, slug, poster, tags, short, body)
+		values($1, $2, $3, $4, $5, $6)
+	returning
+		id;
 	`
 
 	if err := post.Validate(); err != nil {
@@ -103,4 +104,17 @@ func (s *PostService) CreatePost(ctx context.Context, post *models.Post) error {
 	}
 
 	return nil
+}
+
+func (s *PostService) UpdatePost(ctx context.Context, param *models.PostUpdateParam) error {
+	// coalesce will return first non null/nil value
+	const q = `
+	update posts set
+		title = coalesce($2, title),
+		slug = coalesce($3, slug)
+	where
+		id = $1
+	`
+	_, err := s.db.conn.Exec(q)
+	return err
 }

@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strings"
 	"time"
+
+	"github.com/mozillazg/go-slugify"
 )
 
 type Post struct {
@@ -25,9 +27,22 @@ func (p *Post) Validate() error {
 	// santinize and validate in the same place
 	p.Title = strings.TrimSpace(p.Title)
 	if p.Title == "" {
-		return errors.New("title invalid")
+		return errors.New("title is empty")
 	}
 
+	p.Slug = slugify.Slugify(strings.ReplaceAll(p.Title, "&", "and"))
+	if p.Slug == "" {
+		return errors.New("slug is empty")
+	}
+	p.Short = strings.TrimSpace(p.Short)
+	if p.Short == "" {
+		return errors.New("short is empty")
+	}
+
+	p.Body = strings.TrimSpace(p.Body)
+	if p.Body == "" {
+		return errors.New("body is empty")
+	}
 	return nil
 }
 
@@ -37,4 +52,10 @@ type PostFilter struct {
 
 	Limit  int
 	Offset int
+}
+
+type PostUpdateParam struct {
+	ID    int
+	Title *string
+	Slug  *string
 }
