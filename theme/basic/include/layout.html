@@ -6,28 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="data:," />
     <link rel="stylesheet" href="/static/css/index.css" />
+    <link rel="stylesheet" href="/static/css/tailwind-all.min.css" />
+    <link rel="stylesheet" href="/static/css/tailwind-base.min.css" />
+    <link rel="stylesheet" href="/static/css/tailwind-components.min.css" />
+    <link rel="stylesheet" href="/static/css/tailwind-utilities.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phosphor-icons@1.4.2/src/index.min.js"></script>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+      type="text/css"
+      href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/bold/style.css"
     />
-
-
     <title>Blog</title>
   </head>
   <body>
     <div style="position: fixed; top: 0; left: 0; right: 0">
       {{ template "header" .}}
     </div>
-    <div
-      style="
-        min-height: 80vh;
-        margin-top: 80px;
-        display: flex;
-        flex-direction: column;
-      "
-    >
+    <div class="min-h-[80vh] mt-[170px] flex flex-col container mx-auto">
       {{ template "main" .}}
     </div>
-    <div>{{ template "footer" .}}</div>
+    <div class="bg-gray-200">
+      <div class="container mx-auto mt-20">{{ template "footer" .}}</div>
+    </div>
   </body>
 </html>
