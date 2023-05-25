@@ -12,11 +12,14 @@ import (
 )
 
 type templateData struct {
-	Form *form.Form
-	User *models.User
+	Form  *form.Form
+	User  *models.User
+	Posts []*models.Post
 }
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"has_role": hasRole,
+}
 
 func parseTheme(theme string) (map[string]*template.Template, error) {
 	pages, err := filepath.Glob(filepath.Join("theme", theme, "*.html"))
@@ -70,4 +73,44 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, td 
 		return
 	}
 	buf.WriteTo(w)
+}
+
+func (s *Server) adminRender(w http.ResponseWriter, r *http.Request, name string, td *templateData) {
+	ts, ok := s.adminHtml[name]
+	if !ok {
+		http.Error(w, "missing template:"+name, 500)
+		return
+	}
+	id := s.session.GetInt(r, "user")
+	if id > 0 {
+		// Get user by id
+		u, err := s.UserService.FindByID(r.Context(), id)
+		if err != nil {
+			log.Println(err)
+			// user has been deleted? remove session anyway
+			s.session.Remove(r, "user")
+		} else {
+			td.User = u
+		}
+	}
+
+	buf := new(bytes.Buffer)
+	if err := ts.Execute(buf, td); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	buf.WriteTo(w)
+}
+
+func hasRole(user *models.User, role string) bool {
+	if user == nil {
+		return false
+	}
+
+	for _, s := range user.Roles {
+		if s == role {
+			return true
+		}
+	}
+	return false
 }

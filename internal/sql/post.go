@@ -20,11 +20,31 @@ func NewPostService(db *DB) *PostService {
 	return &PostService{db: db}
 }
 
+func scanPost(r Scanner, u *models.Post) error {
+	if err := r.Scan(
+		&u.ID,
+		&u.Title,
+		&u.Slug,
+		&u.Poster,
+		pq.Array(&u.Tags),
+		&u.Short,
+		&u.Body,
+		&u.PublisherID,
+		&u.PublishedAt,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+		&u.Total,
+	); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) ([]*models.Post, int, error) {
-	var total int
 	q := `
 		select
-			id, title, slug, poster, tags, short, body, published_at, created_at, updated_at, count(*) over() as total
+			id, title, slug, poster, tags, short, body, publisher_id, published_at, created_at, updated_at, count(*) over() as total
 		from
 			posts
 		where
@@ -54,14 +74,14 @@ func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) (
 
 	posts := make([]*models.Post, 0)
 	for rows.Next() {
-		var p models.Post
-		if err := rows.Scan(&p.ID, &p.Title, &p.Slug, &p.Poster, pq.Array(&p.Tags), &p.Short, &p.Body, &p.PublishedAt, &p.CreatedAt, &p.UpdatedAt, &total); err != nil {
+		p := new(models.Post)
+		if err := scanPost(rows, p); err != nil {
 			return nil, 0, err
 		}
-		posts = append(posts, &p)
+		posts = append(posts, p)
 	}
 
-	return posts, total, err
+	return posts, len(posts), err
 }
 
 func (s *PostService) FindPostByID(ctx context.Context, id int) (*models.Post, error) {

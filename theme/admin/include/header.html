@@ -1,0 +1,32 @@
+{{- define "header"}}
+<!-- <style>
+  .header {
+    background-color: rgb(230, 248, 248);
+    height: 80px;
+  }
+  .header-container {
+    max-width: 800px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo-img {
+    display: block;
+    height: 100%;
+    width: auto;
+  }
+</style> -->
+<header class="bg-white">
+	<div
+		class="border-t border-b border-black py-4 container mx-auto py-4 flex items-center gap-x-2"
+	>
+		<a class="uppercase font-medium text-lg p-2" href="/admin">Home</a>
+		<a class="uppercase font-medium text-lg p-2" href="/admin/posts">Blogs</a>
+		<!-- <a class="uppercase font-medium text-lg p-2" href="/admin/comments">Comments</a> -->
+		<a class="uppercase font-medium text-lg p-2" href="/admin/users">Users</a>
+		<a class="uppercase font-medium text-lg p-2" href="/">Back</a>
+	</div>
+</header>
+{{- end}}

@@ -16,6 +16,7 @@ type Post struct {
 	Tags        []string
 	Short       string
 	Body        string
+	PublisherID int
 	PublishedAt *time.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -43,6 +44,7 @@ func (p *Post) Validate() error {
 	if p.Body == "" {
 		return errors.New("body is empty")
 	}
+
 	return nil
 }
 

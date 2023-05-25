@@ -22,10 +22,11 @@ import (
 )
 
 type Server struct {
-	server  *http.Server
-	router  *flow.Mux
-	html    map[string]*template.Template
-	session *sessions.Session
+	server    *http.Server
+	router    *flow.Mux
+	html      map[string]*template.Template
+	adminHtml map[string]*template.Template
+	session   *sessions.Session
 
 	// services
 	PostService *sql.PostService
@@ -51,6 +52,7 @@ func NewServer(cfg *config.Config) *Server {
 		session: session,
 	}
 
+	// user routes
 	s.router.HandleFunc("/", s.showHome, "GET")
 	s.router.HandleFunc("/register", s.register, "GET")
 	s.router.HandleFunc("/register", s.register, "POST")
@@ -65,6 +67,12 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/verify-email", s.verifyEmailResult, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.showPost, "GET")
 
+	// admin routes
+	s.router.HandleFunc("/admin", use(s.adminHome, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/posts", use(s.managePosts, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/users", use(s.manageUsers, s.isadmin), "GET")
+
+	// static files
 	fs := http.FileServer(http.Dir(filepath.Join("theme", "basic", "static")))
 	s.router.Handle("/static/...", http.StripPrefix("/static", fs))
 
@@ -74,6 +82,9 @@ func NewServer(cfg *config.Config) *Server {
 func (s *Server) Open() (err error) {
 	go s.server.ListenAndServe()
 	if s.html, err = parseTheme("basic"); err != nil {
+		return
+	}
+	if s.adminHtml, err = parseTheme("admin"); err != nil {
 		return
 	}
 	return
@@ -493,4 +504,26 @@ func (s *Server) verifyEmailResult(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		f.Errors.Add("err", "err_could_not_verified_email")
 	}
+}
+
+// admin
+func (s *Server) adminHome(w http.ResponseWriter, r *http.Request) {
+	s.adminRender(w, r, "home.html", &templateData{})
+}
+
+func (s *Server) managePosts(w http.ResponseWriter, r *http.Request) {
+	posts, total, err := s.PostService.FindPosts(r.Context(), models.PostFilter{})
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("total", total)
+
+	s.adminRender(w, r, "posts.html", &templateData{
+		Posts: posts,
+	})
+}
+
+func (s *Server) manageUsers(w http.ResponseWriter, r *http.Request) {
+	s.adminRender(w, r, "home.html", &templateData{})
 }

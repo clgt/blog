@@ -57,7 +57,6 @@ func scanUser(r Scanner, u *models.User) error {
 }
 
 func (s *UserService) FindUsers(ctx context.Context, filter models.UserFilter) ([]*models.User, int, error) {
-	var total int
 	q := `
 		select
 			id, username, email, password, first_name, last_name, roles, email_token, created_at, updated_at, send_verified_email_at, reset_pwd_token, rpt_expired_at, count(*) over() as total
@@ -112,7 +111,7 @@ func (s *UserService) FindUsers(ctx context.Context, filter models.UserFilter) (
 		users = append(users, u)
 	}
 
-	return users, total, err
+	return users, len(users), err
 }
 
 func (s *UserService) FindByID(ctx context.Context, id int) (*models.User, error) {

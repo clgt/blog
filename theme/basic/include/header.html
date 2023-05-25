@@ -19,48 +19,52 @@
   }
 </style> -->
 <header class="bg-white">
-  <div class="container mx-auto py-4 flex items-center justify-between">
-    <a class="h-[60px]" href="/">
-      <img class="block h-full" src="/static/image/logo.png" alt="logo" />
-    </a>
-    <div class="flex items-center gap-4 h-full">
-      {{if .User}}
-      <a href="/profile">{{.User.Username}}</a>
-      <div class="h-full cursor-pointer relative">
-        <img
-          class="block h-10 w-auto p-2"
-          src="/static/image/user.png"
-          alt="logo"
-        />
-        <div
-          class="absolute min-w-[120px] right-0 top-full bg-white rounded-lg overflow-hidden"
-        >
-          <a class="px-4 py-2 hover:bg-gray-200" href="/profile">Profile</a>
-          <a class="px-4 py-2 hover:bg-gray-200" href="/logout">Logout</a>
-        </div>
-      </div>
-      <!-- <a href="/logout">Log Out</a> -->
-      {{else}}
-      <a
-        class="mr-4 px-8 py-2 rounded-full border border-black"
-        href="/register"
-        >Register</a
-      >
-      <a
-        class="px-8 py-2 rounded-full bg-blue-600 border border-transparent text-white"
-        href="/login"
-        >Login</a
-      >
-      {{end}}
-    </div>
-  </div>
-  <div
-    class="border-t border-b border-black py-4 container mx-auto py-4 flex items-center gap-x-2"
-  >
-    <a class="uppercase font-medium text-lg p-2" href="/">home</a>
-    <a class="uppercase font-medium text-lg p-2" href="/blogs">all Blogs</a>
-    <a class="uppercase font-medium text-lg p-2" href="/about">about</a>
-    <a class="uppercase font-medium text-lg p-2" href="/contact">contact</a>
-  </div>
+	<div class="container mx-auto py-4 flex items-center justify-between">
+		<a class="h-[60px]" href="/">
+			<img class="block h-full" src="/static/image/logo.png" alt="logo" />
+		</a>
+		<div class="flex items-center gap-4 h-full">
+			{{if .User}}
+			<a href="/profile">{{.User.Username}}</a>
+			<div class="h-full cursor-pointer relative">
+				<img
+					class="block h-10 w-auto p-2"
+					src="/static/image/user.png"
+					alt="logo"
+				/>
+				<div
+					class="absolute min-w-[120px] right-0 top-full bg-white rounded-lg overflow-hidden"
+				>
+					<!--  -->
+					{{if and .User (has_role .User "admin")}}
+					<a class="px-4 py-2 hover:bg-gray-200" href="/admin">Admin</a>
+					{{end}}
+					<!--  -->
+					<a class="px-4 py-2 hover:bg-gray-200" href="/logout">Logout</a>
+				</div>
+			</div>
+			<!-- <a href="/logout">Log Out</a> -->
+			{{else}}
+			<a
+				class="mr-4 px-8 py-2 rounded-full border border-black"
+				href="/register"
+				>Register</a
+			>
+			<a
+				class="px-8 py-2 rounded-full bg-blue-600 border border-transparent text-white"
+				href="/login"
+				>Login</a
+			>
+			{{end}}
+		</div>
+	</div>
+	<div
+		class="border-t border-b border-black py-4 container mx-auto py-4 flex items-center gap-x-2"
+	>
+		<a class="uppercase font-medium text-lg p-2" href="/">home</a>
+		<a class="uppercase font-medium text-lg p-2" href="/blogs">all Blogs</a>
+		<a class="uppercase font-medium text-lg p-2" href="/about">about</a>
+		<a class="uppercase font-medium text-lg p-2" href="/contact">contact</a>
+	</div>
 </header>
 {{- end}}
