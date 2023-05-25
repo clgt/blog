@@ -28,6 +28,10 @@ type DB struct {
 	Datasource string
 }
 
+type Scanner interface {
+	Scan(dest ...interface{}) error
+}
+
 func NewDB(cfg *config.Config) *DB {
 	db := &DB{
 		Datasource: cfg.Datasource,

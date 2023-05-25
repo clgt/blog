@@ -21,3 +21,13 @@ type User struct {
 
 	Total int64
 }
+
+type UserFilter struct {
+	ID         int
+	Username   string
+	Email      string
+	EmailToken string
+
+	Limit  int
+	Offset int
+}

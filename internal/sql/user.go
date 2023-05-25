@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/clgt/blog/internal/form"
 	"github.com/clgt/blog/internal/helper"
 	"github.com/clgt/blog/internal/models"
 	"github.com/lib/pq"
@@ -33,23 +32,22 @@ func (s *UserService) CompareHashAndPassword(hashed string, password string) err
 	return err
 }
 
-func scanUser(r interface {
-	Scan(dest ...interface{}) error
-}, o *models.User) error {
+func scanUser(r Scanner, u *models.User) error {
 	if err := r.Scan(
-		&o.ID,
-		&o.Username,
-		&o.Email,
-		&o.Password,
-		&o.FirstName,
-		&o.LastName,
-		pq.Array(&o.Roles),
-		&o.EmailToken,
-		&o.CreatedAt,
-		&o.UpdatedAt,
-		&o.SendVerifiedEmailAt,
-		&o.ResetPasswordToken,
-		&o.RPTExpiredAt,
+		&u.ID,
+		&u.Username,
+		&u.Email,
+		&u.Password,
+		&u.FirstName,
+		&u.LastName,
+		pq.Array(&u.Roles),
+		&u.EmailToken,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+		&u.SendVerifiedEmailAt,
+		&u.ResetPasswordToken,
+		&u.RPTExpiredAt,
+		&u.Total,
 	); err != nil {
 		return err
 	}
@@ -57,66 +55,124 @@ func scanUser(r interface {
 	return nil
 }
 
-func (s *UserService) ID(id string) (*models.User, error) {
-	if id == "" {
-		return nil, errors.New("err_id_empty")
+func (s *UserService) FindUsers(ctx context.Context, filter models.UserFilter) ([]*models.User, int, error) {
+	var total int
+	q := `
+		select
+			id, username, email, password, first_name, last_name, roles, email_token, created_at, updated_at, send_verified_email_at, reset_pwd_token, rpt_expired_at, count(*) over() as total
+		from
+			users
+		where
+			case
+				when $1 > 0 then id=$1
+				else true
+			end
+		and
+			case
+				when $2 <> '' then username=$2
+				else true
+			end
+		and
+			case
+				when $3 <> '' then email=$3
+				else true
+			end
+		and
+			case
+				when $4 <> '' then email_token=$4
+				else true
+			end
+		order by created_at desc
+		limit
+			case
+				when $5 > 0 then $5
+				else null
+			end
+		offset $6
+	`
+
+	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Username, filter.Email, filter.EmailToken, filter.Limit, filter.Offset)
+	if err != nil {
+		return nil, 0, err
 	}
-	q := `select * from users where users.id = $1`
-	row := s.db.conn.QueryRow(q, id)
-	o := new(models.User)
-	if err := scanUser(row, o); err != nil {
-		return nil, err
+	defer rows.Close()
+
+	users := make([]*models.User, 0)
+	for rows.Next() {
+		u := new(models.User)
+		if err := scanUser(rows, u); err != nil {
+			return nil, 0, err
+		}
+		users = append(users, u)
 	}
-	return o, nil
+
+	return users, total, err
 }
 
-func (s *UserService) Auth(ctx context.Context, f *form.Form) (*models.User, error) {
-	q := `
-		select id, password from users where username = $1
-	`
-	var id int
-	var hashed string
-	row := s.db.conn.QueryRowContext(ctx, q, f.Get("Username"))
-	if err := row.Scan(&id, &hashed); err != nil {
+func (s *UserService) FindByID(ctx context.Context, id int) (*models.User, error) {
+	users, _, err := s.FindUsers(ctx, models.UserFilter{
+		ID:    id,
+		Limit: 1,
+	})
+
+	if err != nil {
 		return nil, err
 	}
-
-	if err := s.CompareHashAndPassword(hashed, f.Get("Password")); err != nil {
-		return nil, err
+	if len(users) == 0 {
+		return nil, ErrUserNotFound
 	}
-
-	return &models.User{ID: id}, nil
+	return users[0], nil
 }
 
-func (s *UserService) Create(ctx context.Context, f *form.Form) (*models.User, error) {
+func (s *UserService) Auth(ctx context.Context, user *models.User) (*models.User, error) {
+	users, _, err := s.FindUsers(ctx, models.UserFilter{
+		Username: user.Username,
+		Limit:    1,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	if len(users) == 0 {
+		return nil, ErrUserNotFound
+	}
+
+	hashed := users[0].Password
+	if err := s.CompareHashAndPassword(hashed, user.Password); err != nil {
+		return nil, err
+	}
+
+	return &models.User{ID: users[0].ID}, nil
+}
+
+func (s *UserService) Create(ctx context.Context, user *models.User) (*models.User, error) {
 	q := `
-		insert into users (username, first_name, last_name, email, password, email_token)
-		values ($1, $2, $3, $4, $5, $6)
-		returning id
+		insert into users (username, first_name, last_name, email, password)
+		values ($1, $2, $3, $4, $5)
+		returning id, email
 	`
-	hashedPassword, err := s.HashPassword(f.Get("Password"))
+	hashedPassword, err := s.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
 
 	row := s.db.conn.QueryRowContext(ctx, q,
-		f.Get("Username"),
-		f.Get("FirstName"),
-		f.Get("LastName"),
-		f.Get("Email"),
+		user.Username,
+		user.FirstName,
+		user.LastName,
+		user.Email,
 		hashedPassword,
-		helper.RandString(6),
 	)
-	o := new(models.User)
-	if err := row.Scan(&o.ID); err != nil {
+	u := new(models.User)
+	if err := row.Scan(&u.ID, &u.Email); err != nil {
 		return nil, err
 	}
 
-	return o, nil
+	return u, nil
 }
 
-func (s *UserService) UpdateNewPassword(ctx context.Context, userId string, password string) error {
-	hashedPassword, err := s.HashPassword(password)
+func (s *UserService) UpdatePassword(ctx context.Context, user *models.User) error {
+	hashedPassword, err := s.HashPassword(user.Password)
 
 	if err != nil {
 		return err
@@ -132,7 +188,7 @@ func (s *UserService) UpdateNewPassword(ctx context.Context, userId string, pass
 	`
 
 	_, qerr := s.db.conn.ExecContext(ctx, q,
-		userId,
+		user.ID,
 		hashedPassword,
 	)
 
@@ -141,6 +197,7 @@ func (s *UserService) UpdateNewPassword(ctx context.Context, userId string, pass
 
 func (s *UserService) LogSendVerifyEmail(ctx context.Context, user *models.User) error {
 	user.EmailToken = helper.RandString(6)
+
 	q := `
 		update users set
 			email = $2,
@@ -164,11 +221,16 @@ func (s *UserService) AddRole(ctx context.Context, user *models.User, role strin
 }
 
 func (s *UserService) FindByEmailToken(ctx context.Context, token string) (*models.User, error) {
-	q := `select * from users where users.email_token = $1`
-	row := s.db.conn.QueryRow(q, token)
-	o := new(models.User)
-	if err := scanUser(row, o); err != nil {
+	users, _, err := s.FindUsers(ctx, models.UserFilter{
+		EmailToken: token,
+		Limit:      1,
+	})
+
+	if err != nil {
 		return nil, err
 	}
-	return o, nil
+	if len(users) == 0 {
+		return nil, ErrUserNotFound
+	}
+	return users[0], nil
 }

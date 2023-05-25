@@ -157,14 +157,20 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		user, err := s.UserService.Create(r.Context(), f)
+		log.Println("email", f.Get("Email"))
+
+		user, err := s.UserService.Create(r.Context(), &models.User{
+			Username:  f.Get("Username"),
+			Password:  f.Get("Password"),
+			Email:     f.Get("Email"),
+			FirstName: f.Get("FirstName"),
+			LastName:  f.Get("LastName"),
+		})
 		if err != nil {
 			log.Println(err)
 			f.Errors.Add("err", "err_could_not_create_user")
 			return
 		}
-
-		log.Println(user)
 
 		s.session.Put(r, "user", user.ID)
 
@@ -173,10 +179,12 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// reload user
-		user, err = s.UserService.ID(fmt.Sprint(user.ID))
+		user, err = s.UserService.FindByID(r.Context(), user.ID)
 		if err != nil {
 			log.Println(err)
 		}
+
+		log.Println(user)
 
 		// gởi email verify
 		email.PostmarkApiToken = "?"
@@ -225,7 +233,10 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		user, err := s.UserService.Auth(r.Context(), f)
+		user, err := s.UserService.Auth(r.Context(), &models.User{
+			Username: f.Get("Username"),
+			Password: f.Get("Password"),
+		})
 		if err != nil {
 			log.Println(err)
 			f.Errors.Add("err", "msg_invalid_login")
@@ -250,9 +261,10 @@ func (s *Server) logout(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) profile(w http.ResponseWriter, r *http.Request) {
 	userId := s.session.GetInt(r, "user")
-	user, err := s.UserService.ID(fmt.Sprint(userId))
+	user, err := s.UserService.FindByID(r.Context(), userId)
 
 	if err != nil {
+		log.Println(err)
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
@@ -302,7 +314,7 @@ func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		user, _ := s.UserService.ID(fmt.Sprint(userId))
+		user, _ := s.UserService.FindByID(r.Context(), userId)
 		if user != nil {
 			err := s.UserService.CompareHashAndPassword(user.Password, f.Get("OldPassword"))
 			if err != nil {
@@ -318,7 +330,10 @@ func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			s.UserService.UpdateNewPassword(r.Context(), fmt.Sprint(user.ID), f.Get("Password"))
+			s.UserService.UpdatePassword(r.Context(), &models.User{
+				ID:       userId,
+				Password: f.Get("Password"),
+			})
 		}
 
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
@@ -340,14 +355,10 @@ func (s *Server) verifyEmailResult(w http.ResponseWriter, r *http.Request) {
 
 	// check hash
 	iat := r.URL.Query().Get("iat")
-	log.Println("DEBUG", "verifyEmailResult", "iat", iat)
 	token := r.URL.Query().Get("token")
-	log.Println("DEBUG", "verifyEmailResult", "token", token)
 	sign := r.URL.Query().Get("sign")
-	log.Println("DEBUG", "verifyEmailResult", "sign", sign)
 
 	qs := fmt.Sprintf("blog:%s:%s:blog", token, iat)
-	log.Println("DEBUG", "verifyEmailResult", "qs", qs)
 
 	if fmt.Sprintf("%x", md5.Sum([]byte(qs))) != sign {
 		log.Println("url sign không đúng")

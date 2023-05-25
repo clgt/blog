@@ -2,7 +2,6 @@ package http
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -55,7 +54,7 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, td 
 	id := s.session.GetInt(r, "user")
 	if id > 0 {
 		// Get user by id
-		u, err := s.UserService.ID(fmt.Sprint(id))
+		u, err := s.UserService.FindByID(r.Context(), id)
 		if err != nil {
 			log.Println(err)
 			// user has been deleted? remove session anyway
