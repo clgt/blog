@@ -1,7 +1,3 @@
-:root {
-  --background-body: red;
-}
-
 html {
   box-sizing: border-box !important;
 }
@@ -10,4 +6,22 @@ input,
 a,
 button {
   display: block;
+}
+
+.header {
+  background-color: rgb(230, 248, 248);
+  height: 80px;
+}
+.header-container {
+  max-width: 800px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo-img {
+  display: block;
+  height: 100%;
+  width: auto;
 }

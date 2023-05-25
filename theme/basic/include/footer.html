@@ -1,5 +1,25 @@
 {{- define "footer"}}
 <footer>
-  <h1>This is footer</h1>
+  <div
+    class="py-8 flex items-center gap-x-8 text-2xl border-b-[0.5px] border-gray-400"
+  >
+    <p class="text-lg">Follow Us</p>
+    <i class="ph-fill ph-facebook-logo"></i>
+    <i class="ph-fill ph-twitter-logo"></i>
+    <i class="ph-fill ph-youtube-logo"></i>
+    <i class="ph-fill ph-instagram-logo"></i>
+    <i class="ph-fill ph-github-logo"></i>
+  </div>
+
+  <div
+    class="pt-8 pb-16 flex items-center gap-x-12 text-2xl uppercase text-gray-700 font-medium"
+  >
+    <a href="/"
+      ><img src="/static/image/logo.png" alt="logo" class="block h-[40px]"
+    /></a>
+    <a href="#">about</a>
+    <a href="#">contact</a>
+    <a href="#">clgt</a>
+  </div>
 </footer>
 {{- end}}

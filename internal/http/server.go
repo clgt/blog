@@ -86,6 +86,7 @@ func (s *Server) showPost(w http.ResponseWriter, r *http.Request) {
 	slug := flow.Param(r.Context(), "slug")
 	id := strings.Split(slug, "-")[0]
 	if id == "" {
+
 		handleError(w, r, errors.New("id invalid"))
 		return
 	}
