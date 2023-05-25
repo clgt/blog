@@ -61,6 +61,7 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/change-password", s.changePassword, "GET")
 	s.router.HandleFunc("/change-password", s.changePassword, "POST")
 	s.router.HandleFunc("/forgot-password", s.forgotPassword, "GET")
+	s.router.HandleFunc("/forgot-password", s.forgotPassword, "POST")
 	s.router.HandleFunc("/verify-email", s.verifyEmailResult, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.showPost, "GET")
 
@@ -156,8 +157,6 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 			f.Errors.Add("err", "err_password_not_match")
 			return
 		}
-
-		log.Println("email", f.Get("Email"))
 
 		user, err := s.UserService.Create(r.Context(), &models.User{
 			Username:  f.Get("Username"),
@@ -278,14 +277,6 @@ func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
 	f := form.New(nil)
 	ok := false
 
-	userId := s.session.GetInt(r, "user")
-
-	if userId <= 0 {
-		ok = true
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
-
 	defer func() {
 		if !ok {
 			s.render(w, r, "password.change.html", &templateData{
@@ -294,14 +285,63 @@ func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
+	userId := s.session.GetInt(r, "user")
+	// not login means forgot password
+	if userId <= 0 {
+		f.Set("ForgotPassword", "1")
+		// check hash
+		eat := r.URL.Query().Get("eat")
+		token := r.URL.Query().Get("token")
+		sign := r.URL.Query().Get("sign")
+
+		qs := fmt.Sprintf("blog:%s:%s:blog", token, eat)
+
+		if fmt.Sprintf("%x", md5.Sum([]byte(qs))) != sign {
+			log.Println("url sign không đúng")
+			f.Errors.Add("err", "err_token_invalid")
+			return
+		}
+
+		// nếu ko có, hoặc ko parse dc eat, thì xem như expired
+		expiredAt, err := strconv.ParseInt(eat, 10, 64)
+
+		if err != nil {
+			log.Println(err)
+			f.Errors.Add("err", "err_token_missing")
+			return
+		}
+
+		isExpired := time.Unix(expiredAt, 0).UTC().Before(time.Now().UTC())
+		if isExpired {
+			log.Println(time.Unix(expiredAt, 0).UTC())
+			f.Errors.Add("err", "err_token_expired")
+			return
+		}
+
+		// find user by the token
+		user, err := s.UserService.FindByRPT(r.Context(), token)
+		if err != nil {
+			log.Println(err)
+			f.Errors.Add("err", "err_token_invalid")
+		}
+
+		f.Set("UserID", fmt.Sprintf("%d", user.ID))
+	}
+
 	if r.Method == "POST" {
 		if err := r.ParseForm(); err != nil {
 			f.Errors.Add("err", "err_parse_form")
 			return
 		}
 
+		if f.Get("UserID") != "" {
+			userId, _ = strconv.Atoi(f.Get("UserID"))
+			r.PostForm.Set("UserID", f.Get("UserID"))
+			r.PostForm.Set("ForgotPassword", "1")
+		}
+
 		f.Values = r.PostForm
-		f.Required("OldPassword", "Password", "PasswordConfirmation")
+		f.Required("Password", "PasswordConfirmation")
 
 		if f.Get("Password") != f.Get("PasswordConfirmation") {
 			f.Errors.Add("err", "err_password_not_match")
@@ -315,15 +355,18 @@ func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
 		}
 
 		user, _ := s.UserService.FindByID(r.Context(), userId)
+		log.Println("user", user)
 		if user != nil {
-			err := s.UserService.CompareHashAndPassword(user.Password, f.Get("OldPassword"))
-			if err != nil {
-				log.Println("Old password invalid", f.Get("OldPassword"))
-				f.Errors.Add("err", "err_invalid_old_password")
-				return
+			if f.Get("OldPassword") != "" {
+				err := s.UserService.CompareHashAndPassword(user.Password, f.Get("OldPassword"))
+				if err != nil {
+					log.Println("Old password invalid", f.Get("OldPassword"))
+					f.Errors.Add("err", "err_invalid_old_password")
+					return
+				}
 			}
 
-			err = s.UserService.CompareHashAndPassword(user.Password, f.Get("Password"))
+			err := s.UserService.CompareHashAndPassword(user.Password, f.Get("Password"))
 			if err == nil {
 				log.Println("New password invalid", f.Get("Password"))
 				f.Errors.Add("err", "err_invalid_new_password")
@@ -336,12 +379,66 @@ func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 
+		ok = true
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 
 func (s *Server) forgotPassword(w http.ResponseWriter, r *http.Request) {
-	s.render(w, r, "password.forgot.html", &templateData{})
+	f := form.New(nil)
+	ok := false
+
+	userId := s.session.GetInt(r, "user")
+	// redirect if logged in
+	if userId > 0 {
+		ok = true
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	defer func() {
+		if !ok {
+			s.render(w, r, "password.forgot.html", &templateData{
+				Form: f,
+			})
+		}
+	}()
+
+	if r.Method == "POST" {
+		if err := r.ParseForm(); err != nil {
+			log.Println(err)
+			f.Errors.Add("err", "err_parse_form")
+			return
+		}
+
+		f.Values = r.PostForm
+		f.Required("Email")
+
+		if !f.Valid() {
+			log.Println("form invalid", f.Errors)
+			f.Errors.Add("err", "err_invalid_form")
+			return
+		}
+
+		user, err := s.UserService.LogSendResetPassword(r.Context(), f.Get("Email"))
+		if err != nil {
+			log.Println(err)
+			f.Errors.Add("err", err.Error())
+			return
+		}
+
+		log.Println(user)
+
+		// gởi email verify
+		email.PostmarkApiToken = "?"
+		email.Domain = "http://localhost:3000"
+		if err := email.SendResetPasswordEmail(user); err != nil {
+			log.Println(err)
+		}
+
+		ok = true
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
 }
 
 func (s *Server) verifyEmailResult(w http.ResponseWriter, r *http.Request) {
@@ -383,7 +480,7 @@ func (s *Server) verifyEmailResult(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// tìm user với cái token này
+	// find user by the token
 	user, err := s.UserService.FindByEmailToken(r.Context(), token)
 	if err != nil {
 		log.Println(err)

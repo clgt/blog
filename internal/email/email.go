@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -25,7 +24,7 @@ func SendVerifyEmail(user *models.User) error {
 	if PostmarkApiToken == "" {
 		return errors.New("PostmarkApiToken=?")
 	}
-	log.Println(user.SendVerifiedEmailAt)
+
 	// sign the url
 	qs := fmt.Sprintf(
 		"blog:%s:%d:blog",
@@ -41,11 +40,6 @@ You have registered an account at on our website.
 Please click the link below to verify your email address: %s
 `, user.FirstName, user.LastName, link)
 
-	if Domain == "http://localhost:3000" {
-		fmt.Println(link)
-		return nil
-	}
-
 	body, err := json.Marshal(map[string]string{
 		"From":          From,
 		"To":            user.Email,
@@ -57,6 +51,52 @@ Please click the link below to verify your email address: %s
 		return err
 	}
 
+	if Domain == "http://localhost:3000" {
+		fmt.Println(link)
+		return nil
+	}
+	return SendEmail(body)
+}
+
+func SendResetPasswordEmail(user *models.User) error {
+	if PostmarkApiToken == "" {
+		return errors.New("PostmarkApiToken=?")
+	}
+
+	// sign the url
+	qs := fmt.Sprintf(
+		"blog:%s:%d:blog",
+		user.ResetPasswordToken,
+		user.RPTExpiredAt.Unix(),
+	)
+	sign := fmt.Sprintf("%x", md5.Sum([]byte(qs)))
+	link := fmt.Sprintf("%s/change-password?token=%s&eat=%d&sign=%s", Domain, user.ResetPasswordToken, user.RPTExpiredAt.Unix(), sign)
+	// dùng text cho gọn
+	msg := fmt.Sprintf(`
+Hi %s %s,
+You have sent a request to reset your password.
+Please click the link below to reset your password: %s
+`, user.FirstName, user.LastName, link)
+
+	body, err := json.Marshal(map[string]string{
+		"From":          From,
+		"To":            user.Email,
+		"Subject":       "[Todo] Reset your password",
+		"TextBody":      msg,
+		"MessageStream": "outbound",
+	})
+	if err != nil {
+		return err
+	}
+
+	if Domain == "http://localhost:3000" {
+		fmt.Println(link)
+		return nil
+	}
+	return SendEmail(body)
+}
+
+func SendEmail(body []byte) error {
 	req, err := http.NewRequest("POST", "https://api.postmarkapp.com/email", bytes.NewBuffer(body))
 	if err != nil {
 		return err

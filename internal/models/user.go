@@ -23,10 +23,11 @@ type User struct {
 }
 
 type UserFilter struct {
-	ID         int
-	Username   string
-	Email      string
-	EmailToken string
+	ID                 int
+	Username           string
+	Email              string
+	EmailToken         string
+	ResetPasswordToken string
 
 	Limit  int
 	Offset int

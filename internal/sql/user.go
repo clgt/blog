@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	ErrUserNotFound = errors.New("user not found")
+	ErrUserNotFound         = errors.New("user not found")
+	ErrUserNotVerifiedEmail = errors.New("user not verified email")
 )
 
 type UserService struct {
@@ -82,16 +83,21 @@ func (s *UserService) FindUsers(ctx context.Context, filter models.UserFilter) (
 				when $4 <> '' then email_token=$4
 				else true
 			end
+		and
+			case
+				when $5 <> '' then reset_pwd_token=$5
+				else true
+			end
 		order by created_at desc
 		limit
 			case
-				when $5 > 0 then $5
+				when $6 > 0 then $6
 				else null
 			end
-		offset $6
+		offset $7
 	`
 
-	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Username, filter.Email, filter.EmailToken, filter.Limit, filter.Offset)
+	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Username, filter.Email, filter.EmailToken, filter.ResetPasswordToken, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -209,6 +215,42 @@ func (s *UserService) LogSendVerifyEmail(ctx context.Context, user *models.User)
 	return err
 }
 
+func (s *UserService) LogSendResetPassword(ctx context.Context, email string) (*models.User, error) {
+	users, _, err := s.FindUsers(ctx, models.UserFilter{
+		Email: email,
+		Limit: 1,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(users) == 0 {
+		return nil, ErrUserNotFound
+	}
+	user := users[0]
+
+	// user must have verified email
+	if !helper.Contains("verified_email", user.Roles) {
+		return nil, ErrUserNotVerifiedEmail
+	}
+
+	user.ResetPasswordToken = helper.RandString(6)
+
+	q := `
+		update users set
+			updated_at = now(),
+			reset_pwd_token = $2,
+			rpt_expired_at = now() + (15 * interval '1 minute')
+		where id = $1
+		returning id
+	`
+	_, err = s.db.conn.ExecContext(ctx, q, user.ID, user.ResetPasswordToken)
+	if err != nil {
+		return nil, err
+	}
+	user, err = s.FindByID(ctx, user.ID)
+	return user, err
+}
+
 func (s *UserService) AddRole(ctx context.Context, user *models.User, role string) error {
 	for _, s := range user.Roles {
 		if s == role {
@@ -224,6 +266,21 @@ func (s *UserService) FindByEmailToken(ctx context.Context, token string) (*mode
 	users, _, err := s.FindUsers(ctx, models.UserFilter{
 		EmailToken: token,
 		Limit:      1,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	if len(users) == 0 {
+		return nil, ErrUserNotFound
+	}
+	return users[0], nil
+}
+
+func (s *UserService) FindByRPT(ctx context.Context, token string) (*models.User, error) {
+	users, _, err := s.FindUsers(ctx, models.UserFilter{
+		ResetPasswordToken: token,
+		Limit:              1,
 	})
 
 	if err != nil {
