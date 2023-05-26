@@ -25,3 +25,7 @@ button {
   height: 100%;
   width: auto;
 }
+
+.user-button:hover .user-dropdown {
+  display: block;
+}
