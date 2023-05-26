@@ -1,5 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
 html {
-  box-sizing: border-box !important;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+body {
+  position: relative;
 }
 
 input,
@@ -8,24 +23,11 @@ button {
   display: block;
 }
 
-.header {
-  background-color: rgb(230, 248, 248);
-  height: 80px;
-}
-.header-container {
-  max-width: 800px;
-  height: 100%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.logo-img {
-  display: block;
-  height: 100%;
-  width: auto;
-}
-
 .user-button:hover .user-dropdown {
   display: block;
+}
+
+#menuToggle:checked ~ .mobile-menu {
+  display: block;
+  transform: translateY(0);
 }
