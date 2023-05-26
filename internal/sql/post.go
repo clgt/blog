@@ -84,7 +84,7 @@ func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) (
 	return posts, len(posts), err
 }
 
-func (s *PostService) FindPostByID(ctx context.Context, id int) (*models.Post, error) {
+func (s *PostService) FindByID(ctx context.Context, id int) (*models.Post, error) {
 	posts, _, err := s.FindPosts(ctx, models.PostFilter{
 		ID:    id,
 		Limit: 1,
@@ -98,10 +98,24 @@ func (s *PostService) FindPostByID(ctx context.Context, id int) (*models.Post, e
 	return posts[0], nil
 }
 
+func (s *PostService) FindBySlug(ctx context.Context, slug string) (*models.Post, error) {
+	posts, _, err := s.FindPosts(ctx, models.PostFilter{
+		Slug:  slug,
+		Limit: 1,
+	})
+	if err != nil {
+		return nil, err
+	} else if len(posts) == 0 {
+		return nil, ErrPostNotFound
+	}
+
+	return posts[0], nil
+}
+
 func (s *PostService) CreatePost(ctx context.Context, post *models.Post) error {
 	const q = `
-	insert into posts (title, slug, poster, tags, short, body)
-		values($1, $2, $3, $4, $5, $6)
+	insert into posts (title, slug, poster, tags, short, body, publisher_id)
+		values($1, $2, $3, $4, $5, $6, $7)
 	returning
 		id;
 	`
@@ -117,6 +131,7 @@ func (s *PostService) CreatePost(ctx context.Context, post *models.Post) error {
 		pq.Array(post.Tags),
 		post.Short,
 		post.Body,
+		post.PublisherID,
 	)
 
 	if err := row.Scan(&post.ID); err != nil {

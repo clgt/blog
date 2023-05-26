@@ -14,6 +14,7 @@ import (
 type templateData struct {
 	Form  *form.Form
 	User  *models.User
+	Post  *models.Post
 	Posts []*models.Post
 }
 

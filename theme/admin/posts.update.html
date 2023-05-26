@@ -1,0 +1,36 @@
+{{template "layout.html" .}}
+<!--  -->
+{{define "main" -}}
+<!--  -->
+{{if .Form.Errors.Get `err`}}
+<div>{{.Form.Errors.Get `err`}}</div>
+{{end}} {{with .Form}}
+<form method="POST">
+	<input
+		type="text"
+		name="Title"
+		placeholder="Title"
+		value="{{.Get `Title`}}"
+		required
+	/>
+	<textarea cols="80" rows="10" placeholder="Content" name="Body">
+{{.Get `Body`}}</textarea
+	>
+	<input
+		type="text"
+		name="Short"
+		placeholder="Short"
+		value="{{.Get `Short`}}"
+	/>
+	<input
+		type="url"
+		name="Poster"
+		placeholder="Poster"
+		value="{{.Get `Poster`}}"
+	/>
+	<input type="text" name="Tags" placeholder="Tags" value="{{.Get `Tags`}}" />
+	<input type="submit" value="Create" />
+</form>
+{{end}}
+<!--  -->
+{{- end}}

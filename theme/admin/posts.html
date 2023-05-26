@@ -2,7 +2,16 @@
 <!--  -->
 {{define "main" -}}
 <!--  -->
-{{range .Posts}} {{.Title}} <br />
-{{end}}
+<div>
+	{{range .Posts}}
+	<div>
+		<a href="/blogs/{{.Slug}}">
+			<h2>{{.Title}}</h2>
+		</a>
+		<p>{{.Short}}</p>
+	</div>
+	{{end}}
+</div>
+<a href="/admin/posts/new">New Post</a>
 <!--  -->
 {{- end}}

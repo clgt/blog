@@ -2,7 +2,6 @@ package http
 
 import (
 	"crypto/md5"
-	"errors"
 	"fmt"
 	"html/template"
 	"log"
@@ -53,7 +52,7 @@ func NewServer(cfg *config.Config) *Server {
 	}
 
 	// user routes
-	s.router.HandleFunc("/", s.showHome, "GET")
+	s.router.HandleFunc("/", s.home, "GET")
 	s.router.HandleFunc("/register", s.register, "GET")
 	s.router.HandleFunc("/register", s.register, "POST")
 	s.router.HandleFunc("/login", s.login, "GET")
@@ -65,12 +64,15 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/forgot-password", s.forgotPassword, "GET")
 	s.router.HandleFunc("/forgot-password", s.forgotPassword, "POST")
 	s.router.HandleFunc("/verify-email", s.verifyEmailResult, "GET")
-	s.router.HandleFunc("/blogs/:slug", s.showPost, "GET")
+	s.router.HandleFunc("/blogs", s.posts, "GET")
+	s.router.HandleFunc("/blogs/:slug", s.postDetails, "GET")
 
 	// admin routes
 	s.router.HandleFunc("/admin", use(s.adminHome, s.isadmin), "GET")
-	s.router.HandleFunc("/admin/posts", use(s.managePosts, s.isadmin), "GET")
-	s.router.HandleFunc("/admin/users", use(s.manageUsers, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/posts", use(s.adminPosts, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/posts/new", use(s.adminCreatePost, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/posts/new", use(s.adminCreatePost, s.isadmin), "POST")
+	s.router.HandleFunc("/admin/users", use(s.adminUsers, s.isadmin), "GET")
 
 	// static files
 	fs := http.FileServer(http.Dir(filepath.Join("theme", "basic", "static")))
@@ -94,36 +96,33 @@ func (s *Server) Close() (err error) {
 	return
 }
 
-func (s *Server) showPost(w http.ResponseWriter, r *http.Request) {
-	slug := flow.Param(r.Context(), "slug")
-	id := strings.Split(slug, "-")[0]
-	if id == "" {
-
-		handleError(w, r, errors.New("id invalid"))
-		return
-	}
-
-	idNum, err := strconv.Atoi(id)
+func (s *Server) posts(w http.ResponseWriter, r *http.Request) {
+	posts, total, err := s.PostService.FindPosts(r.Context(), models.PostFilter{})
 	if err != nil {
-		handleError(w, r, err)
-		return
+		log.Println(err)
 	}
 
-	filter := models.PostFilter{
-		ID: idNum,
-	}
+	log.Println("total", total)
 
-	posts, _, err := s.PostService.FindPosts(r.Context(), filter)
-	if err != nil {
-		handleError(w, r, err)
-		return
-	}
-	for _, p := range posts {
-		fmt.Fprint(w, p)
-	}
+	s.render(w, r, "posts.html", &templateData{
+		Posts: posts,
+	})
 }
 
-func (s *Server) showHome(w http.ResponseWriter, r *http.Request) {
+func (s *Server) postDetails(w http.ResponseWriter, r *http.Request) {
+	slug := flow.Param(r.Context(), "slug")
+
+	post, err := s.PostService.FindBySlug(r.Context(), slug)
+	if err != nil {
+		handleError(w, r, err)
+		return
+	}
+	s.render(w, r, "posts.details.html", &templateData{
+		Post: post,
+	})
+}
+
+func (s *Server) home(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, "home.html", &templateData{})
 }
 
@@ -511,7 +510,7 @@ func (s *Server) adminHome(w http.ResponseWriter, r *http.Request) {
 	s.adminRender(w, r, "home.html", &templateData{})
 }
 
-func (s *Server) managePosts(w http.ResponseWriter, r *http.Request) {
+func (s *Server) adminPosts(w http.ResponseWriter, r *http.Request) {
 	posts, total, err := s.PostService.FindPosts(r.Context(), models.PostFilter{})
 	if err != nil {
 		log.Println(err)
@@ -524,6 +523,54 @@ func (s *Server) managePosts(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (s *Server) manageUsers(w http.ResponseWriter, r *http.Request) {
+func (s *Server) adminCreatePost(w http.ResponseWriter, r *http.Request) {
+	f := form.New(nil)
+	ok := false
+
+	defer func() {
+		if !ok {
+			s.adminRender(w, r, "posts.update.html", &templateData{
+				Form: f,
+			})
+		}
+	}()
+
+	if r.Method == "POST" {
+		if err := r.ParseForm(); err != nil {
+			log.Println(err)
+			f.Errors.Add("err", "err_parse_form")
+			return
+		}
+
+		f.Values = r.PostForm
+		f.Required("Title")
+
+		if !f.Valid() {
+			log.Println("form invalid", f.Errors)
+			f.Errors.Add("err", "err_invalid_form")
+			return
+		}
+
+		userId := s.session.GetInt(r, "user")
+
+		err := s.PostService.CreatePost(r.Context(), &models.Post{
+			Title:       f.Get("Title"),
+			Body:        f.Get("Body"),
+			Short:       f.Get("Short"),
+			Tags:        strings.Split(f.Get("Tags"), ","),
+			PublisherID: userId,
+		})
+		if err != nil {
+			log.Println(err)
+			f.Errors.Add("err", err.Error())
+			return
+		}
+
+		ok = true
+		http.Redirect(w, r, "/admin/posts", http.StatusSeeOther)
+	}
+}
+
+func (s *Server) adminUsers(w http.ResponseWriter, r *http.Request) {
 	s.adminRender(w, r, "home.html", &templateData{})
 }
