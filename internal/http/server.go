@@ -15,6 +15,7 @@ import (
 	"github.com/clgt/blog/internal/config"
 	"github.com/clgt/blog/internal/email"
 	"github.com/clgt/blog/internal/form"
+	"github.com/clgt/blog/internal/helper"
 	"github.com/clgt/blog/internal/models"
 	"github.com/clgt/blog/internal/sql"
 	"github.com/golangcollege/sessions"
@@ -53,16 +54,12 @@ func NewServer(cfg *config.Config) *Server {
 
 	// user routes
 	s.router.HandleFunc("/", s.home, "GET")
-	s.router.HandleFunc("/register", s.register, "GET")
-	s.router.HandleFunc("/register", s.register, "POST")
-	s.router.HandleFunc("/login", s.login, "GET")
-	s.router.HandleFunc("/login", s.login, "POST")
+	s.router.HandleFunc("/register", s.register, "GET", "POST")
+	s.router.HandleFunc("/login", s.login, "GET", "POST")
 	s.router.HandleFunc("/logout", s.logout, "GET")
 	s.router.HandleFunc("/profile", s.profile, "GET")
-	s.router.HandleFunc("/change-password", s.changePassword, "GET")
-	s.router.HandleFunc("/change-password", s.changePassword, "POST")
-	s.router.HandleFunc("/forgot-password", s.forgotPassword, "GET")
-	s.router.HandleFunc("/forgot-password", s.forgotPassword, "POST")
+	s.router.HandleFunc("/change-password", s.changePassword, "GET", "POST")
+	s.router.HandleFunc("/forgot-password", s.forgotPassword, "GET", "POST")
 	s.router.HandleFunc("/verify-email", s.verifyEmailResult, "GET")
 	s.router.HandleFunc("/blogs", s.posts, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.postDetails, "GET")
@@ -70,8 +67,9 @@ func NewServer(cfg *config.Config) *Server {
 	// admin routes
 	s.router.HandleFunc("/admin", use(s.adminHome, s.isadmin), "GET")
 	s.router.HandleFunc("/admin/posts", use(s.adminPosts, s.isadmin), "GET")
-	s.router.HandleFunc("/admin/posts/new", use(s.adminCreatePost, s.isadmin), "GET")
-	s.router.HandleFunc("/admin/posts/new", use(s.adminCreatePost, s.isadmin), "POST")
+	s.router.HandleFunc("/admin/posts/new", use(s.adminCreatePost, s.isadmin), "GET", "POST")
+	s.router.HandleFunc("/admin/posts/:id/edit", use(s.adminUpdatePost, s.isadmin), "GET", "POST")
+	s.router.HandleFunc("/admin/posts/:id/remove", use(s.adminRemovePost, s.isadmin), "GET")
 	s.router.HandleFunc("/admin/users", use(s.adminUsers, s.isadmin), "GET")
 
 	// static files
@@ -97,7 +95,10 @@ func (s *Server) Close() (err error) {
 }
 
 func (s *Server) posts(w http.ResponseWriter, r *http.Request) {
-	posts, total, err := s.PostService.FindPosts(r.Context(), models.PostFilter{})
+	posts, total, err := s.PostService.FindPosts(r.Context(), models.PostFilter{
+		IsPublished:        true,
+		InPublicationOrder: true,
+	})
 	if err != nil {
 		log.Println(err)
 	}
@@ -552,13 +553,30 @@ func (s *Server) adminCreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 
 		userId := s.session.GetInt(r, "user")
+		user, err := s.UserService.FindByID(r.Context(), userId)
+		if err != nil {
+			log.Println(err)
+			f.Errors.Add("err", err.Error())
+			return
+		}
 
-		err := s.PostService.CreatePost(r.Context(), &models.Post{
-			Title:       f.Get("Title"),
-			Body:        f.Get("Body"),
-			Short:       f.Get("Short"),
-			Tags:        strings.Split(f.Get("Tags"), ","),
-			PublisherID: userId,
+		publishedAt, err := helper.ParseTime(f.Get("PublishedAt"))
+		if err != nil {
+			log.Println(err)
+			f.Errors.Add("err", err.Error())
+			return
+		}
+
+		err = s.PostService.Create(r.Context(), &models.Post{
+			Title:              f.Get("Title"),
+			Body:               f.Get("Body"),
+			Short:              f.Get("Short"),
+			Tags:               strings.Split(f.Get("Tags"), ","),
+			Poster:             f.Get("Poster"),
+			PublisherID:        userId,
+			PublishedAt:        publishedAt,
+			PublisherFirstName: user.FirstName,
+			PublisherLastName:  user.LastName,
 		})
 		if err != nil {
 			log.Println(err)
@@ -569,6 +587,93 @@ func (s *Server) adminCreatePost(w http.ResponseWriter, r *http.Request) {
 		ok = true
 		http.Redirect(w, r, "/admin/posts", http.StatusSeeOther)
 	}
+}
+
+func (s *Server) adminUpdatePost(w http.ResponseWriter, r *http.Request) {
+	postIdStr := flow.Param(r.Context(), "id")
+	postId, err := strconv.Atoi(postIdStr)
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
+	post, err := s.PostService.FindByID(r.Context(), postId)
+	if err != nil {
+		log.Println(err)
+		http.Redirect(w, r, "/admin/posts", http.StatusSeeOther)
+		return
+	}
+
+	f := form.New(nil)
+	f.Set("ID", postIdStr)
+	f.Set("Title", post.Title)
+	f.Set("Body", post.Body)
+	f.Set("Poster", post.Poster)
+	f.Set("Short", post.Short)
+	f.Set("Tags", strings.Join(post.Tags, ","))
+	f.Set("PublishedAt", post.PublishedAt.Format("2006-01-02T15:04:05"))
+
+	ok := false
+	defer func() {
+		if !ok {
+			s.adminRender(w, r, "posts.update.html", &templateData{
+				Form: f,
+			})
+		}
+	}()
+
+	if r.Method == "POST" {
+		if err := r.ParseForm(); err != nil {
+			log.Println(err)
+			f.Errors.Add("err", "err_parse_form")
+			return
+		}
+
+		f.Values = r.PostForm
+		f.Required("Title")
+
+		if !f.Valid() {
+			log.Println("form invalid", f.Errors)
+			return
+		}
+
+		publishedAt, err := helper.ParseTime(f.Get("PublishedAt"))
+		if err != nil {
+			log.Println(err)
+			f.Errors.Add("err", err.Error())
+			return
+		}
+
+		if err := s.PostService.Update(r.Context(), &models.Post{
+			ID:          post.ID,
+			Title:       f.Get("Title"),
+			Body:        f.Get("Body"),
+			Short:       f.Get("Short"),
+			Tags:        strings.Split(f.Get("Tags"), ","),
+			Poster:      f.Get("Poster"),
+			PublishedAt: publishedAt,
+		}); err != nil {
+			log.Println(err)
+			f.Errors.Add("err", "could_not_update_post")
+			return
+		}
+
+		ok = true
+		http.Redirect(w, r, "/admin/posts", http.StatusSeeOther)
+	}
+}
+
+func (s *Server) adminRemovePost(w http.ResponseWriter, r *http.Request) {
+	postIdStr := flow.Param(r.Context(), "id")
+	postId, err := strconv.Atoi(postIdStr)
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
+
+	s.PostService.Delete(r.Context(), postId)
+	http.Redirect(w, r, "/admin/posts", http.StatusSeeOther)
 }
 
 func (s *Server) adminUsers(w http.ResponseWriter, r *http.Request) {

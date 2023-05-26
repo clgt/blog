@@ -1,6 +1,9 @@
 package helper
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 // Contains return true if `s“ in `list`
 func Contains(s string, list []string) bool {
@@ -20,4 +23,16 @@ func RandString(n int) string {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(b)
+}
+
+func ParseTime(s string) (*time.Time, error) {
+	t1, err := time.Parse("2006-01-02T15:04:05", s)
+	if err == nil {
+		return &t1, nil
+	}
+	t2, err := time.Parse("2006-01-02T15:04", s)
+	if err == nil {
+		return &t2, nil
+	}
+	return nil, err
 }

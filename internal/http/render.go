@@ -6,9 +6,11 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/clgt/blog/internal/form"
 	"github.com/clgt/blog/internal/models"
+	"github.com/dustin/go-humanize"
 )
 
 type templateData struct {
@@ -19,7 +21,8 @@ type templateData struct {
 }
 
 var functions = template.FuncMap{
-	"has_role": hasRole,
+	"has_role":      hasRole,
+	"humanize_time": humanizeTime,
 }
 
 func parseTheme(theme string) (map[string]*template.Template, error) {
@@ -114,4 +117,11 @@ func hasRole(user *models.User, role string) bool {
 		}
 	}
 	return false
+}
+
+func humanizeTime(v *time.Time) string {
+	if v == nil {
+		return ""
+	}
+	return humanize.Time(*v)
 }

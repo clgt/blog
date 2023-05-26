@@ -23,13 +23,32 @@
 		value="{{.Get `Short`}}"
 	/>
 	<input
+		class="form-control"
+		type="datetime-local"
+		autocomplete="on"
+		spellcheck="false"
+		name="PublishedAt"
+		value="{{.Get `PublishedAt`}}"
+		step="1"
+	/>
+	<input
 		type="url"
 		name="Poster"
 		placeholder="Poster"
 		value="{{.Get `Poster`}}"
 	/>
 	<input type="text" name="Tags" placeholder="Tags" value="{{.Get `Tags`}}" />
-	<input type="submit" value="Create" />
+	<input
+		type="submit"
+		{{if
+		.Get
+		`ID`}}
+		value="Save"
+		{{else}}
+		value="Create"
+		{{end}}
+	/>
+	<a href="/admin/posts">Cancel</a>
 </form>
 {{end}}
 <!--  -->

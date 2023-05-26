@@ -4,6 +4,8 @@
 	{{with .Post}}
 	<h1 class="mt-8">{{.Title}}</h1>
 	<span>{{.Tags}}</span>
+	<span>{{humanize_time .PublishedAt}}</span>
+	<span>{{.PublisherFirstName}} {{.PublisherLastName}}</span>
 	<p>{{.Body}}</p>
 	{{end}}
 </div>

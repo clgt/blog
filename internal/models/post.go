@@ -9,17 +9,19 @@ import (
 )
 
 type Post struct {
-	ID          int
-	Title       string
-	Slug        string
-	Poster      string
-	Tags        []string
-	Short       string
-	Body        string
-	PublisherID int
-	PublishedAt *time.Time
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID                 int
+	Title              string
+	Slug               string
+	Poster             string
+	Tags               []string
+	Short              string
+	Body               string
+	PublisherID        int
+	PublishedAt        *time.Time
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+	PublisherFirstName string
+	PublisherLastName  string
 
 	Total int64
 }
@@ -49,8 +51,10 @@ func (p *Post) Validate() error {
 }
 
 type PostFilter struct {
-	ID   int
-	Slug string
+	ID                 int
+	Slug               string
+	IsPublished        bool
+	InPublicationOrder bool
 
 	Limit  int
 	Offset int

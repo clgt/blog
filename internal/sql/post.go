@@ -33,6 +33,8 @@ func scanPost(r Scanner, u *models.Post) error {
 		&u.PublishedAt,
 		&u.CreatedAt,
 		&u.UpdatedAt,
+		&u.PublisherFirstName,
+		&u.PublisherLastName,
 		&u.Total,
 	); err != nil {
 		return err
@@ -44,7 +46,7 @@ func scanPost(r Scanner, u *models.Post) error {
 func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) ([]*models.Post, int, error) {
 	q := `
 		select
-			id, title, slug, poster, tags, short, body, publisher_id, published_at, created_at, updated_at, count(*) over() as total
+			id, title, slug, poster, tags, short, body, publisher_id, published_at, created_at, updated_at, publisher_first_name, publisher_last_name, count(*) over() as total
 		from
 			posts
 		where
@@ -57,16 +59,25 @@ func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) (
 				when $2 <> '' then slug=$2
 				else true
 			end
-		order by created_at desc
+		and
+			case
+				when $3 then published_at <= now()
+				else true
+			end
+		order by
+			case
+				when $4 then published_at
+				else created_at 
+			end desc
 		limit
 			case
-				when $3 > 0 then $3
+				when $5 > 0 then $5
 				else null
 			end
-		offset $4
+		offset $6
 	`
 
-	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.Limit, filter.Offset)
+	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.IsPublished, filter.InPublicationOrder, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -112,10 +123,10 @@ func (s *PostService) FindBySlug(ctx context.Context, slug string) (*models.Post
 	return posts[0], nil
 }
 
-func (s *PostService) CreatePost(ctx context.Context, post *models.Post) error {
+func (s *PostService) Create(ctx context.Context, post *models.Post) error {
 	const q = `
-	insert into posts (title, slug, poster, tags, short, body, publisher_id)
-		values($1, $2, $3, $4, $5, $6, $7)
+	insert into posts (title, slug, poster, tags, short, body, publisher_id, published_at, publisher_first_name, publisher_last_name)
+		values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 	returning
 		id;
 	`
@@ -132,6 +143,9 @@ func (s *PostService) CreatePost(ctx context.Context, post *models.Post) error {
 		post.Short,
 		post.Body,
 		post.PublisherID,
+		post.PublishedAt,
+		post.PublisherFirstName,
+		post.PublisherLastName,
 	)
 
 	if err := row.Scan(&post.ID); err != nil {
@@ -141,15 +155,34 @@ func (s *PostService) CreatePost(ctx context.Context, post *models.Post) error {
 	return nil
 }
 
-func (s *PostService) UpdatePost(ctx context.Context, param *models.PostUpdateParam) error {
+func (s *PostService) Update(ctx context.Context, post *models.Post) error {
 	// coalesce will return first non null/nil value
 	const q = `
 	update posts set
 		title = coalesce($2, title),
-		slug = coalesce($3, slug)
+		slug = coalesce($3, slug),
+		poster = coalesce($4, poster),
+		tags = coalesce($5, tags),
+		short = coalesce($6, short),
+		body = coalesce($7, body),
+		published_at = coalesce($8, published_at),
+		updated_at = now()
 	where
 		id = $1
 	`
-	_, err := s.db.conn.Exec(q)
+
+	if err := post.Validate(); err != nil {
+		return err
+	}
+
+	_, err := s.db.conn.ExecContext(ctx, q, post.ID, post.Title, post.Slug, post.Poster, pq.Array(post.Tags), post.Short, post.Body, post.PublishedAt)
+	return err
+}
+
+func (s *PostService) Delete(ctx context.Context, id int) error {
+	const q = `
+		delete from posts where id = $1
+	`
+	_, err := s.db.conn.ExecContext(ctx, q, id)
 	return err
 }

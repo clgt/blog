@@ -17,8 +17,8 @@
 		<div class="p-4 flex w-full flex-col gap-y-2">
 			<p class="font-bold text-xl">{{.Title}}</p>
 			<div class="flex items-center gap-x-4 text-base text-gray-400">
-				<p>May 1, 2023</p>
-				<p>Darek Piotrowski</p>
+				<p>{{humanize_time .PublishedAt}}</p>
+				<p>{{.PublisherFirstName}} {{.PublisherLastName}}</p>
 			</div>
 			<p class="text-justify">{{.Short}}</p>
 			<div class="w-full flex justify-end">
