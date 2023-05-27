@@ -23,7 +23,9 @@
     <div style="position: fixed; top: 0; left: 0; right: 0">
       {{ template "header" .}}
     </div>
-    <div class="min-h-[80vh] mt-[170px] flex flex-col container mx-auto">
+    <div
+      class="min-h-[80vh] mt-[70px] sm:mt-[170px] flex flex-col container mx-auto px-3 sm:px-0"
+    >
       {{ template "main" .}}
     </div>
     <div class="bg-gray-200">
