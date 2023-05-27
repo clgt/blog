@@ -1,0 +1,185 @@
+package sql
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"strings"
+
+	"github.com/clgt/blog/internal/models"
+)
+
+var (
+	ErrCommentNotFound = errors.New("comment not found")
+)
+
+type CommentService struct {
+	db *DB
+}
+
+var commentUserColumes = []string{
+	"comments.id",
+	"comments.parent_id",
+	"comments.slug",
+	"comments.message",
+	"comments.created_at",
+	"comments.updated_at",
+	"comments.user_id",
+	"users.first_name",
+	"users.last_name",
+}
+
+func NewCommentService(db *DB) *CommentService {
+	return &CommentService{db: db}
+}
+
+func scanComment(r Scanner, u *models.Comment) error {
+	if err := r.Scan(
+		&u.ID,
+		&u.ParentID,
+		&u.Slug,
+		&u.Message,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+		&u.User.ID,
+		&u.User.FirstName,
+		&u.User.LastName,
+		&u.Total,
+	); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func BuildCommentTree(comments []*models.Comment) []*models.Comment {
+	commentMap := make(map[int]*models.Comment)
+
+	// Create a mapping of comment IDs to comments for efficient lookup
+	for _, comment := range comments {
+		commentMap[comment.ID] = comment
+	}
+
+	var rootComments []*models.Comment
+
+	// Iterate through the comments to build the tree
+	for _, comment := range comments {
+		parentID := comment.ParentID
+		if parentID == 0 {
+			// Comment is a root comment
+			rootComments = append(rootComments, comment)
+		} else {
+			// Comment has a parent, so add it as a child to the parent comment
+			parentComment := commentMap[parentID]
+			if parentComment != nil {
+				parentComment.ChildComments = append(parentComment.ChildComments, comment)
+			}
+		}
+	}
+
+	return rootComments
+}
+
+func (s *CommentService) FindComments(ctx context.Context, filter models.CommentFilter) ([]*models.Comment, int, error) {
+	q := fmt.Sprintf(`
+		select
+			%s, count(*) over() as total
+		from
+			comments left join users on
+			comments.user_id = users.id
+		where
+			case
+				when $1 > 0 then comments.id=$1
+				else true
+			end
+		and
+			case
+				when $2 <> '' then comments.slug=$2
+				else true
+			end
+		order by created_at desc
+		limit
+			case
+				when $3 > 0 then $3
+				else null
+			end
+		offset $4
+	`, strings.Join(commentUserColumes, ", "))
+
+	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.Limit, filter.Offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+
+	comments := make([]*models.Comment, 0)
+	for rows.Next() {
+		p := new(models.Comment)
+		if err := scanComment(rows, p); err != nil {
+			return nil, 0, err
+		}
+		comments = append(comments, p)
+	}
+
+	return comments, len(comments), err
+}
+
+func (s *CommentService) FindByID(ctx context.Context, id int) (*models.Comment, error) {
+	comments, _, err := s.FindComments(ctx, models.CommentFilter{
+		ID:    id,
+		Limit: 1,
+	})
+	if err != nil {
+		return nil, err
+	} else if len(comments) == 0 {
+		return nil, ErrCommentNotFound
+	}
+
+	return comments[0], nil
+}
+
+func (s *CommentService) FindBySlug(ctx context.Context, slug string) ([]*models.Comment, error) {
+	comments, _, err := s.FindComments(ctx, models.CommentFilter{
+		Slug: slug,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return BuildCommentTree(comments), nil
+}
+
+func (s *CommentService) Create(ctx context.Context, comment *models.Comment) error {
+	const q = `
+	insert into comments (user_id, parent_id, slug, message)
+		values($1, $2, $3, $4)
+	returning
+		id;
+	`
+
+	if err := comment.Validate(); err != nil {
+		return err
+	}
+
+	row := s.db.conn.QueryRowContext(ctx, q,
+		comment.UserID,
+		comment.ParentID,
+		comment.Slug,
+		comment.Message,
+	)
+
+	if err := row.Scan(&comment.ID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *CommentService) Delete(ctx context.Context, id int) error {
+	const q = `
+		delete from comments where id = $1
+	`
+	_, err := s.db.conn.ExecContext(ctx, q, id)
+	return err
+}

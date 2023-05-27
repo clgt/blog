@@ -14,7 +14,7 @@ func use(h http.HandlerFunc, middleware ...func(http.HandlerFunc) http.HandlerFu
 	return h
 }
 
-func (s *Server) islogined(next http.HandlerFunc) http.HandlerFunc {
+func (s *Server) isLogined(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := s.session.GetInt(r, "user")
 		if id == 0 {
