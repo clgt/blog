@@ -1,0 +1,111 @@
+{{template "layout.html" .}}
+<!---->
+{{define "header.scripts-after" -}}
+<script src="/static/js/comment.js" defer></script>
+{{- end}}
+<!---->
+{{define "main" -}}
+<!--  -->
+<div class="">
+	{{with .Post}}
+	<h1 class="mt-8">{{.Title}}</h1>
+	<span>{{.Tags}}</span>
+	<span>{{humanize_time .PublishedAt}}</span>
+	<span>{{.PublisherFirstName}} {{.PublisherLastName}}</span>
+	<p>{{.Body}}</p>
+	{{end}} {{$user := .User}} {{if $user}}
+	<div class="mt-4">
+		<div class="mt-1">
+			<textarea
+				rows="4"
+				id="comment"
+				class="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
+			></textarea>
+		</div>
+		<button
+			id="comment-submit"
+			data-slug="{{.Post.Slug}}"
+			type="button"
+			class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+		>
+			Send
+		</button>
+	</div>
+	{{if .Comments}}
+	<div class="mt-4 space-y-2">
+		{{range .Comments}}
+		<div class="text-gray-500 bg-gray-50 p-4 rounded">
+			<div class="flex-1">
+				<h3 class="font-bold text-gray-900">
+					{{.User.FirstName}} {{.User.LastName}}
+					<time
+						class="font-normal text-sm text-gray-500 ml-2"
+						datetime="{{humanize_time .CreatedAt }}"
+					>
+						{{humanize_time .CreatedAt }}
+					</time>
+				</h3>
+				<div class="prose prose-sm mt-4 max-w-none text-gray-500">
+					<p class="whitespace-pre-wrap break-words">{{.Message}}</p>
+				</div>
+			</div>
+			{{if $user}}
+			<button
+				data-comment="reply"
+				data-parent="{{.ID}}"
+				type="button"
+				class="inline-flex items-center rounded-md border border-transparent px-2 py-1 text-sm font-bold text-sky-500"
+			>
+				Reply
+			</button>
+			<div
+				class="mt-4 hidden"
+				data-comment="reply-section"
+				data-parent="{{.ID}}"
+			>
+				<div class="mt-1">
+					<textarea
+						data-comment="comment"
+						data-parent="{{.ID}}"
+						rows="2"
+						class="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm"
+					></textarea>
+				</div>
+				<button
+					data-comment="submit"
+					data-parent="{{.ID}}"
+					data-slug="{{$.Post.Slug}}"
+					type="button"
+					class="mt-2 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-2 py-1 text-sm font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+				>
+					Send
+				</button>
+			</div>
+			{{end}}
+		</div>
+		{{range .ChildComments}}
+		<div class="ml-6 flex space-x-4 text-gray-500 bg-gray-50 p-4 rounded">
+			<div class="flex-1">
+				<h3 class="font-bold text-gray-900">
+					{{.User.FirstName}} {{.User.LastName}}
+					<time
+						class="font-normal text-sm text-gray-500 ml-2"
+						datetime="{{humanize_time .CreatedAt }}"
+					>
+						{{humanize_time .CreatedAt }}
+					</time>
+				</h3>
+				<div class="prose prose-sm mt-4 max-w-none text-gray-500">
+					<p class="whitespace-pre-wrap break-words">{{.Message}}</p>
+				</div>
+			</div>
+		</div>
+		{{end}}
+		<!---->
+		{{end}}
+	</div>
+	{{end}} {{end}}
+	<!---->
+</div>
+<!--  -->
+{{- end}}

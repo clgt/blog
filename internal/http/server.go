@@ -29,8 +29,9 @@ type Server struct {
 	session   *sessions.Session
 
 	// services
-	PostService *sql.PostService
-	UserService *sql.UserService
+	PostService    *sql.PostService
+	UserService    *sql.UserService
+	CommentService *sql.CommentService
 }
 
 func NewServer(cfg *config.Config) *Server {
@@ -57,12 +58,13 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/register", s.register, "GET", "POST")
 	s.router.HandleFunc("/login", s.login, "GET", "POST")
 	s.router.HandleFunc("/logout", s.logout, "GET")
-	s.router.HandleFunc("/profile", s.profile, "GET")
+	s.router.HandleFunc("/profile", use(s.profile, s.isLogined), "GET")
 	s.router.HandleFunc("/change-password", s.changePassword, "GET", "POST")
 	s.router.HandleFunc("/forgot-password", s.forgotPassword, "GET", "POST")
 	s.router.HandleFunc("/verify-email", s.verifyEmailResult, "GET")
 	s.router.HandleFunc("/blogs", s.posts, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.postDetails, "GET")
+	s.router.HandleFunc("/blogs/:slug/comments/new", use(s.createComment, s.isLogined), "POST")
 
 	// admin routes
 	s.router.HandleFunc("/admin", use(s.adminHome, s.isadmin), "GET")
@@ -118,8 +120,16 @@ func (s *Server) postDetails(w http.ResponseWriter, r *http.Request) {
 		handleError(w, r, err)
 		return
 	}
+
+	comments, err := s.CommentService.FindBySlug(r.Context(), slug)
+	if err != nil {
+		handleError(w, r, err)
+		return
+	}
+
 	s.render(w, r, "posts.details.html", &templateData{
-		Post: post,
+		Post:     post,
+		Comments: comments,
 	})
 }
 
@@ -503,6 +513,45 @@ func (s *Server) verifyEmailResult(w http.ResponseWriter, r *http.Request) {
 	if err := s.UserService.AddRole(r.Context(), user, "verified_email"); err != nil {
 		log.Println(err)
 		f.Errors.Add("err", "err_could_not_verified_email")
+	}
+}
+
+func (s *Server) createComment(w http.ResponseWriter, r *http.Request) {
+	userId := s.session.GetInt(r, "user")
+	slug := flow.Param(r.Context(), "slug")
+
+	f := form.New(nil)
+
+	if r.Method == "POST" {
+		if err := r.ParseForm(); err != nil {
+			log.Println(err)
+			f.Errors.Add("err", "err_parse_form")
+			return
+		}
+
+		f.Values = r.PostForm
+		f.Required("Message", "ParentId")
+
+		if !f.Valid() {
+			log.Println("form invalid", f.Errors)
+			f.Errors.Add("err", "err_invalid_form")
+			return
+		}
+
+		comment := &models.Comment{
+			UserID:   userId,
+			ParentID: f.GetInt("ParentId"),
+			Slug:     slug,
+			Message:  f.Get("Message"),
+		}
+
+		if err := s.CommentService.Create(r.Context(), comment); err != nil {
+			log.Println(err)
+			f.Errors.Add("err", "err_could_not_create_comment")
+			return
+		}
+
+		w.Write([]byte("ok"))
 	}
 }
 

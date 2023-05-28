@@ -98,6 +98,7 @@ func (app *App) Run(ctx context.Context) error {
 	// register services
 	app.HTTPServer.PostService = sql.NewPostService(app.DB)
 	app.HTTPServer.UserService = sql.NewUserService(app.DB)
+	app.HTTPServer.CommentService = sql.NewCommentService(app.DB)
 
 	// open db connection
 	if err := app.DB.Open(); err != nil {
