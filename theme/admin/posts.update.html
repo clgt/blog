@@ -4,51 +4,54 @@
 <!--  -->
 {{if .Form.Errors.Get `err`}}
 <div>{{.Form.Errors.Get `err`}}</div>
-{{end}} {{with .Form}}
+{{end}}
+<!--  -->
+{{with .Form}}
 <form method="POST">
-	<input
-		type="text"
-		name="Title"
-		placeholder="Title"
-		value="{{.Get `Title`}}"
-		required
-	/>
-	<textarea cols="80" rows="10" placeholder="Content" name="Body">
+  <input
+    type="text"
+    name="Title"
+    placeholder="Title"
+    value="{{.Get `Title`}}"
+    required
+  />
+  <textarea cols="80" rows="10" placeholder="Content" name="Body">
+ 
 {{.Get `Body`}}</textarea
-	>
-	<input
-		type="text"
-		name="Short"
-		placeholder="Short"
-		value="{{.Get `Short`}}"
-	/>
-	<input
-		class="form-control"
-		type="datetime-local"
-		autocomplete="on"
-		spellcheck="false"
-		name="PublishedAt"
-		value="{{.Get `PublishedAt`}}"
-		step="1"
-	/>
-	<input
-		type="url"
-		name="Poster"
-		placeholder="Poster"
-		value="{{.Get `Poster`}}"
-	/>
-	<input type="text" name="Tags" placeholder="Tags" value="{{.Get `Tags`}}" />
-	<input
-		type="submit"
-		{{if
-		.Get
-		`ID`}}
-		value="Save"
-		{{else}}
-		value="Create"
-		{{end}}
-	/>
-	<a href="/admin/posts">Cancel</a>
+  >
+  <input
+    type="text"
+    name="Short"
+    placeholder="Short"
+    value="{{.Get `Short`}}"
+  />
+  <input
+    class="form-control"
+    type="datetime-local"
+    autocomplete="on"
+    spellcheck="false"
+    name="PublishedAt"
+    value="{{.Get `PublishedAt`}}"
+    step="1"
+  />
+  <input
+    type="url"
+    name="Poster"
+    placeholder="Poster"
+    value="{{.Get `Poster`}}"
+  />
+  <input type="text" name="Tags" placeholder="Tags" value="{{.Get `Tags`}}" />
+  <input
+    type="submit"
+    {{if
+    .Get
+    `ID`}}
+    value="Save"
+    {{else}}
+    value="Create"
+    {{end}}
+  />
+  <a href="/admin/posts">Cancel</a>
 </form>
 {{end}}
 <!--  -->

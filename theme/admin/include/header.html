@@ -1,32 +1,15 @@
 {{- define "header"}}
-<!-- <style>
-  .header {
-    background-color: rgb(230, 248, 248);
-    height: 80px;
-  }
-  .header-container {
-    max-width: 800px;
-    height: 100%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .logo-img {
-    display: block;
-    height: 100%;
-    width: auto;
-  }
-</style> -->
-<header class="bg-white">
-	<div
-		class="border-t border-b border-black py-4 container mx-auto py-4 flex items-center gap-x-2"
-	>
-		<a class="uppercase font-medium text-lg p-2" href="/admin">Home</a>
-		<a class="uppercase font-medium text-lg p-2" href="/admin/posts">Blogs</a>
-		<!-- <a class="uppercase font-medium text-lg p-2" href="/admin/comments">Comments</a> -->
-		<a class="uppercase font-medium text-lg p-2" href="/admin/users">Users</a>
-		<a class="uppercase font-medium text-lg p-2" href="/">Back</a>
-	</div>
+
+<header class="h-20 bg-white flex items-center justify-between px-4">
+  <div class="flex items-center gap-x-2">
+    <p class="text-4xl">
+      <i class="ph-fill ph-user"></i>
+    </p>
+    <p class="text-lg font-medium">{{.User.Username}}</p>
+  </div>
+  <a href="/logout" class="flex items-center gap-x-2 text-red-400">
+    <i class="ph-fill ph-sign-out"></i>
+    <p class="text-lg">Logout</p>
+  </a>
 </header>
 {{- end}}

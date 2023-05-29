@@ -20,7 +20,8 @@
         <img
           src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Matt_Madrigal_headshot_1.max-122x92.format-webp.webp"
           alt="author"
-          class="w-10 aspect-square rounded-full object-cover" />
+          class="w-10 aspect-square rounded-full object-cover"
+        />
         <p class="text-lg font-medium">
           {{.PublisherFirstName}} {{.PublisherLastName}}
         </p>
@@ -28,181 +29,113 @@
       <img
         src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/commerce_gml_hero.width-1200.format-webp.webp"
         alt="banner"
-        class="block w-full aspect-video object-cover" />
+        class="block w-full aspect-video object-cover"
+      />
       <div class="w-[720px] mx-auto text-justify text-lg">{{.Body}}</div>
     </div>
   </div>
   <!--  -->
   <!-- comment -->
-  {{if .Comments}} {{end}}
+  <!--  -->
   <div class="w-[720px] mx-auto">
     <p class="text-center text-3xl">Comments</p>
-    <div class="my-4">
+    {{end}}
+    <!--  -->
+    {{if .Comments}}
+    <div class="my-4 flex flex-col gap-y-8">
       <!-- parent comment -->
       {{range .Comments}}
       <div class="w-full flex gap-x-4 items-start">
         <img
           src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
           alt="avatar"
-          class="w-10 aspect-square rounded-full object-cover" />
+          class="w-10 aspect-square rounded-full object-cover"
+        />
         <div class="flex flex-col w-full gap-y-1">
-          <p class="text-lg font-medium">Người Trong Muôn Nghề</p>
-          <p>
-            Các bạn có thể xem full video ở kênh YouTube của Người Trong Muôn
-            Nghề nhé
+          <p class="text-lg font-medium">
+            {{.User.FirstName}} {{.User.LastName}}
           </p>
+          <p>{{.Message}}</p>
           <div class="flex items-center gap-x-4">
-            <p>1 ngày trước</p>
-            <p class="cursor-pointer">Trả lời</p>
+            <p>{{humanize_time .CreatedAt }}</p>
+            <button
+              data-comment="reply"
+              data-parent="{{.ID}}"
+              class="cursor-pointer font-medium hover:underline"
+            >
+              Reply
+            </button>
+          </div>
+          <div
+            class="mt-4 hidden flex items-center w-full gap-x-3"
+            data-comment="reply-section"
+            data-parent="{{.ID}}"
+          >
+            <textarea
+              data-comment="comment"
+              data-parent="{{.ID}}"
+              rows="1"
+              class="block flex-1 py-2 px-4 w-full rounded-md border-[0.5px] border-gray-300 shadow-sm focus:outline-none focus:border-sky-500"
+            ></textarea>
+            <button
+              data-comment="submit"
+              data-parent="{{.ID}}"
+              data-slug="{{$.Post.Slug}}"
+              type="button"
+              class="block h-full bg-sky-600 text-white font-medium py-2 px-4 rounded-lg"
+            >
+              Send
+            </button>
           </div>
           <!-- child comment -->
+          {{range .ChildComments}}
           <div class="w-full mt-4 flex gap-x-4 items-start">
             <img
               src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
               alt="avatar"
-              class="w-10 aspect-square rounded-full object-cover" />
+              class="w-10 aspect-square rounded-full object-cover"
+            />
             <div class="flex flex-col w-full gap-y-1">
-              <p class="text-lg font-medium">Người Trong Muôn Nghề</p>
-              <p>
-                Các bạn có thể xem full video ở kênh YouTube của Người Trong
-                Muôn Nghề nhé
+              <p class="text-lg font-medium">
+                {{.User.FirstName}} {{.User.LastName}}
               </p>
+              <p>{{.Message}}</p>
               <div class="flex items-center gap-x-4">
-                <p>1 ngày trước</p>
-                <p class="cursor-pointer">Trả lời</p>
+                <p>{{humanize_time .CreatedAt }}</p>
               </div>
             </div>
           </div>
+          {{end}}
         </div>
       </div>
       {{end}}
-      <div class="w-full flex gap-x-4 items-start">
-        <img
-          src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
-          alt="avatar"
-          class="w-10 aspect-square rounded-full object-cover" />
-        <div class="flex flex-col w-full gap-y-1">
-          <p class="text-lg font-medium">Người Trong Muôn Nghề</p>
-          <p>
-            Các bạn có thể xem full video ở kênh YouTube của Người Trong Muôn
-            Nghề nhé
-          </p>
-          <div class="flex items-center gap-x-4">
-            <p>1 ngày trước</p>
-            <p class="cursor-pointer">Trả lời</p>
-          </div>
-          <!-- child comment -->
-          <div class="w-full mt-4 flex gap-x-4 items-start">
-            <img
-              src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
-              alt="avatar"
-              class="w-10 aspect-square rounded-full object-cover" />
-            <div class="flex flex-col w-full gap-y-1">
-              <p class="text-lg font-medium">Người Trong Muôn Nghề</p>
-              <p>
-                Các bạn có thể xem full video ở kênh YouTube của Người Trong
-                Muôn Nghề nhé
-              </p>
-              <div class="flex items-center gap-x-4">
-                <p>1 ngày trước</p>
-                <p class="cursor-pointer">Trả lời</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    </div>
+    {{end}}
+    <!--  -->
+    {{$user := .User}} {{if $user}}
+    <div class="mt-8">
+      <div class="flex flex-col w-full items-end justify-end">
+        <textarea
+          rows="4"
+          id="comment"
+          class="block w-full p-4 rounded-md border-[0.5px] border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500"
+        ></textarea>
+      </div>
+      <div class="flex w-full justify-end">
+        <button
+          id="comment-submit"
+          data-slug="{{.Post.Slug}}"
+          type="button"
+          class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+        >
+          Send
+        </button>
       </div>
     </div>
   </div>
   <!-- comment-end -->
-  <h1 class="mt-8">{{.Title}}</h1>
-  <span>{{.Tags}}</span>
-  <span>{{humanize_time .PublishedAt}}</span>
-  <span>{{.PublisherFirstName}} {{.PublisherLastName}}</span>
-  <p>{{.Body}}</p>
-  {{end}} {{$user := .User}} {{if $user}}
-  <div class="mt-4">
-    <div class="mt-1">
-      <textarea
-        rows="4"
-        id="comment"
-        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm"></textarea>
-    </div>
-    <button
-      id="comment-submit"
-      data-slug="{{.Post.Slug}}"
-      type="button"
-      class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
-      Send
-    </button>
-  </div>
-  {{if .Comments}}
-  <div class="mt-4 space-y-2">
-    {{range .Comments}}
-    <div class="text-gray-500 bg-gray-50 p-4 rounded">
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-900">
-          {{.User.FirstName}} {{.User.LastName}}
-          <time
-            class="font-normal text-sm text-gray-500 ml-2"
-            datetime="{{humanize_time .CreatedAt }}">
-            {{humanize_time .CreatedAt }}
-          </time>
-        </h3>
-        <div class="prose prose-sm mt-4 max-w-none text-gray-500">
-          <p class="whitespace-pre-wrap break-words">{{.Message}}</p>
-        </div>
-      </div>
-      {{if $user}}
-      <button
-        data-comment="reply"
-        data-parent="{{.ID}}"
-        type="button"
-        class="inline-flex items-center rounded-md border border-transparent px-2 py-1 text-sm font-bold text-sky-500">
-        Reply
-      </button>
-      <div
-        class="mt-4 hidden"
-        data-comment="reply-section"
-        data-parent="{{.ID}}">
-        <div class="mt-1">
-          <textarea
-            data-comment="comment"
-            data-parent="{{.ID}}"
-            rows="2"
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm"></textarea>
-        </div>
-        <button
-          data-comment="submit"
-          data-parent="{{.ID}}"
-          data-slug="{{$.Post.Slug}}"
-          type="button"
-          class="mt-2 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-2 py-1 text-sm font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
-          Send
-        </button>
-      </div>
-      {{end}}
-    </div>
-    {{range .ChildComments}}
-    <div class="ml-6 flex space-x-4 text-gray-500 bg-gray-50 p-4 rounded">
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-900">
-          {{.User.FirstName}} {{.User.LastName}}
-          <time
-            class="font-normal text-sm text-gray-500 ml-2"
-            datetime="{{humanize_time .CreatedAt }}">
-            {{humanize_time .CreatedAt }}
-          </time>
-        </h3>
-        <div class="prose prose-sm mt-4 max-w-none text-gray-500">
-          <p class="whitespace-pre-wrap break-words">{{.Message}}</p>
-        </div>
-      </div>
-    </div>
-    {{end}}
-    <!---->
-    {{end}}
-  </div>
-  {{end}} {{end}}
+
+  {{end}}
   <!---->
 </div>
 <!--  -->
