@@ -1,4 +1,6 @@
-{{template "layout.html" .}} {{define "main" -}}
+{{template "layout.html" .}} {{define "header.scripts-after" -}}
+<script src="/static/js/comment.js" defer></script>
+{{- end}} {{define "main" -}}
 <!--  -->
 <div>
   <div class="my-8 flex flex-col max-w-[1024px] mx-auto gap-y-8">
@@ -16,15 +18,13 @@
       <img
         src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Matt_Madrigal_headshot_1.max-122x92.format-webp.webp"
         alt="author"
-        class="w-10 aspect-square rounded-full object-cover"
-      />
+        class="w-10 aspect-square rounded-full object-cover" />
       <p class="text-lg font-medium">Matt Madrigal</p>
     </div>
     <img
       src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/commerce_gml_hero.width-1200.format-webp.webp"
       alt="banner"
-      class="block w-full aspect-video object-cover"
-    />
+      class="block w-full aspect-video object-cover" />
     <div class="w-[720px] mx-auto text-justify text-lg">
       <p>
         These days, shopping can happen anytime and anywhere. So it can be
@@ -55,8 +55,7 @@
       <img
         src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
         alt="avatar"
-        class="w-10 aspect-square rounded-full object-cover"
-      />
+        class="w-10 aspect-square rounded-full object-cover" />
       <div class="flex flex-col w-full gap-y-1">
         <p class="text-lg font-medium">Người Trong Muôn Nghề</p>
         <p>
@@ -72,8 +71,7 @@
           <img
             src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
             alt="avatar"
-            class="w-10 aspect-square rounded-full object-cover"
-          />
+            class="w-10 aspect-square rounded-full object-cover" />
           <div class="flex flex-col w-full gap-y-1">
             <p class="text-lg font-medium">Người Trong Muôn Nghề</p>
             <p>
