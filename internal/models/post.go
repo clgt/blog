@@ -22,6 +22,7 @@ type Post struct {
 	UpdatedAt          time.Time
 	PublisherFirstName string
 	PublisherLastName  string
+	IsEditorsPick      bool
 
 	Total int64
 }
@@ -55,6 +56,7 @@ type PostFilter struct {
 	Slug               string
 	IsPublished        bool
 	InPublicationOrder bool
+	IsEditorsPick      bool
 
 	Limit  int
 	Offset int

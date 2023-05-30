@@ -34,6 +34,8 @@ type Server struct {
 	CommentService *sql.CommentService
 }
 
+var server *Server
+
 func NewServer(cfg *config.Config) *Server {
 	mux := flow.New()
 
@@ -78,6 +80,7 @@ func NewServer(cfg *config.Config) *Server {
 	fs := http.FileServer(http.Dir(filepath.Join("theme", "basic", "static")))
 	s.router.Handle("/static/...", http.StripPrefix("/static", fs))
 
+	server = s
 	return s
 }
 
@@ -626,6 +629,7 @@ func (s *Server) adminCreatePost(w http.ResponseWriter, r *http.Request) {
 			PublishedAt:        publishedAt,
 			PublisherFirstName: user.FirstName,
 			PublisherLastName:  user.LastName,
+			IsEditorsPick:      f.Get("IsEditorsPick") == "on",
 		})
 		if err != nil {
 			log.Println(err)
@@ -661,6 +665,7 @@ func (s *Server) adminUpdatePost(w http.ResponseWriter, r *http.Request) {
 	f.Set("Short", post.Short)
 	f.Set("Tags", strings.Join(post.Tags, ","))
 	f.Set("PublishedAt", post.PublishedAt.Format("2006-01-02T15:04:05"))
+	f.Set("IsEditorsPick", fmt.Sprintf("%t", post.IsEditorsPick))
 
 	ok := false
 	defer func() {
@@ -694,13 +699,14 @@ func (s *Server) adminUpdatePost(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err := s.PostService.Update(r.Context(), &models.Post{
-			ID:          post.ID,
-			Title:       f.Get("Title"),
-			Body:        f.Get("Body"),
-			Short:       f.Get("Short"),
-			Tags:        strings.Split(f.Get("Tags"), ","),
-			Poster:      f.Get("Poster"),
-			PublishedAt: publishedAt,
+			ID:            post.ID,
+			Title:         f.Get("Title"),
+			Body:          f.Get("Body"),
+			Short:         f.Get("Short"),
+			Tags:          strings.Split(f.Get("Tags"), ","),
+			Poster:        f.Get("Poster"),
+			PublishedAt:   publishedAt,
+			IsEditorsPick: f.Get("IsEditorsPick") == "on",
 		}); err != nil {
 			log.Println(err)
 			f.Errors.Add("err", "could_not_update_post")

@@ -98,6 +98,9 @@
 		placeholder="Poster"
 		value="{{.Get `Poster`}}"
 	/>
+	<label for="IsEditorsPick">Is Editors Pick</label>
+	<input type="checkbox" name="IsEditorsPick" id="IsEditorsPick" {{if eq (.Get
+	`IsEditorsPick`) "true"}}checked{{end}}>
 	<input type="text" name="Tags" placeholder="Tags" value="{{.Get `Tags`}}" />
 	<input
 		type="submit"

@@ -17,7 +17,7 @@ type CommentService struct {
 	db *DB
 }
 
-var commentUserColumes = []string{
+var commentColumes = []string{
 	"comments.id",
 	"comments.parent_id",
 	"comments.slug",
@@ -104,7 +104,7 @@ func (s *CommentService) FindComments(ctx context.Context, filter models.Comment
 				else null
 			end
 		offset $4
-	`, strings.Join(commentUserColumes, ", "))
+	`, strings.Join(commentColumes, ", "))
 
 	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.Limit, filter.Offset)
 	if err != nil {

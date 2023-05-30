@@ -2,6 +2,7 @@ package http
 
 import (
 	"bytes"
+	"context"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,16 +15,21 @@ import (
 )
 
 type templateData struct {
-	Form     *form.Form
-	User     *models.User
-	Post     *models.Post
-	Posts    []*models.Post
-	Comments []*models.Comment
+	Form        *form.Form
+	User        *models.User
+	Post        *models.Post
+	Posts       []*models.Post
+	LatestPosts []*models.Post
+	EditorsPick []*models.Post
+	Comments    []*models.Comment
 }
 
 var functions = template.FuncMap{
-	"has_role":      hasRole,
-	"humanize_time": humanizeTime,
+	"has_role":         hasRole,
+	"humanize_time":    humanizeTime,
+	"get_latest_posts": getLatestPosts,
+	"get_more_posts":   getMorePosts,
+	"get_editors_pick": getEditorsPick,
 }
 
 func parseTheme(theme string) (map[string]*template.Template, error) {
@@ -125,4 +131,48 @@ func humanizeTime(v *time.Time) string {
 		return ""
 	}
 	return humanize.Time(*v)
+}
+
+func getLatestPosts(n int) []*models.Post {
+	latestPosts, _, err := server.PostService.FindPosts(context.Background(), models.PostFilter{
+		IsPublished:        true,
+		InPublicationOrder: true,
+		Limit:              n,
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return latestPosts
+}
+
+func getMorePosts(n int) []*models.Post {
+	posts, _, err := server.PostService.FindPosts(context.Background(), models.PostFilter{
+		IsPublished:        true,
+		InPublicationOrder: true,
+		Limit:              6,
+		Offset:             n,
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return posts
+}
+
+func getEditorsPick(n int) []*models.Post {
+	editorsPick, _, err := server.PostService.FindPosts(context.Background(), models.PostFilter{
+		IsPublished:        true,
+		InPublicationOrder: true,
+		IsEditorsPick:      true,
+		Limit:              n,
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return editorsPick
 }

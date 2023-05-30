@@ -3,6 +3,8 @@ package sql
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/clgt/blog/internal/models"
 	"github.com/lib/pq"
@@ -14,6 +16,23 @@ var (
 
 type PostService struct {
 	db *DB
+}
+
+var postColumes = []string{
+	"id",
+	"title",
+	"slug",
+	"poster",
+	"tags",
+	"short",
+	"body",
+	"publisher_id",
+	"published_at",
+	"created_at",
+	"updated_at",
+	"publisher_first_name",
+	"publisher_last_name",
+	"is_editors_pick",
 }
 
 func NewPostService(db *DB) *PostService {
@@ -35,6 +54,7 @@ func scanPost(r Scanner, u *models.Post) error {
 		&u.UpdatedAt,
 		&u.PublisherFirstName,
 		&u.PublisherLastName,
+		&u.IsEditorsPick,
 		&u.Total,
 	); err != nil {
 		return err
@@ -44,9 +64,9 @@ func scanPost(r Scanner, u *models.Post) error {
 }
 
 func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) ([]*models.Post, int, error) {
-	q := `
+	q := fmt.Sprintf(`
 		select
-			id, title, slug, poster, tags, short, body, publisher_id, published_at, created_at, updated_at, publisher_first_name, publisher_last_name, count(*) over() as total
+			%s, count(*) over() as total
 		from
 			posts
 		where
@@ -64,20 +84,25 @@ func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) (
 				when $3 then published_at <= now()
 				else true
 			end
+		and
+			case
+				when $4 = true then is_editors_pick = true
+				else true
+			end
 		order by
 			case
-				when $4 then published_at
+				when $5 then published_at
 				else created_at 
 			end desc
 		limit
 			case
-				when $5 > 0 then $5
+				when $6 > 0 then $6
 				else null
 			end
-		offset $6
-	`
+		offset $7
+	`, strings.Join(postColumes, ", "))
 
-	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.IsPublished, filter.InPublicationOrder, filter.Limit, filter.Offset)
+	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.IsPublished, filter.IsEditorsPick, filter.InPublicationOrder, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -166,6 +191,7 @@ func (s *PostService) Update(ctx context.Context, post *models.Post) error {
 		short = coalesce($6, short),
 		body = coalesce($7, body),
 		published_at = coalesce($8, published_at),
+		is_editors_pick = coalesce($9, is_editors_pick),
 		updated_at = now()
 	where
 		id = $1
@@ -175,7 +201,7 @@ func (s *PostService) Update(ctx context.Context, post *models.Post) error {
 		return err
 	}
 
-	_, err := s.db.conn.ExecContext(ctx, q, post.ID, post.Title, post.Slug, post.Poster, pq.Array(post.Tags), post.Short, post.Body, post.PublishedAt)
+	_, err := s.db.conn.ExecContext(ctx, q, post.ID, post.Title, post.Slug, post.Poster, pq.Array(post.Tags), post.Short, post.Body, post.PublishedAt, post.IsEditorsPick)
 	return err
 }
 
