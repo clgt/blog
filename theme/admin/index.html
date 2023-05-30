@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>ByteMD example</title>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
+			integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI"
+			crossorigin="anonymous"
+		/>
+		<link
+			rel="stylesheet"
+			href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css"
+		/>
+		<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bytemd@1.21.0/dist/index.min.css"
+		/>
+		<link rel="stylesheet" href="/static/css/github-markdown.css" />
+		<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gfm@1.21.0/dist/index.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-frontmatter@1.21.0/dist/index.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gemoji@1.21.0/dist/index.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-highlight-ssr@1.21.0/dist/index.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-math-ssr@1.21.0/dist/index.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-medium-zoom@1.21.0/dist/index.umd.min.js"></script>
+		<script src="/static/js/bytemd@1.21.0/dist/index.umd.js"></script>
+		<style>
+			#root {
+				max-width: 1200px;
+				margin: 0 auto;
+			}
+			.bytemd {
+				height: calc(100vh - 50px);
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root"></div>
+		<script>
+			const plugins = [
+				bytemdPluginGfm(),
+				bytemdPluginHighlightSsr(),
+				bytemdPluginFrontmatter(),
+				bytemdPluginMathSsr(),
+				bytemdPluginMediumZoom(),
+				bytemdPluginGemoji(),
+			];
+
+			const editor = new bytemd.Editor({
+				target: document.getElementById('root'),
+				props: {
+					value: '# heading\n\nparagraph\n\n> blockquote',
+					plugins,
+				},
+			});
+
+			editor.$on('change', (e) => {
+				editor.$set({ value: e.detail.value });
+				console.log(e.detail.value);
+			});
+		</script>
+	</body>
+</html>

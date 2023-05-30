@@ -1,5 +1,40 @@
 {{template "layout.html" .}}
 <!--  -->
+{{define "header.scripts-before" -}}
+<link
+	rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
+	integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI"
+	crossorigin="anonymous"
+/>
+<link
+	rel="stylesheet"
+	href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css"
+/>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+<link
+	rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bytemd@1.21.0/dist/index.min.css"
+/>
+<link rel="stylesheet" href="/static/css/github-markdown.css" />
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gfm@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-frontmatter@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gemoji@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-highlight-ssr@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-math-ssr@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-medium-zoom@1.21.0/dist/index.umd.min.js"></script>
+<script src="/static/js/bytemd@1.21.0/dist/index.umd.js"></script>
+<style>
+	#root {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+	.bytemd {
+		height: calc(100vh - 50px);
+	}
+</style>
+{{- end}}
+<!--  -->
 {{define "main" -}}
 <!--  -->
 {{if .Form.Errors.Get `err`}}
@@ -8,50 +43,73 @@
 <!--  -->
 {{with .Form}}
 <form method="POST">
-  <input
-    type="text"
-    name="Title"
-    placeholder="Title"
-    value="{{.Get `Title`}}"
-    required
-  />
-  <textarea cols="80" rows="10" placeholder="Content" name="Body">
- 
-{{.Get `Body`}}</textarea
-  >
-  <input
-    type="text"
-    name="Short"
-    placeholder="Short"
-    value="{{.Get `Short`}}"
-  />
-  <input
-    class="form-control"
-    type="datetime-local"
-    autocomplete="on"
-    spellcheck="false"
-    name="PublishedAt"
-    value="{{.Get `PublishedAt`}}"
-    step="1"
-  />
-  <input
-    type="url"
-    name="Poster"
-    placeholder="Poster"
-    value="{{.Get `Poster`}}"
-  />
-  <input type="text" name="Tags" placeholder="Tags" value="{{.Get `Tags`}}" />
-  <input
-    type="submit"
-    {{if
-    .Get
-    `ID`}}
-    value="Save"
-    {{else}}
-    value="Create"
-    {{end}}
-  />
-  <a href="/admin/posts">Cancel</a>
+	<input
+		type="text"
+		name="Title"
+		placeholder="Title"
+		value="{{.Get `Title`}}"
+		required
+	/>
+	<textarea cols="80" rows="10" placeholder="Content" hidden name="Body">
+		{{.Get `Body`}}</textarea
+	>
+	<div id="root"></div>
+	<script>
+		const plugins = [
+			bytemdPluginGfm(),
+			bytemdPluginHighlightSsr(),
+			bytemdPluginFrontmatter(),
+			bytemdPluginMathSsr(),
+			bytemdPluginMediumZoom(),
+			bytemdPluginGemoji(),
+		];
+
+		const editor = new bytemd.Editor({
+			target: document.getElementById('root'),
+			props: {
+				value: '{{.Get `Body`}}',
+				plugins,
+			},
+		});
+
+		editor.$on('change', (e) => {
+			editor.$set({ value: e.detail.value });
+			document.querySelector('textarea[name="Body"]').value = e.detail.value;
+		});
+	</script>
+	<input
+		type="text"
+		name="Short"
+		placeholder="Short"
+		value="{{.Get `Short`}}"
+	/>
+	<input
+		class="form-control"
+		type="datetime-local"
+		autocomplete="on"
+		spellcheck="false"
+		name="PublishedAt"
+		value="{{.Get `PublishedAt`}}"
+		step="1"
+	/>
+	<input
+		type="url"
+		name="Poster"
+		placeholder="Poster"
+		value="{{.Get `Poster`}}"
+	/>
+	<input type="text" name="Tags" placeholder="Tags" value="{{.Get `Tags`}}" />
+	<input
+		type="submit"
+		{{if
+		.Get
+		`ID`}}
+		value="Save"
+		{{else}}
+		value="Create"
+		{{end}}
+	/>
+	<a href="/admin/posts">Cancel</a>
 </form>
 {{end}}
 <!--  -->

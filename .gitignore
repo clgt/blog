@@ -2,7 +2,6 @@
 *.txt
 *.tmp
 *.xml
-dist
 config.json
 tmp
 *.css.map

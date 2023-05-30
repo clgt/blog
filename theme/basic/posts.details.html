@@ -1,142 +1,194 @@
 {{template "layout.html" .}}
 <!---->
 {{define "header.scripts-after" -}}
+<link
+	rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
+	integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI"
+	crossorigin="anonymous"
+/>
+<link
+	rel="stylesheet"
+	href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css"
+/>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+<link
+	rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bytemd@1.21.0/dist/index.min.css"
+/>
+<link rel="stylesheet" href="/static/css/github-markdown.css" />
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gfm@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-frontmatter@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gemoji@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-highlight-ssr@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-math-ssr@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-medium-zoom@1.21.0/dist/index.umd.min.js"></script>
+<script src="/static/js/bytemd@1.21.0/dist/index.umd.js"></script>
+<style>
+	#root {
+		max-width: 1200px;
+		/* margin: 0 auto; */
+	}
+	.bytemd {
+		width: 100%;
+		height: calc(100vh - 50px);
+	}
+</style>
 <script src="/static/js/comment.js" defer></script>
 {{- end}}
 <!---->
 {{define "main" -}}
 <!--  -->
 <div class="">
-  {{with .Post}}
-  <!--  -->
-  <div>
-    <div class="my-8 flex flex-col max-w-[1024px] mx-auto gap-y-8">
-      <h1 class="text-[60px] leading-[60px] font-medium">{{.Title}}</h1>
-      <div class="text-gray-400">
-        <p class="text-base">{{humanize_time .PublishedAt}}</p>
-        <p class="text-lg text-gray-600 italic text-justify">{{.Short}}</p>
-      </div>
-      <div class="flex items-center gap-x-4">
-        <img
-          src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Matt_Madrigal_headshot_1.max-122x92.format-webp.webp"
-          alt="author"
-          class="w-10 aspect-square rounded-full object-cover"
-        />
-        <p class="text-lg font-medium">
-          {{.PublisherFirstName}} {{.PublisherLastName}}
-        </p>
-      </div>
-      <img
-        src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/commerce_gml_hero.width-1200.format-webp.webp"
-        alt="banner"
-        class="block w-full aspect-video object-cover"
-      />
-      <div class="w-[720px] mx-auto text-justify text-lg">{{.Body}}</div>
-    </div>
-  </div>
-  <!--  -->
-  <!-- comment -->
-  <!--  -->
-  <div class="w-[720px] mx-auto">
-    <p class="text-center text-3xl">Comments</p>
-    {{end}}
-    <!--  -->
-    {{if .Comments}}
-    <div class="my-4 flex flex-col gap-y-8">
-      <!-- parent comment -->
-      {{range .Comments}}
-      <div class="w-full flex gap-x-4 items-start">
-        <img
-          src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
-          alt="avatar"
-          class="w-10 aspect-square rounded-full object-cover"
-        />
-        <div class="flex flex-col w-full gap-y-1">
-          <p class="text-lg font-medium">
-            {{.User.FirstName}} {{.User.LastName}}
-          </p>
-          <p>{{.Message}}</p>
-          <div class="flex items-center gap-x-4">
-            <p>{{humanize_time .CreatedAt }}</p>
-            <button
-              data-comment="reply"
-              data-parent="{{.ID}}"
-              class="cursor-pointer font-medium hover:underline"
-            >
-              Reply
-            </button>
-          </div>
-          <div
-            class="mt-4 hidden flex items-center w-full gap-x-3"
-            data-comment="reply-section"
-            data-parent="{{.ID}}"
-          >
-            <textarea
-              data-comment="comment"
-              data-parent="{{.ID}}"
-              rows="1"
-              class="block flex-1 py-2 px-4 w-full rounded-md border-[0.5px] border-gray-300 shadow-sm focus:outline-none focus:border-sky-500"
-            ></textarea>
-            <button
-              data-comment="submit"
-              data-parent="{{.ID}}"
-              data-slug="{{$.Post.Slug}}"
-              type="button"
-              class="block h-full bg-sky-600 text-white font-medium py-2 px-4 rounded-lg"
-            >
-              Send
-            </button>
-          </div>
-          <!-- child comment -->
-          {{range .ChildComments}}
-          <div class="w-full mt-4 flex gap-x-4 items-start">
-            <img
-              src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
-              alt="avatar"
-              class="w-10 aspect-square rounded-full object-cover"
-            />
-            <div class="flex flex-col w-full gap-y-1">
-              <p class="text-lg font-medium">
-                {{.User.FirstName}} {{.User.LastName}}
-              </p>
-              <p>{{.Message}}</p>
-              <div class="flex items-center gap-x-4">
-                <p>{{humanize_time .CreatedAt }}</p>
-              </div>
-            </div>
-          </div>
-          {{end}}
-        </div>
-      </div>
-      {{end}}
-    </div>
-    {{end}}
-    <!--  -->
-    {{$user := .User}} {{if $user}}
-    <div class="mt-8">
-      <div class="flex flex-col w-full items-end justify-end">
-        <textarea
-          rows="4"
-          id="comment"
-          class="block w-full p-4 rounded-md border-[0.5px] border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500"
-        ></textarea>
-      </div>
-      <div class="flex w-full justify-end">
-        <button
-          id="comment-submit"
-          data-slug="{{.Post.Slug}}"
-          type="button"
-          class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
-        >
-          Send
-        </button>
-      </div>
-    </div>
-  </div>
-  <!-- comment-end -->
+	{{with .Post}}
+	<!--  -->
+	<div>
+		<div class="my-8 flex flex-col max-w-[1024px] mx-auto gap-y-8">
+			<h1 class="text-[60px] leading-[60px] font-medium">{{.Title}}</h1>
+			<div class="text-gray-400">
+				<p class="text-base">{{humanize_time .PublishedAt}}</p>
+				<p class="text-lg text-gray-600 italic text-justify">{{.Short}}</p>
+			</div>
+			<div class="flex items-center gap-x-4">
+				<img
+					src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Matt_Madrigal_headshot_1.max-122x92.format-webp.webp"
+					alt="author"
+					class="w-10 aspect-square rounded-full object-cover"
+				/>
+				<p class="text-lg font-medium">
+					{{.PublisherFirstName}} {{.PublisherLastName}}
+				</p>
+			</div>
+			<img
+				src="https://storage.googleapis.com/gweb-uniblog-publish-prod/images/commerce_gml_hero.width-1200.format-webp.webp"
+				alt="banner"
+				class="block w-full aspect-video object-cover"
+			/>
+			<!-- <div class="w-[720px] mx-auto text-justify text-lg">{{.Body}}</div> -->
+			<div id="root"></div>
+			<script>
+				const plugins = [
+					bytemdPluginGfm(),
+					bytemdPluginHighlightSsr(),
+					bytemdPluginFrontmatter(),
+					bytemdPluginMathSsr(),
+					bytemdPluginMediumZoom(),
+					bytemdPluginGemoji(),
+				];
 
-  {{end}}
-  <!---->
+				const viewer = new bytemd.Viewer({
+					target: document.getElementById('root'),
+					props: {
+						value: '{{.Body}}',
+						plugins,
+					},
+				});
+			</script>
+		</div>
+	</div>
+	<!--  -->
+	<!-- comment -->
+	<!--  -->
+	<div class="w-[720px] mx-auto">
+		<p class="text-center text-3xl">Comments</p>
+		{{end}}
+		<!--  -->
+		{{if .Comments}}
+		<div class="my-4 flex flex-col gap-y-8">
+			<!-- parent comment -->
+			{{range .Comments}}
+			<div class="w-full flex gap-x-4 items-start">
+				<img
+					src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
+					alt="avatar"
+					class="w-10 aspect-square rounded-full object-cover"
+				/>
+				<div class="flex flex-col w-full gap-y-1">
+					<p class="text-lg font-medium">
+						{{.User.FirstName}} {{.User.LastName}}
+					</p>
+					<p>{{.Message}}</p>
+					<div class="flex items-center gap-x-4">
+						<p>{{humanize_time .CreatedAt }}</p>
+						<button
+							data-comment="reply"
+							data-parent="{{.ID}}"
+							class="cursor-pointer font-medium hover:underline"
+						>
+							Reply
+						</button>
+					</div>
+					<div
+						class="mt-4 hidden flex items-center w-full gap-x-3"
+						data-comment="reply-section"
+						data-parent="{{.ID}}"
+					>
+						<textarea
+							data-comment="comment"
+							data-parent="{{.ID}}"
+							rows="1"
+							class="block flex-1 py-2 px-4 w-full rounded-md border-[0.5px] border-gray-300 shadow-sm focus:outline-none focus:border-sky-500"
+						></textarea>
+						<button
+							data-comment="submit"
+							data-parent="{{.ID}}"
+							data-slug="{{$.Post.Slug}}"
+							type="button"
+							class="block h-full bg-sky-600 text-white font-medium py-2 px-4 rounded-lg"
+						>
+							Send
+						</button>
+					</div>
+					<!-- child comment -->
+					{{range .ChildComments}}
+					<div class="w-full mt-4 flex gap-x-4 items-start">
+						<img
+							src="https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/f6a736ba94ad35b171aaadab0f900393~c5_100x100.jpeg?x-expires=1685448000&x-signature=%2FL08m9jB7fKWGRrbGyxxTrhkSkQ%3D"
+							alt="avatar"
+							class="w-10 aspect-square rounded-full object-cover"
+						/>
+						<div class="flex flex-col w-full gap-y-1">
+							<p class="text-lg font-medium">
+								{{.User.FirstName}} {{.User.LastName}}
+							</p>
+							<p>{{.Message}}</p>
+							<div class="flex items-center gap-x-4">
+								<p>{{humanize_time .CreatedAt }}</p>
+							</div>
+						</div>
+					</div>
+					{{end}}
+				</div>
+			</div>
+			{{end}}
+		</div>
+		{{end}}
+		<!--  -->
+		{{$user := .User}} {{if $user}}
+		<div class="mt-8">
+			<div class="flex flex-col w-full items-end justify-end">
+				<textarea
+					rows="4"
+					id="comment"
+					class="block w-full p-4 rounded-md border-[0.5px] border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500"
+				></textarea>
+			</div>
+			<div class="flex w-full justify-end">
+				<button
+					id="comment-submit"
+					data-slug="{{.Post.Slug}}"
+					type="button"
+					class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+				>
+					Send
+				</button>
+			</div>
+		</div>
+	</div>
+	<!-- comment-end -->
+
+	{{end}}
+	<!---->
 </div>
 <!--  -->
 {{- end}}

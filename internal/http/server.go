@@ -726,5 +726,5 @@ func (s *Server) adminRemovePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) adminUsers(w http.ResponseWriter, r *http.Request) {
-	s.adminRender(w, r, "home.html", &templateData{})
+	s.adminRender(w, r, "index.html", &templateData{})
 }
