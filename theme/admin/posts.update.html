@@ -13,9 +13,8 @@
     name="Title"
     placeholder="Title"
     value="{{.Get `Title`}}"
-    required
-  />
-  <textarea cols="80" rows="10" placeholder="Content" name="Body">
+    required />
+  <textarea cols="80" rows="10" placeholder="Content" name="Body"></textarea>
  
 {{.Get `Body`}}</textarea
   >
@@ -23,8 +22,7 @@
     type="text"
     name="Short"
     placeholder="Short"
-    value="{{.Get `Short`}}"
-  />
+    value="{{.Get `Short`}}" />
   <input
     class="form-control"
     type="datetime-local"
@@ -32,14 +30,12 @@
     spellcheck="false"
     name="PublishedAt"
     value="{{.Get `PublishedAt`}}"
-    step="1"
-  />
+    step="1" />
   <input
     type="url"
     name="Poster"
     placeholder="Poster"
-    value="{{.Get `Poster`}}"
-  />
+    value="{{.Get `Poster`}}" />
   <input type="text" name="Tags" placeholder="Tags" value="{{.Get `Tags`}}" />
   <input
     type="submit"
@@ -49,8 +45,7 @@
     value="Save"
     {{else}}
     value="Create"
-    {{end}}
-  />
+    {{end}} />
   <a href="/admin/posts">Cancel</a>
 </form>
 {{end}}
