@@ -1,39 +1,12 @@
 {{template "layout.html" .}}
 <!---->
 {{define "header.scripts-after" -}}
-<link
-	rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
-	integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI"
-	crossorigin="anonymous"
-/>
-<link
-	rel="stylesheet"
-	href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css"
-/>
-<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
-<link
-	rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bytemd@1.21.0/dist/index.min.css"
-/>
 <link rel="stylesheet" href="/static/css/github-markdown.css" />
-<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gfm@1.21.0/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-frontmatter@1.21.0/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gemoji@1.21.0/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-highlight-ssr@1.21.0/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-math-ssr@1.21.0/dist/index.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-medium-zoom@1.21.0/dist/index.umd.min.js"></script>
-<script src="/static/js/bytemd@1.21.0/dist/index.umd.js"></script>
-<style>
-	#root {
-		max-width: 1200px;
-		/* margin: 0 auto; */
-	}
-	.bytemd {
-		width: 100%;
-		height: calc(100vh - 50px);
-	}
-</style>
+<script
+	id="MathJax-script"
+	async
+	src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+></script>
 <script src="/static/js/comment.js" defer></script>
 {{- end}}
 <!---->
@@ -64,26 +37,9 @@
 				alt="banner"
 				class="block w-full aspect-video object-cover"
 			/>
-			<!-- <div class="w-[720px] mx-auto text-justify text-lg">{{.Body}}</div> -->
-			<div id="root"></div>
-			<script>
-				const plugins = [
-					bytemdPluginGfm(),
-					bytemdPluginHighlightSsr(),
-					bytemdPluginFrontmatter(),
-					bytemdPluginMathSsr(),
-					bytemdPluginMediumZoom(),
-					bytemdPluginGemoji(),
-				];
-
-				const viewer = new bytemd.Viewer({
-					target: document.getElementById('root'),
-					props: {
-						value: '{{.Body}}',
-						plugins,
-					},
-				});
-			</script>
+			<div class="w-[720px] mx-auto text-justify text-lg">
+				{{markdown .Body}}
+			</div>
 		</div>
 	</div>
 	<!--  -->

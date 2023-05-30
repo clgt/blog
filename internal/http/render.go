@@ -12,6 +12,14 @@ import (
 	"github.com/clgt/blog/internal/form"
 	"github.com/clgt/blog/internal/models"
 	"github.com/dustin/go-humanize"
+	mathjax "github.com/litao91/goldmark-mathjax"
+	"github.com/yuin/goldmark"
+	emoji "github.com/yuin/goldmark-emoji"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
+	meta "github.com/yuin/goldmark-meta"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
 type templateData struct {
@@ -30,6 +38,7 @@ var functions = template.FuncMap{
 	"get_latest_posts": getLatestPosts,
 	"get_more_posts":   getMorePosts,
 	"get_editors_pick": getEditorsPick,
+	"markdown":         markdownConvert,
 }
 
 func parseTheme(theme string) (map[string]*template.Template, error) {
@@ -83,6 +92,7 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, td 
 		http.Error(w, err.Error(), 500)
 		return
 	}
+
 	buf.WriteTo(w)
 }
 
@@ -175,4 +185,27 @@ func getEditorsPick(n int) []*models.Post {
 	}
 
 	return editorsPick
+}
+
+func markdownConvert(content string) template.HTML {
+	md := goldmark.New(
+		goldmark.WithExtensions(
+			extension.GFM,
+			highlighting.Highlighting,
+			emoji.Emoji,
+			mathjax.MathJax,
+			meta.Meta,
+		),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
+		goldmark.WithRendererOptions(
+			html.WithHardWraps(),
+		),
+	)
+	var buf bytes.Buffer
+	if err := md.Convert([]byte(content), &buf); err != nil {
+		panic(err)
+	}
+	return template.HTML(buf.String())
 }
