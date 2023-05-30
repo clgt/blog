@@ -13,3 +13,4 @@ build
 pkg/box/blob.go
 demo.json
 dump.rdb
+.env
