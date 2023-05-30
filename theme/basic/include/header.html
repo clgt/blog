@@ -1,105 +1,112 @@
 {{- define "header"}}
 <header class="bg-white sm:pb-4 relative">
-  <div
-    class="container mx-auto py-4 px-2 sm:px-0 flex items-center justify-between">
-    <a class="h-[40px] sm:h-[60px]" href="/">
-      <img class="block h-full" src="/static/image/logo.png" alt="logo" />
-    </a>
-    <div class="hidden sm:flex items-center gap-4 h-full">
-      {{if .User}}
-      <a href="/profile">{{.User.Username}}</a>
-      <div class="h-full cursor-pointer relative user-button">
-        <img
-          class="block h-10 w-auto p-2"
-          src="/static/image/user.png"
-          alt="logo" />
-        <div
-          class="absolute min-w-[120px] right-0 top-full bg-white rounded-lg overflow-hidden border border-gray-400 hidden user-dropdown duration-300">
-          <!--  -->
-          {{if and .User (has_role .User "admin")}}
-          <a class="px-4 py-2 hover:bg-gray-200" href="/admin">Admin</a>
-          {{end}}
-          <!--  -->
-          <a class="px-4 py-2 hover:bg-gray-200" href="/logout">
-            <div class="w-full flex items-center justify-between">
-              <p>Logout</p>
-              <i class="ph-thin ph-sign-out"></i>
-            </div>
-          </a>
-        </div>
-      </div>
-      <!-- <a href="/logout">Log Out</a> -->
-      {{else}}
-      <a class="px-8 py-2 rounded-full border border-black" href="/register"
-        >Register</a
-      >
-      <a
-        class="px-8 py-2 rounded-full bg-blue-600 border border-transparent text-white"
-        href="/login"
-        >Login</a
-      >
-      {{end}}
-    </div>
-    <label for="menuToggle" class="text-3xl block sm:hidden">
-      <i class="ph-thin ph-list"></i>
-    </label>
-  </div>
-  <div
-    class="hidden sm:flex border-t border-b border-black py-4 my-1 container mx-auto py-4 items-center gap-x-2">
-    <a class="uppercase font-medium text-lg p-2" href="/">home</a>
-    <a class="uppercase font-medium text-lg p-2" href="/blogs">all Blogs</a>
-    <a class="uppercase font-medium text-lg p-2" href="/about">about</a>
-    <a class="uppercase font-medium text-lg p-2" href="/contact">contact</a>
-  </div>
-  <input
-    title="checkbox"
-    type="checkbox"
-    name="checkbox"
-    id="menuToggle"
-    hidden />
-  <!-- mobile menu -->
-  <div
-    class="mobile-menu -translate-x-full duration-300 absolute top-0 left-0 h-screen min-w-[200px] bg-white py-2">
-    <div class="flex w-full flex-col">
-      <a class="py-2 px-4 mb-4 h-[60px] sm:h-[60px]" href="/">
-        <img class="block h-full" src="/static/image/logo.png" alt="logo" />
-      </a>
-      <div class="text-xl font-medium uppercase">
-        <p class="py-2 px-4">blog</p>
-        <p class="py-2 px-4">about</p>
-        <p class="py-2 px-4">contact</p>
-        <p class="py-2 px-4">clgt</p>
-      </div>
-      <div class="my-8 h-[0.5px] w-full bg-gray-400"></div>
-      <div
-        class="flex flex-col w-full items-start gap-4 h-full py-2 px-4 text-base font-normal text-left">
-        {{if .User}}
-        <a href="/profile">{{.User.Username}}</a>
-        {{if and .User (has_role .User "admin")}}
-        <a class="hover:bg-gray-200 w-full" href="/admin">Admin</a>
-        {{end}}
-        <!--  -->
-        <a class="hover:bg-gray-200 w-full" href="/logout">
-          <div class="w-full flex items-center gap-x-2">
-            <p>Logout</p>
-            <i class="ph-thin ph-sign-out"></i>
-          </div>
-        </a>
-        <!-- <a href="/logout">Log Out</a> -->
-        {{else}}
-        <a
-          class="w-full text-center py-2 rounded-full bg-blue-600 border border-transparent text-white"
-          href="/login"
-          >Login</a
-        >
-        <a
-          class="w-full text-center py-2 rounded-full border border-black"
-          href="/register"
-          >Register</a
-        >
-        {{end}}
-      </div>
-    </div>
-  </div>
+	<div
+		class="container mx-auto py-4 px-2 sm:px-0 flex items-center justify-between"
+	>
+		<a class="h-[40px] sm:h-[60px]" href="/">
+			<img class="block h-full" src="/static/image/logo.png" alt="logo" />
+		</a>
+		<div class="hidden sm:flex items-center gap-4 h-full">
+			{{if .User}}
+			<a href="/profile">{{.User.Username}}</a>
+			<div class="h-full cursor-pointer relative user-button">
+				<img
+					class="block h-10 w-auto p-2"
+					src="/static/image/user.png"
+					alt="logo"
+				/>
+				<div
+					class="absolute min-w-[120px] right-0 top-full bg-white rounded-lg overflow-hidden border border-gray-400 hidden user-dropdown duration-300"
+				>
+					<!--  -->
+					{{if and .User (has_role .User.Roles "admin")}}
+					<a class="px-4 py-2 hover:bg-gray-200" href="/admin">Admin</a>
+					{{end}}
+					<!--  -->
+					<a class="px-4 py-2 hover:bg-gray-200" href="/logout">
+						<div class="w-full flex items-center justify-between">
+							<p>Logout</p>
+							<i class="ph-thin ph-sign-out"></i>
+						</div>
+					</a>
+				</div>
+			</div>
+			<!-- <a href="/logout">Log Out</a> -->
+			{{else}}
+			<a class="px-8 py-2 rounded-full border border-black" href="/register"
+				>Register</a
+			>
+			<a
+				class="px-8 py-2 rounded-full bg-blue-600 border border-transparent text-white"
+				href="/login"
+				>Login</a
+			>
+			{{end}}
+		</div>
+		<label for="menuToggle" class="text-3xl block sm:hidden">
+			<i class="ph-thin ph-list"></i>
+		</label>
+	</div>
+	<div
+		class="hidden sm:flex border-t border-b border-black py-4 my-1 container mx-auto py-4 items-center gap-x-2"
+	>
+		<a class="uppercase font-medium text-lg p-2" href="/">home</a>
+		<a class="uppercase font-medium text-lg p-2" href="/blogs">all Blogs</a>
+		<a class="uppercase font-medium text-lg p-2" href="/about">about</a>
+		<a class="uppercase font-medium text-lg p-2" href="/contact">contact</a>
+	</div>
+	<input
+		title="checkbox"
+		type="checkbox"
+		name="checkbox"
+		id="menuToggle"
+		hidden
+	/>
+	<!-- mobile menu -->
+	<div
+		class="mobile-menu -translate-x-full duration-300 absolute top-0 left-0 h-screen min-w-[200px] bg-white py-2"
+	>
+		<div class="flex w-full flex-col">
+			<a class="py-2 px-4 mb-4 h-[60px] sm:h-[60px]" href="/">
+				<img class="block h-full" src="/static/image/logo.png" alt="logo" />
+			</a>
+			<div class="text-xl font-medium uppercase">
+				<p class="py-2 px-4">blog</p>
+				<p class="py-2 px-4">about</p>
+				<p class="py-2 px-4">contact</p>
+				<p class="py-2 px-4">clgt</p>
+			</div>
+			<div class="my-8 h-[0.5px] w-full bg-gray-400"></div>
+			<div
+				class="flex flex-col w-full items-start gap-4 h-full py-2 px-4 text-base font-normal text-left"
+			>
+				{{if .User}}
+				<a href="/profile">{{.User.Username}}</a>
+				{{if and .User (has_role .User.Roles "admin")}}
+				<a class="hover:bg-gray-200 w-full" href="/admin">Admin</a>
+				{{end}}
+				<!--  -->
+				<a class="hover:bg-gray-200 w-full" href="/logout">
+					<div class="w-full flex items-center gap-x-2">
+						<p>Logout</p>
+						<i class="ph-thin ph-sign-out"></i>
+					</div>
+				</a>
+				<!-- <a href="/logout">Log Out</a> -->
+				{{else}}
+				<a
+					class="w-full text-center py-2 rounded-full bg-blue-600 border border-transparent text-white"
+					href="/login"
+					>Login</a
+				>
+				<a
+					class="w-full text-center py-2 rounded-full border border-black"
+					href="/register"
+					>Register</a
+				>
+				{{end}}
+			</div>
+		</div>
+	</div>
 </header>
 {{- end}}

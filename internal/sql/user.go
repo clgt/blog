@@ -3,6 +3,8 @@ package sql
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/clgt/blog/internal/helper"
 	"github.com/clgt/blog/internal/models"
@@ -17,6 +19,23 @@ var (
 
 type UserService struct {
 	db *DB
+}
+
+var userColumes = []string{
+	"id",
+	"username",
+	"email",
+	"password",
+	"first_name",
+	"last_name",
+	"roles",
+	"email_token",
+	"created_at",
+	"updated_at",
+	"send_verified_email_at",
+	"reset_pwd_token",
+	"rpt_expired_at",
+	"is_blocked",
 }
 
 func NewUserService(db *DB) *UserService {
@@ -48,6 +67,7 @@ func scanUser(r Scanner, u *models.User) error {
 		&u.SendVerifiedEmailAt,
 		&u.ResetPasswordToken,
 		&u.RPTExpiredAt,
+		&u.IsBlocked,
 		&u.Total,
 	); err != nil {
 		return err
@@ -57,9 +77,9 @@ func scanUser(r Scanner, u *models.User) error {
 }
 
 func (s *UserService) FindUsers(ctx context.Context, filter models.UserFilter) ([]*models.User, int, error) {
-	q := `
+	q := fmt.Sprintf(`
 		select
-			id, username, email, password, first_name, last_name, roles, email_token, created_at, updated_at, send_verified_email_at, reset_pwd_token, rpt_expired_at, count(*) over() as total
+			%s, count(*) over() as total
 		from
 			users
 		where
@@ -94,7 +114,7 @@ func (s *UserService) FindUsers(ctx context.Context, filter models.UserFilter) (
 				else null
 			end
 		offset $7
-	`
+	`, strings.Join(userColumes, ", "))
 
 	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Username, filter.Email, filter.EmailToken, filter.ResetPasswordToken, filter.Limit, filter.Offset)
 	if err != nil {

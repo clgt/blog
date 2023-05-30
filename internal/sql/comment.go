@@ -24,6 +24,7 @@ var commentColumes = []string{
 	"comments.message",
 	"comments.created_at",
 	"comments.updated_at",
+	"comments.is_hidden",
 	"comments.user_id",
 	"users.first_name",
 	"users.last_name",
@@ -41,6 +42,7 @@ func scanComment(r Scanner, u *models.Comment) error {
 		&u.Message,
 		&u.CreatedAt,
 		&u.UpdatedAt,
+		&u.IsHidden,
 		&u.User.ID,
 		&u.User.FirstName,
 		&u.User.LastName,
@@ -97,16 +99,21 @@ func (s *CommentService) FindComments(ctx context.Context, filter models.Comment
 				when $2 <> '' then comments.slug=$2
 				else true
 			end
+		and
+			case
+				when $3 then comments.is_hidden=false
+				else true
+			end
 		order by created_at desc
 		limit
 			case
-				when $3 > 0 then $3
+				when $4 > 0 then $4
 				else null
 			end
-		offset $4
+		offset $5
 	`, strings.Join(commentColumes, ", "))
 
-	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.Limit, filter.Offset)
+	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.IsVisible, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -140,7 +147,8 @@ func (s *CommentService) FindByID(ctx context.Context, id int) (*models.Comment,
 
 func (s *CommentService) FindBySlug(ctx context.Context, slug string) ([]*models.Comment, error) {
 	comments, _, err := s.FindComments(ctx, models.CommentFilter{
-		Slug: slug,
+		Slug:      slug,
+		IsVisible: true,
 	})
 
 	if err != nil {
@@ -176,9 +184,21 @@ func (s *CommentService) Create(ctx context.Context, comment *models.Comment) er
 	return nil
 }
 
+func (s *CommentService) Hide(ctx context.Context, id int) error {
+	const q = `
+		update comments
+		set
+			is_hidden = not(coalesce(is_hidden, false)),
+			updated_at = now()
+		where id = $1 or parent_id = $1
+	`
+	_, err := s.db.conn.ExecContext(ctx, q, id)
+	return err
+}
+
 func (s *CommentService) Delete(ctx context.Context, id int) error {
 	const q = `
-		delete from comments where id = $1
+		delete from comments where id = $1 or parent_id = $1
 	`
 	_, err := s.db.conn.ExecContext(ctx, q, id)
 	return err

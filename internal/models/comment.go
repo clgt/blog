@@ -16,6 +16,7 @@ type Comment struct {
 	Message       string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+	IsHidden      bool
 
 	Total int64
 }
@@ -31,8 +32,9 @@ func (c *Comment) Validate() error {
 }
 
 type CommentFilter struct {
-	ID   int
-	Slug string
+	ID        int
+	Slug      string
+	IsVisible bool
 
 	Limit  int
 	Offset int

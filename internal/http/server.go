@@ -74,6 +74,9 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/admin/posts/new", use(s.adminCreatePost, s.isadmin), "GET", "POST")
 	s.router.HandleFunc("/admin/posts/:id/edit", use(s.adminUpdatePost, s.isadmin), "GET", "POST")
 	s.router.HandleFunc("/admin/posts/:id/remove", use(s.adminRemovePost, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/comments", use(s.adminComments, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/comments/:id/hide", use(s.adminHideComment, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/comments/:id/remove", use(s.adminRemoveComment, s.isadmin), "GET")
 	s.router.HandleFunc("/admin/users", use(s.adminUsers, s.isadmin), "GET")
 
 	// static files
@@ -727,10 +730,76 @@ func (s *Server) adminRemovePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.PostService.Delete(r.Context(), postId)
+	err = s.PostService.Delete(r.Context(), postId)
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
 	http.Redirect(w, r, "/admin/posts", http.StatusSeeOther)
 }
 
+func (s *Server) adminComments(w http.ResponseWriter, r *http.Request) {
+	comments, total, err := s.CommentService.FindComments(r.Context(), models.CommentFilter{})
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
+
+	log.Println("total", total)
+
+	s.adminRender(w, r, "comments.html", &templateData{
+		Comments: comments,
+	})
+}
+
+func (s *Server) adminHideComment(w http.ResponseWriter, r *http.Request) {
+	commentIdStr := flow.Param(r.Context(), "id")
+	commentId, err := strconv.Atoi(commentIdStr)
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
+
+	err = s.CommentService.Hide(r.Context(), commentId)
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
+	http.Redirect(w, r, "/admin/comments", http.StatusSeeOther)
+}
+
+func (s *Server) adminRemoveComment(w http.ResponseWriter, r *http.Request) {
+	commentIdStr := flow.Param(r.Context(), "id")
+	commentId, err := strconv.Atoi(commentIdStr)
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
+
+	err = s.CommentService.Delete(r.Context(), commentId)
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
+	http.Redirect(w, r, "/admin/comments", http.StatusSeeOther)
+}
+
 func (s *Server) adminUsers(w http.ResponseWriter, r *http.Request) {
-	s.adminRender(w, r, "index.html", &templateData{})
+	users, total, err := s.UserService.FindUsers(r.Context(), models.UserFilter{})
+	if err != nil {
+		log.Println(err)
+		handleError(w, r, err)
+	}
+
+	log.Println("total", total)
+
+	s.adminRender(w, r, "users.html", &templateData{
+		Users: users,
+	})
 }

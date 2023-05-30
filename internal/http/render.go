@@ -25,6 +25,7 @@ import (
 type templateData struct {
 	Form        *form.Form
 	User        *models.User
+	Users       []*models.User
 	Post        *models.Post
 	Posts       []*models.Post
 	LatestPosts []*models.Post
@@ -39,6 +40,7 @@ var functions = template.FuncMap{
 	"get_more_posts":   getMorePosts,
 	"get_editors_pick": getEditorsPick,
 	"markdown":         markdownConvert,
+	"find_post":        findPostBySlug,
 }
 
 func parseTheme(theme string) (map[string]*template.Template, error) {
@@ -123,12 +125,8 @@ func (s *Server) adminRender(w http.ResponseWriter, r *http.Request, name string
 	buf.WriteTo(w)
 }
 
-func hasRole(user *models.User, role string) bool {
-	if user == nil {
-		return false
-	}
-
-	for _, s := range user.Roles {
+func hasRole(roles []string, role string) bool {
+	for _, s := range roles {
 		if s == role {
 			return true
 		}
@@ -208,4 +206,12 @@ func markdownConvert(content string) template.HTML {
 		panic(err)
 	}
 	return template.HTML(buf.String())
+}
+
+func findPostBySlug(slug string) *models.Post {
+	post, err := server.PostService.FindBySlug(context.Background(), slug)
+	if err != nil {
+		log.Println(err)
+	}
+	return post
 }

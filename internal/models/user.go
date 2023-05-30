@@ -18,6 +18,7 @@ type User struct {
 	SendVerifiedEmailAt time.Time
 	ResetPasswordToken  string
 	RPTExpiredAt        time.Time
+	IsBlocked           bool
 
 	Total int64
 }
