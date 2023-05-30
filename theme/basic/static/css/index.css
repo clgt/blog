@@ -33,3 +33,23 @@ button {
   display: block;
   transform: translateY(0);
 }
+
+.bytemd {
+  height: 70vh !important;
+  border-radius: 12px;
+  border: 0.5px solid #ccc;
+  overflow: hidden;
+}
+.bytemd-fullscreen {
+  z-index: 99999;
+}
+
+.bytemd-status-right {
+  display: flex;
+  align-items: center;
+}
+
+.bytemd-status-right label {
+  display: flex;
+  align-items: center;
+}
