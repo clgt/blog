@@ -804,8 +804,11 @@ func (s *Server) adminUpdatePost(w http.ResponseWriter, r *http.Request) {
 	f.Set("Poster", post.Poster)
 	f.Set("Short", post.Short)
 	f.Set("Tags", strings.Join(post.Tags, ","))
-	f.Set("PublishedAt", post.PublishedAt.Format("2006-01-02T15:04:05"))
 	f.Set("IsEditorsPick", fmt.Sprintf("%t", post.IsEditorsPick))
+	loc, err := time.LoadLocation("Asia/Ho_Chi_Minh")
+	if err == nil {
+		f.Set("PublishedAt", post.PublishedAt.In(loc).Format("2006-01-02T15:04:05"))
+	}
 
 	ok := false
 	defer func() {

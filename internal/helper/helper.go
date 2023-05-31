@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -26,11 +27,15 @@ func RandString(n int) string {
 }
 
 func ParseTime(s string) (*time.Time, error) {
-	t1, err := time.Parse("2006-01-02T15:04:05", s)
+	loc, err := time.LoadLocation("Asia/Ho_Chi_Minh")
+	if err != nil {
+		return nil, fmt.Errorf("load location: %w", err)
+	}
+	t1, err := time.ParseInLocation("2006-01-02T15:04:05", s, loc)
 	if err == nil {
 		return &t1, nil
 	}
-	t2, err := time.Parse("2006-01-02T15:04", s)
+	t2, err := time.ParseInLocation("2006-01-02T15:04", s, loc)
 	if err == nil {
 		return &t2, nil
 	}

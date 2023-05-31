@@ -150,8 +150,8 @@ func (s *PostService) FindBySlug(ctx context.Context, slug string) (*models.Post
 
 func (s *PostService) Create(ctx context.Context, post *models.Post) error {
 	const q = `
-	insert into posts (title, slug, poster, tags, short, body, publisher_id, published_at, publisher_first_name, publisher_last_name)
-		values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	insert into posts (title, slug, poster, tags, short, body, publisher_id, published_at, publisher_first_name, publisher_last_name, is_editors_pick)
+		values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 	returning
 		id;
 	`
@@ -171,6 +171,7 @@ func (s *PostService) Create(ctx context.Context, post *models.Post) error {
 		post.PublishedAt,
 		post.PublisherFirstName,
 		post.PublisherLastName,
+		post.IsEditorsPick,
 	)
 
 	if err := row.Scan(&post.ID); err != nil {
