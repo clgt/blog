@@ -2,9 +2,9 @@ package sql
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"io/fs"
-	"os"
 	"sort"
 
 	"github.com/clgt/blog/internal/config"
@@ -16,9 +16,8 @@ import (
 	"github.com/lib/pq"
 )
 
-// go:embed migration/*.sql
-// var migrationFS embed.FS
-var migrationFS fs.FS = os.DirFS("internal/sql")
+//go:embed migration/*.sql
+var migrationFS embed.FS
 
 type DB struct {
 	conn   *sqlx.DB
