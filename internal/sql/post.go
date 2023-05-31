@@ -26,12 +26,11 @@ var postColumes = []string{
 	"tags",
 	"short",
 	"body",
-	"publisher_id",
+	"author_id",
 	"published_at",
 	"created_at",
 	"updated_at",
-	"publisher_first_name",
-	"publisher_last_name",
+	"author_username",
 	"is_editors_pick",
 }
 
@@ -48,12 +47,11 @@ func scanPost(r Scanner, u *models.Post) error {
 		pq.Array(&u.Tags),
 		&u.Short,
 		&u.Body,
-		&u.PublisherID,
+		&u.AuthorID,
 		&u.PublishedAt,
 		&u.CreatedAt,
 		&u.UpdatedAt,
-		&u.PublisherFirstName,
-		&u.PublisherLastName,
+		&u.AuthorUserName,
 		&u.IsEditorsPick,
 		&u.Total,
 	); err != nil {
@@ -92,7 +90,7 @@ func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) (
 		order by
 			case
 				when $5 then published_at
-				else created_at 
+				else created_at
 			end desc
 		limit
 			case
@@ -167,11 +165,9 @@ func (s *PostService) Create(ctx context.Context, post *models.Post) error {
 		pq.Array(post.Tags),
 		post.Short,
 		post.Body,
-		post.PublisherID,
+		post.AuthorID,
 		post.PublishedAt,
-		post.PublisherFirstName,
-		post.PublisherLastName,
-		post.IsEditorsPick,
+		post.AuthorUserName,
 	)
 
 	if err := row.Scan(&post.ID); err != nil {

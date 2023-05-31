@@ -35,10 +35,10 @@ func SendVerifyEmail(user *models.User) error {
 	link := fmt.Sprintf("%s/verify-email?token=%s&iat=%d&sign=%s", Domain, user.EmailToken, user.SendVerifiedEmailAt.Unix(), sign)
 	// dùng text cho gọn
 	msg := fmt.Sprintf(`
-Hi %s %s,
+Hi %s,
 You have registered an account at on our website.
 Please click the link below to verify your email address: %s
-`, user.FirstName, user.LastName, link)
+`, user.Username, link)
 
 	body, err := json.Marshal(map[string]string{
 		"From":          From,
@@ -73,10 +73,10 @@ func SendResetPasswordEmail(user *models.User) error {
 	link := fmt.Sprintf("%s/change-password?token=%s&eat=%d&sign=%s", Domain, user.ResetPasswordToken, user.RPTExpiredAt.Unix(), sign)
 	// dùng text cho gọn
 	msg := fmt.Sprintf(`
-Hi %s %s,
+Hi %s,
 You have sent a request to reset your password.
 Please click the link below to reset your password: %s
-`, user.FirstName, user.LastName, link)
+`, user.Username, link)
 
 	body, err := json.Marshal(map[string]string{
 		"From":          From,

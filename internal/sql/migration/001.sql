@@ -3,8 +3,6 @@ create table if not exists users (
 	username text not null default '',
     email text not null default '',
     password text not null default '',
-    first_name text not null default '',
-    last_name text not null default '',
     roles text[] not null default '{}',
     email_token text not null default '',
     created_at timestamptz not null default now(),

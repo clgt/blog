@@ -177,7 +177,7 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		f.Values = r.PostForm
-		f.Required("Username", "Password", "PasswordConfirmation", "Email", "FirstName", "LastName")
+		f.Required("Username", "Password", "PasswordConfirmation", "Email")
 
 		if !f.Valid() {
 			log.Println("form invalid", f.Errors)
@@ -192,11 +192,9 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		user, err := s.UserService.Create(r.Context(), &models.User{
-			Username:  f.Get("Username"),
-			Password:  f.Get("Password"),
-			Email:     f.Get("Email"),
-			FirstName: f.Get("FirstName"),
-			LastName:  f.Get("LastName"),
+			Username: f.Get("Username"),
+			Password: f.Get("Password"),
+			Email:    f.Get("Email"),
 		})
 		if err != nil {
 			log.Println(err)
@@ -761,16 +759,15 @@ func (s *Server) adminCreatePost(w http.ResponseWriter, r *http.Request) {
 		}
 
 		err = s.PostService.Create(r.Context(), &models.Post{
-			Title:              f.Get("Title"),
-			Body:               f.Get("Body"),
-			Short:              f.Get("Short"),
-			Tags:               strings.Split(f.Get("Tags"), ","),
-			Poster:             f.Get("Poster"),
-			PublisherID:        userId,
-			PublishedAt:        publishedAt,
-			PublisherFirstName: user.FirstName,
-			PublisherLastName:  user.LastName,
-			IsEditorsPick:      f.Get("IsEditorsPick") == "on",
+			Title:          f.Get("Title"),
+			Body:           f.Get("Body"),
+			Short:          f.Get("Short"),
+			Tags:           strings.Split(f.Get("Tags"), ","),
+			Poster:         f.Get("Poster"),
+			AuthorID:       userId,
+			AuthorUserName: user.Username,
+			PublishedAt:    publishedAt,
+			IsEditorsPick:  f.Get("IsEditorsPick") == "on",
 		})
 		if err != nil {
 			log.Println(err)
