@@ -22,8 +22,8 @@
 			<a href="/blogs/{{.Slug}}" class="col-span-4 line-clamp-1"
 				>{{$post.Title}}</a
 			>
-			<p class="col-span-5 line-clamp-1">{{.Message}}</p>
-			<p class="col-span-2">{{.User.FirstName}} {{.User.LastName}}</p>
+			<p class="col-span-5 line-clamp-1">{{.Body}}</p>
+			<p class="col-span-2">{{.User.Username}}</p>
 			<div class="col-span-1 w-full grid grid-cols-2">
 				<a href="/admin/comments/{{.ID}}/hide" class="text-yellow-600 text-xl">
 					<i

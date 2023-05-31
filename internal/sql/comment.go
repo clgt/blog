@@ -21,11 +21,11 @@ var commentColumes = []string{
 	"comments.id",
 	"comments.parent_id",
 	"comments.slug",
-	"comments.message",
+	"comments.body",
 	"comments.created_at",
 	"comments.updated_at",
 	"comments.is_hidden",
-	"comments.user_id",
+	"comments.author_id",
 	"users.username",
 }
 
@@ -38,7 +38,7 @@ func scanComment(r Scanner, u *models.Comment) error {
 		&u.ID,
 		&u.ParentID,
 		&u.Slug,
-		&u.Message,
+		&u.Body,
 		&u.CreatedAt,
 		&u.UpdatedAt,
 		&u.IsHidden,
@@ -86,7 +86,7 @@ func (s *CommentService) FindComments(ctx context.Context, filter models.Comment
 			%s, count(*) over() as total
 		from
 			comments left join users on
-			comments.user_id = users.id
+			comments.author_id = users.id
 		where
 			case
 				when $1 > 0 then comments.id=$1
@@ -158,7 +158,7 @@ func (s *CommentService) FindBySlug(ctx context.Context, slug string) ([]*models
 
 func (s *CommentService) Create(ctx context.Context, comment *models.Comment) error {
 	const q = `
-	insert into comments (user_id, parent_id, slug, message)
+	insert into comments (author_id, parent_id, slug, body)
 		values($1, $2, $3, $4)
 	returning
 		id;
@@ -169,10 +169,10 @@ func (s *CommentService) Create(ctx context.Context, comment *models.Comment) er
 	}
 
 	row := s.db.conn.QueryRowContext(ctx, q,
-		comment.UserID,
+		comment.AuthorID,
 		comment.ParentID,
 		comment.Slug,
-		comment.Message,
+		comment.Body,
 	)
 
 	if err := row.Scan(&comment.ID); err != nil {
@@ -212,7 +212,7 @@ func (s *CommentService) DeleteBySlug(ctx context.Context, slug string) error {
 
 func (s *CommentService) DeleteByUserID(ctx context.Context, userId int) error {
 	const q = `
-		delete from comments where user_id = $1 returning id
+		delete from comments where author_id = $1 returning id
 	`
 	rows, err := s.db.conn.QueryContext(ctx, q, userId)
 	if err != nil {

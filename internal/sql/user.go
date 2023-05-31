@@ -171,7 +171,7 @@ func (s *UserService) Auth(ctx context.Context, user *models.User) (*models.User
 func (s *UserService) Create(ctx context.Context, user *models.User) (*models.User, error) {
 	q := `
 		insert into users (username, email, password)
-		values ($1, $2, $3, $4, $5)
+		values ($1, $2, $3)
 		returning id, email
 	`
 	hashedPassword, err := s.HashPassword(user.Password)

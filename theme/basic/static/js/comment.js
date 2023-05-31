@@ -22,7 +22,7 @@ commentSubmit.addEventListener('click', async () => {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			body: `Message=${encodeURIComponent(comment.value)}&ParentId=0`,
+			body: `Body=${encodeURIComponent(comment.value)}&ParentId=0`,
 		});
 
 		if (resp.ok) {
@@ -86,7 +86,7 @@ commentSubmits.forEach((el) => {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-				body: `Message=${encodeURIComponent(
+				body: `Body=${encodeURIComponent(
 					commentChild.value
 				)}&ParentId=${parent}`,
 			});

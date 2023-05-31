@@ -657,7 +657,7 @@ func (s *Server) createComment(w http.ResponseWriter, r *http.Request) {
 		}
 
 		f.Values = r.PostForm
-		f.Required("Message", "ParentId")
+		f.Required("Body", "ParentId")
 
 		if !f.Valid() {
 			handleError(w, r, errors.New("err invalid form"))
@@ -682,10 +682,10 @@ func (s *Server) createComment(w http.ResponseWriter, r *http.Request) {
 		}
 
 		comment := &models.Comment{
-			UserID:   userId,
+			AuthorID: userId,
 			ParentID: f.GetInt("ParentId"),
 			Slug:     slug,
-			Message:  f.Get("Message"),
+			Body:     f.Get("Body"),
 		}
 
 		if err := s.CommentService.Create(r.Context(), comment); err != nil {

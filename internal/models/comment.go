@@ -8,12 +8,12 @@ import (
 
 type Comment struct {
 	ID            int
-	UserID        int
+	AuthorID      int
 	User          User
 	ParentID      int
 	ChildComments []*Comment
 	Slug          string
-	Message       string
+	Body          string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	IsHidden      bool
@@ -23,9 +23,9 @@ type Comment struct {
 
 func (c *Comment) Validate() error {
 	// santinize and validate in the same place
-	c.Message = strings.TrimSpace(c.Message)
-	if c.Message == "" {
-		return errors.New("message is empty")
+	c.Body = strings.TrimSpace(c.Body)
+	if c.Body == "" {
+		return errors.New("body is empty")
 	}
 
 	return nil
@@ -34,7 +34,7 @@ func (c *Comment) Validate() error {
 type CommentFilter struct {
 	ID        int
 	Slug      string
-	UserID    int
+	AuthorID  int
 	IsVisible bool
 
 	Limit  int

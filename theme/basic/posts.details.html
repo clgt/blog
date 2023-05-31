@@ -24,13 +24,11 @@
 			</div>
 			<div class="flex items-center gap-x-4">
 				<img
-					src="https://robohash.org/{{.PublisherID}}sometext{{.PublisherFirstName}}"
+					src="https://robohash.org/{{.AuthorID}}sometext{{.AuthorUserName}}"
 					alt="author"
 					class="w-10 aspect-square rounded-full object-cover"
 				/>
-				<p class="text-lg font-medium">
-					{{.PublisherFirstName}} {{.PublisherLastName}}
-				</p>
+				<p class="text-lg font-medium">{{.AuthorUserName}}</p>
 			</div>
 			<img
 				src="{{.Poster}}"
@@ -56,15 +54,13 @@
 			{{range .Comments}}
 			<div class="w-full flex gap-x-4 items-start">
 				<img
-					src="https://robohash.org/{{.User.ID}}sometext{{.User.FirstName}}"
+					src="https://robohash.org/{{.User.ID}}sometext{{.User.Username}}"
 					alt="avatar"
 					class="w-10 aspect-square rounded-full object-cover"
 				/>
 				<div class="flex flex-col w-full gap-y-1">
-					<p class="text-lg font-medium">
-						{{.User.FirstName}} {{.User.LastName}}
-					</p>
-					<p>{{.Message}}</p>
+					<p class="text-lg font-medium">{{.User.Username}}</p>
+					<p>{{.Body}}</p>
 					<div class="flex items-center gap-x-4">
 						<p>{{humanize_time .CreatedAt }}</p>
 						<button
@@ -100,15 +96,13 @@
 					{{range .ChildComments}}
 					<div class="w-full mt-4 flex gap-x-4 items-start">
 						<img
-							src="https://robohash.org/{{.User.ID}}sometext{{.User.FirstName}}"
+							src="https://robohash.org/{{.User.ID}}sometext{{.User.Username}}"
 							alt="avatar"
 							class="w-10 aspect-square rounded-full object-cover"
 						/>
 						<div class="flex flex-col w-full gap-y-1">
-							<p class="text-lg font-medium">
-								{{.User.FirstName}} {{.User.LastName}}
-							</p>
-							<p>{{.Message}}</p>
+							<p class="text-lg font-medium">{{.User.Username}}</p>
+							<p>{{.Body}}</p>
 							<div class="flex items-center gap-x-4">
 								<p>{{humanize_time .CreatedAt }}</p>
 							</div>

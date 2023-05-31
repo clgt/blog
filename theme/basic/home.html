@@ -24,7 +24,7 @@
 				<p class="font-bold text-xl">{{$post.Title}}</p>
 				<div class="flex items-center gap-x-4 text-base text-gray-400">
 					<p>{{humanize_time $post.PublishedAt}}</p>
-					<p>{{$post.PublisherFirstName}} {{$post.PublisherLastName}}</p>
+					<p>{{$post.AuthorUserName}}</p>
 				</div>
 				<p class="text-justify">{{$post.Short}}</p>
 				<div class="w-full flex justify-end">
@@ -61,7 +61,7 @@
 						class="grid grid-cols-1 xl:grid-cols-2 gap-x-4 text-base text-gray-400"
 					>
 						<p>{{humanize_time $post.PublishedAt}}</p>
-						<p>{{$post.PublisherFirstName}} {{$post.PublisherLastName}}</p>
+						<p>{{$post.AuthorUserName}}</p>
 					</div>
 					<p class="text-justify line-clamp-3 sm:line-clamp-5 leading-[24px]">
 						{{$post.Short}}
@@ -95,7 +95,7 @@
 						class="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-x-4 text-base text-gray-400"
 					>
 						<p>{{humanize_time $post.PublishedAt}}</p>
-						<p>{{.PublisherFirstName}} {{$post.PublisherLastName}}</p>
+						<p>{{$post.AuthorUserName}}</p>
 					</div>
 					<p
 						class="text-justify line-clamp-3 lg:line-clamp-1 xl:line-clamp-3 leading-[22px]"
