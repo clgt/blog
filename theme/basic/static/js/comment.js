@@ -26,15 +26,21 @@ commentSubmit.addEventListener('click', async () => {
 		});
 
 		if (resp.ok) {
-			comment.value = '';
+			res = await resp.text();
+			if (res != 'ok') {
+				alert(res);
+				return;
+			}
+
 			// reload page
+			comment.value = '';
 			location.reload();
 			return;
 		}
 
 		throw new Error();
 	} catch (error) {
-		// TODO
+		console.log(error);
 	}
 });
 
@@ -86,15 +92,21 @@ commentSubmits.forEach((el) => {
 			});
 
 			if (resp.ok) {
-				commentChild.value = '';
+				res = await resp.text();
+				if (res != 'ok') {
+					alert(res);
+					return;
+				}
+
 				// reload page
+				commentChild.value = '';
 				location.reload();
 				return;
 			}
 
 			throw new Error();
 		} catch (error) {
-			// TODO
+			console.log(error);
 		}
 	});
 });

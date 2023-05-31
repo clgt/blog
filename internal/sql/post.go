@@ -205,10 +205,17 @@ func (s *PostService) Update(ctx context.Context, post *models.Post) error {
 	return err
 }
 
-func (s *PostService) Delete(ctx context.Context, id int) error {
+func (s *PostService) Delete(ctx context.Context, id int) (string, error) {
 	const q = `
-		delete from posts where id = $1
+		delete from posts where id = $1 returnning slug;
 	`
-	_, err := s.db.conn.ExecContext(ctx, q, id)
-	return err
+	row := s.db.conn.QueryRowContext(ctx, q, id)
+
+	// get slug of deleted post to delete its comments
+	var slug string
+	if err := row.Scan(&slug); err != nil {
+		return "", err
+	}
+
+	return slug, nil
 }

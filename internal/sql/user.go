@@ -15,6 +15,8 @@ import (
 var (
 	ErrUserNotFound         = errors.New("user not found")
 	ErrUserNotVerifiedEmail = errors.New("user not verified email")
+	ErrorCannotBlockAdmin   = errors.New("cannot block admin")
+	ErrorCannotDeleteAdmin  = errors.New("cannot delete admin")
 )
 
 type UserService struct {
@@ -309,4 +311,57 @@ func (s *UserService) FindByRPT(ctx context.Context, token string) (*models.User
 		return nil, ErrUserNotFound
 	}
 	return users[0], nil
+}
+
+func (s *UserService) HasRole(ctx context.Context, id int, role string) (bool, error) {
+	users, _, err := s.FindUsers(ctx, models.UserFilter{
+		ID:    id,
+		Limit: 1,
+	})
+
+	if err != nil {
+		return false, err
+	}
+	if len(users) == 0 {
+		return false, ErrUserNotFound
+	}
+
+	return helper.Contains(role, users[0].Roles), nil
+}
+
+func (s *UserService) Block(ctx context.Context, id int) error {
+	isAdmin, err := s.HasRole(ctx, id, "admin")
+	if err != nil {
+		return err
+	}
+	if isAdmin {
+		return ErrorCannotBlockAdmin
+	}
+	q := `
+		update users
+		set
+			is_blocked = not(coalesce(is_blocked, false)),
+			updated_at = now()
+		where id = $1`
+
+	_, err = s.db.conn.ExecContext(ctx, q, id)
+	return err
+}
+
+func (s *UserService) Delete(ctx context.Context, id int) error {
+	isAdmin, err := s.HasRole(ctx, id, "admin")
+	if err != nil {
+		return err
+	}
+	if isAdmin {
+		return ErrorCannotDeleteAdmin
+	}
+
+	// delete user
+	q := `
+		delete from users
+		where id = $1
+	`
+	_, err = s.db.conn.ExecContext(ctx, q, id)
+	return err
 }

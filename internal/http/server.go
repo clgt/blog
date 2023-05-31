@@ -2,6 +2,7 @@ package http
 
 import (
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"html/template"
 	"log"
@@ -78,6 +79,8 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/admin/comments/:id/hide", use(s.adminHideComment, s.isadmin), "GET")
 	s.router.HandleFunc("/admin/comments/:id/remove", use(s.adminRemoveComment, s.isadmin), "GET")
 	s.router.HandleFunc("/admin/users", use(s.adminUsers, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/users/:id/block", use(s.adminBlockUser, s.isadmin), "GET")
+	s.router.HandleFunc("/admin/users/:id/remove", use(s.adminRemoveUser, s.isadmin), "GET")
 
 	// static files
 	fs := http.FileServer(http.Dir(filepath.Join("theme", "basic", "static")))
@@ -530,8 +533,7 @@ func (s *Server) createComment(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		if err := r.ParseForm(); err != nil {
-			log.Println(err)
-			f.Errors.Add("err", "err_parse_form")
+			handleError(w, r, errors.New("err parse form"))
 			return
 		}
 
@@ -539,8 +541,24 @@ func (s *Server) createComment(w http.ResponseWriter, r *http.Request) {
 		f.Required("Message", "ParentId")
 
 		if !f.Valid() {
-			log.Println("form invalid", f.Errors)
-			f.Errors.Add("err", "err_invalid_form")
+			handleError(w, r, errors.New("err invalid form"))
+			return
+		}
+
+		user, err := s.UserService.FindByID(r.Context(), userId)
+		if err != nil {
+			handleError(w, r, err)
+			return
+		}
+
+		// user can not comment if blocked or not verified email
+		if user.IsBlocked {
+			handleError(w, r, errors.New("user is blocked"))
+			return
+		}
+
+		if !helper.Contains("verified_email", user.Roles) {
+			handleError(w, r, errors.New("user not verified email"))
 			return
 		}
 
@@ -552,8 +570,7 @@ func (s *Server) createComment(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err := s.CommentService.Create(r.Context(), comment); err != nil {
-			log.Println(err)
-			f.Errors.Add("err", "err_could_not_create_comment")
+			handleError(w, r, err)
 			return
 		}
 
@@ -649,7 +666,6 @@ func (s *Server) adminUpdatePost(w http.ResponseWriter, r *http.Request) {
 	postIdStr := flow.Param(r.Context(), "id")
 	postId, err := strconv.Atoi(postIdStr)
 	if err != nil {
-		log.Println(err)
 		handleError(w, r, err)
 		return
 	}
@@ -725,14 +741,18 @@ func (s *Server) adminRemovePost(w http.ResponseWriter, r *http.Request) {
 	postIdStr := flow.Param(r.Context(), "id")
 	postId, err := strconv.Atoi(postIdStr)
 	if err != nil {
-		log.Println(err)
 		handleError(w, r, err)
 		return
 	}
 
-	err = s.PostService.Delete(r.Context(), postId)
+	slug, err := s.PostService.Delete(r.Context(), postId)
 	if err != nil {
-		log.Println(err)
+		handleError(w, r, err)
+		return
+	}
+
+	// remove comments
+	if err := s.CommentService.DeleteBySlug(r.Context(), slug); err != nil {
 		handleError(w, r, err)
 		return
 	}
@@ -742,7 +762,6 @@ func (s *Server) adminRemovePost(w http.ResponseWriter, r *http.Request) {
 func (s *Server) adminComments(w http.ResponseWriter, r *http.Request) {
 	comments, total, err := s.CommentService.FindComments(r.Context(), models.CommentFilter{})
 	if err != nil {
-		log.Println(err)
 		handleError(w, r, err)
 		return
 	}
@@ -758,14 +777,12 @@ func (s *Server) adminHideComment(w http.ResponseWriter, r *http.Request) {
 	commentIdStr := flow.Param(r.Context(), "id")
 	commentId, err := strconv.Atoi(commentIdStr)
 	if err != nil {
-		log.Println(err)
 		handleError(w, r, err)
 		return
 	}
 
 	err = s.CommentService.Hide(r.Context(), commentId)
 	if err != nil {
-		log.Println(err)
 		handleError(w, r, err)
 		return
 	}
@@ -776,14 +793,12 @@ func (s *Server) adminRemoveComment(w http.ResponseWriter, r *http.Request) {
 	commentIdStr := flow.Param(r.Context(), "id")
 	commentId, err := strconv.Atoi(commentIdStr)
 	if err != nil {
-		log.Println(err)
 		handleError(w, r, err)
 		return
 	}
 
 	err = s.CommentService.Delete(r.Context(), commentId)
 	if err != nil {
-		log.Println(err)
 		handleError(w, r, err)
 		return
 	}
@@ -793,7 +808,6 @@ func (s *Server) adminRemoveComment(w http.ResponseWriter, r *http.Request) {
 func (s *Server) adminUsers(w http.ResponseWriter, r *http.Request) {
 	users, total, err := s.UserService.FindUsers(r.Context(), models.UserFilter{})
 	if err != nil {
-		log.Println(err)
 		handleError(w, r, err)
 	}
 
@@ -802,4 +816,42 @@ func (s *Server) adminUsers(w http.ResponseWriter, r *http.Request) {
 	s.adminRender(w, r, "users.html", &templateData{
 		Users: users,
 	})
+}
+
+func (s *Server) adminBlockUser(w http.ResponseWriter, r *http.Request) {
+	userIdStr := flow.Param(r.Context(), "id")
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		handleError(w, r, err)
+		return
+	}
+
+	err = s.UserService.Block(r.Context(), userId)
+	if err != nil {
+		handleError(w, r, err)
+		return
+	}
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+}
+
+func (s *Server) adminRemoveUser(w http.ResponseWriter, r *http.Request) {
+	userIdStr := flow.Param(r.Context(), "id")
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		handleError(w, r, err)
+		return
+	}
+
+	err = s.UserService.Delete(r.Context(), userId)
+	if err != nil {
+		handleError(w, r, err)
+		return
+	}
+
+	// remove comments
+	if err := s.CommentService.DeleteByUserID(r.Context(), userId); err != nil {
+		handleError(w, r, err)
+		return
+	}
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
 }

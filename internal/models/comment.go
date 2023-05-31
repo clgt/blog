@@ -34,6 +34,7 @@ func (c *Comment) Validate() error {
 type CommentFilter struct {
 	ID        int
 	Slug      string
+	UserID    int
 	IsVisible bool
 
 	Limit  int

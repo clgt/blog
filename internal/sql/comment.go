@@ -203,3 +203,35 @@ func (s *CommentService) Delete(ctx context.Context, id int) error {
 	_, err := s.db.conn.ExecContext(ctx, q, id)
 	return err
 }
+
+func (s *CommentService) DeleteBySlug(ctx context.Context, slug string) error {
+	const q = `
+		delete from comments where slug = $1
+	`
+	_, err := s.db.conn.ExecContext(ctx, q, slug)
+	return err
+}
+
+func (s *CommentService) DeleteByUserID(ctx context.Context, userId int) error {
+	const q = `
+		delete from comments where user_id = $1 returning id
+	`
+	rows, err := s.db.conn.QueryContext(ctx, q, userId)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	// delete child comments
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return err
+		}
+		if err := s.Delete(ctx, id); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
