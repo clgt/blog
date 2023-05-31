@@ -1,0 +1,17 @@
+{{template "layout.html" .}} {{define "main" -}}
+<!--  -->
+{{if .Form.Get `Message`}}
+<div>{{.Form.Get `Message`}}</div>
+{{end}} {{if .Form.Get `Email`}}
+<form action="/send-email" method="POST">
+	<input
+		type="email"
+		name="Email"
+		placeholder="Email"
+		value="{{.Form.Get `Email`}}"
+	/>
+	<button type="submit">Send</button>
+</form>
+{{end}}
+<!--  -->
+{{- end}}

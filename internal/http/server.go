@@ -62,9 +62,11 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/login", s.login, "GET", "POST")
 	s.router.HandleFunc("/logout", s.logout, "GET")
 	s.router.HandleFunc("/profile", use(s.profile, s.isLogined), "GET")
+	s.router.HandleFunc("/check-email/:type", s.checkEmail, "GET")
 	s.router.HandleFunc("/change-password", s.changePassword, "GET", "POST")
 	s.router.HandleFunc("/forgot-password", s.forgotPassword, "GET", "POST")
 	s.router.HandleFunc("/verify-email", s.verifyEmailResult, "GET")
+	s.router.HandleFunc("/send-email", s.sendEmail, "POST")
 	s.router.HandleFunc("/blogs", s.posts, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.postDetails, "GET")
 	s.router.HandleFunc("/blogs/:slug/comments/new", use(s.createComment, s.isLogined), "POST")
@@ -224,7 +226,7 @@ func (s *Server) register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ok = true
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/check-email/verify", http.StatusSeeOther)
 	}
 }
 
@@ -302,6 +304,125 @@ func (s *Server) profile(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, "profile.html", &templateData{
 		User: user,
 	})
+}
+
+func (s *Server) checkEmail(w http.ResponseWriter, r *http.Request) {
+	userId := s.session.GetInt(r, "user")
+	f := form.New(nil)
+
+	ok := false
+	defer func() {
+		if !ok {
+			s.render(w, r, "check.email.html", &templateData{
+				Form: f,
+			})
+		}
+	}()
+
+	email_type := flow.Param(r.Context(), "type")
+	if email_type == "verify" {
+		if userId <= 0 {
+			ok = true
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		user, err := s.UserService.FindByID(r.Context(), userId)
+		if err != nil {
+			handleError(w, r, err)
+			return
+		}
+
+		if helper.Contains("verified_email", user.Roles) {
+			f.Set("Message", "Your email has been verified")
+			return
+		}
+
+		// check if the token is expired
+		isExpired := time.Unix(user.SendVerifiedEmailAt.Unix()+3600*24*7, 0).UTC().Before(time.Now().UTC())
+		if !isExpired {
+			f.Set("Message", "Please check your email to verify your email address")
+			return
+		}
+
+		// email was expired
+		f.Set("Message", "Your email token has expired, please click the button below to resend verify email")
+		f.Set("UserID", fmt.Sprintf("%d", user.ID))
+		f.Set("Email", user.Email)
+
+	} else if email_type == "reset" {
+		if userId > 0 {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		}
+		f.Set("Message", "Please check your email to reset your password")
+	} else {
+		f.Set("Message", "Invalid email type")
+	}
+}
+
+func (s *Server) sendEmail(w http.ResponseWriter, r *http.Request) {
+	userId := s.session.GetInt(r, "user")
+	f := form.New(nil)
+
+	if userId > 0 && r.Method == "POST" {
+		if err := r.ParseForm(); err != nil {
+			handleError(w, r, err)
+			return
+		}
+
+		f.Values = r.PostForm
+		f.Required("Email")
+
+		if !f.Valid() {
+			handleError(w, r, errors.New("invalid form"))
+			return
+		}
+
+		user, err := s.UserService.FindByID(r.Context(), userId)
+		if err != nil {
+			handleError(w, r, err)
+			return
+		}
+
+		if helper.Contains("verified_email", user.Roles) {
+			http.Redirect(w, r, "/check-email/verify", http.StatusSeeOther)
+			return
+		}
+
+		// check if the token is expired
+		isExpired := time.Unix(user.SendVerifiedEmailAt.Unix()+3600*24*7, 0).UTC().Before(time.Now().UTC())
+		if !isExpired {
+			http.Redirect(w, r, "/check-email/verify", http.StatusSeeOther)
+			return
+		}
+
+		user.Email = r.PostForm.Get("Email")
+		log.Println(user)
+
+		if err := s.UserService.LogSendVerifyEmail(r.Context(), user); err != nil {
+			handleError(w, r, err)
+			return
+		}
+
+		// reload user
+		user, err = s.UserService.FindByID(r.Context(), user.ID)
+		if err != nil {
+			handleError(w, r, err)
+			return
+		}
+
+		log.Println(user)
+
+		// gởi email verify
+		email.PostmarkApiToken = "?"
+		email.Domain = "http://localhost:3000"
+		if err := email.SendVerifyEmail(user); err != nil {
+			log.Println(err)
+		}
+	}
+
+	http.Redirect(w, r, "/check-email/verify", http.StatusSeeOther)
 }
 
 func (s *Server) changePassword(w http.ResponseWriter, r *http.Request) {
@@ -468,7 +589,7 @@ func (s *Server) forgotPassword(w http.ResponseWriter, r *http.Request) {
 		}
 
 		ok = true
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/check-email/reset", http.StatusSeeOther)
 	}
 }
 
