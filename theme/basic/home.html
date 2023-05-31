@@ -1,116 +1,133 @@
 {{template "layout.html" .}} {{define "main" -}}
 <div class="">
-	<p
-		class="my-4 sm:my-8 text-[40px] sm:text-[80px] font-black sm:leading-[80px]"
-	>
-		Latest blogs
-	</p>
-	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-		{{$latestPosts := get_latest_posts 3}} {{range $post := $latestPosts}}
-		<div
-			style="
-				box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-					rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-			"
-			class="rounded-lg overflow-hidden m-0 hover:-m-2 duration-300"
-		>
-			<img
-				src="{{$post.Poster}}"
-				onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
-				alt="thumbnail"
-				class="block w-full aspect-video"
-			/>
-			<div class="p-4 flex w-full flex-col gap-y-2">
-				<p class="font-bold text-xl">{{$post.Title}}</p>
-				<div class="flex items-center gap-x-4 text-base text-gray-400">
-					<p>{{humanize_time $post.PublishedAt}}</p>
-					<p>{{$post.AuthorUserName}}</p>
-				</div>
-				<p class="text-justify">{{$post.Short}}</p>
-				<div class="w-full flex justify-end">
-					<a href="/blogs/{{$post.Slug}}" class="font-medium text-blue-500"
-						>Read more</a
-					>
-				</div>
-			</div>
-		</div>
-		{{end}}
-	</div>
+  <p
+    class="my-4 sm:my-8 text-[40px] sm:text-[80px] font-black sm:leading-[80px]"
+  >
+    Latest blogs
+  </p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    {{$latestPosts := get_latest_posts 3}} {{range $post := $latestPosts}}
+    <div
+      style="
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+          rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+      "
+      class="rounded-lg overflow-hidden m-0 hover:-m-2 duration-300"
+    >
+      <a class="block" href="/blogs/{{$post.Slug}}">
+        <img
+          src="{{$post.Poster}}"
+          onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
+          alt="thumbnail"
+          class="block w-full aspect-video"
+        />
+      </a>
+      <div class="p-4 flex w-full flex-col gap-y-2">
+        <a
+          href="/blogs/{{$post.Slug}}"
+          class="font-bold text-xl hover:text-sky-500"
+          >{{$post.Title}}</a
+        >
+        <div class="flex items-center gap-x-4 text-base text-gray-400">
+          <p>{{humanize_time $post.PublishedAt}}</p>
+          <p>{{$post.AuthorUserName}}</p>
+        </div>
+        <p class="text-justify">{{$post.Short}}</p>
+        <div class="w-full flex justify-end">
+          <a href="/blogs/{{$post.Slug}}" class="font-medium text-blue-500"
+            >Read more</a
+          >
+        </div>
+      </div>
+    </div>
+    {{end}}
+  </div>
 </div>
 <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-x-8">
-	<div class="col-span-2">
-		<p class="py-4 text-3xl uppercase font-medium">Explore More</p>
-		<div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-			{{$posts := get_more_posts 3}} {{range $post := $posts}}
-			<div
-				style="
-					box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-						rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-				"
-				class="rounded-lg overflow-hidden m-0 hover:-m-2 duration-300"
-			>
-				<img
-					src="{{$post.Poster}}"
-					onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
-					alt="thumbnail"
-					class="block w-full aspect-video"
-				/>
-				<div class="p-4 flex w-full flex-col gap-y-2">
-					<p class="font-bold text-xl line-clamp-2">{{$post.Title}}</p>
-					<div
-						class="grid grid-cols-1 xl:grid-cols-2 gap-x-4 text-base text-gray-400"
-					>
-						<p>{{humanize_time $post.PublishedAt}}</p>
-						<p>{{$post.AuthorUserName}}</p>
-					</div>
-					<p class="text-justify line-clamp-3 sm:line-clamp-5 leading-[24px]">
-						{{$post.Short}}
-					</p>
-					<div class="w-full flex justify-end">
-						<a href="/blogs/{{$post.Slug}}" class="font-medium text-blue-500"
-							>Read more</a
-						>
-					</div>
-				</div>
-			</div>
-			{{end}}
-		</div>
-	</div>
-	<div>
-		<p class="py-4 text-3xl uppercase font-medium">In case you missed it</p>
-		<div class="grid grid-cols-1 gap-y-4">
-			{{$editorspick := get_editors_pick 3}} {{range $post := $editorspick}}
-			<div class="grid grid-cols-3 gap-x-4 w-full rounded-lg overflow-hidden">
-				<img
-					src="{{$post.Poster}}"
-					onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
-					alt="thumbnail"
-					class="aspect-square rounded-lg object-cover"
-				/>
-				<div
-					class="col-span-2 flex w-full flex-col gap-y-1 lg:gap-y-0 xl:gap-y-1"
-				>
-					<p class="font-bold text-xl line-clamp-1">{{$post.Title}}</p>
-					<div
-						class="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-x-4 text-base text-gray-400"
-					>
-						<p>{{humanize_time $post.PublishedAt}}</p>
-						<p>{{$post.AuthorUserName}}</p>
-					</div>
-					<p
-						class="text-justify line-clamp-3 lg:line-clamp-1 xl:line-clamp-3 leading-[22px]"
-					>
-						{{$post.Short}}
-					</p>
-					<a
-						href="/blogs/{{$post.Slug}}"
-						class="hidden xl:block font-medium text-blue-500"
-						>Read more</a
-					>
-				</div>
-			</div>
-			{{end}}
-		</div>
-	</div>
+  <div class="col-span-2">
+    <p class="py-4 text-3xl uppercase font-medium">Explore More</p>
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+      {{$posts := get_more_posts 3}} {{range $post := $posts}}
+      <div
+        style="
+          box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+            rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+        "
+        class="rounded-lg overflow-hidden m-0 hover:-m-2 duration-300"
+      >
+        <a href="/blogs/{{$post.Slug}}">
+          <img
+            src="{{$post.Poster}}"
+            onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
+            alt="thumbnail"
+            class="block w-full aspect-video"
+        /></a>
+        <div class="p-4 flex w-full flex-col gap-y-2">
+          <a
+            href="/blogs/{{$post.Slug}}"
+            class="font-bold text-xl line-clamp-2 hover:text-sky-500"
+            >{{$post.Title}}</a
+          >
+          <div
+            class="grid grid-cols-1 xl:grid-cols-2 gap-x-4 text-base text-gray-400"
+          >
+            <p>{{humanize_time $post.PublishedAt}}</p>
+            <p>{{$post.AuthorUserName}}</p>
+          </div>
+          <p class="text-justify line-clamp-3 sm:line-clamp-5 leading-[24px]">
+            {{$post.Short}}
+          </p>
+          <div class="w-full flex justify-end">
+            <a href="/blogs/{{$post.Slug}}" class="font-medium text-blue-500"
+              >Read more</a
+            >
+          </div>
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </div>
+  <div>
+    <p class="py-4 text-3xl uppercase font-medium">In case you missed it</p>
+    <div class="grid grid-cols-1 gap-y-4">
+      {{$editorspick := get_editors_pick 3}} {{range $post := $editorspick}}
+      <div class="grid grid-cols-3 gap-x-4 w-full rounded-lg overflow-hidden">
+        <a href="/blogs/{{$post.Slug}}">
+          <img
+            src="{{$post.Poster}}"
+            onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
+            alt="thumbnail"
+            class="aspect-square rounded-lg object-cover"
+          />
+        </a>
+        <div
+          class="col-span-2 flex w-full flex-col gap-y-1 lg:gap-y-0 xl:gap-y-1"
+        >
+          <a
+            href="/blogs/{{$post.Slug}}"
+            class="font-bold text-xl line-clamp-1 hover:text-sky-500"
+            >{{$post.Title}}</a
+          >
+          <div
+            class="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-x-4 text-base text-gray-400"
+          >
+            <p>{{humanize_time $post.PublishedAt}}</p>
+            <p>{{$post.AuthorUserName}}</p>
+          </div>
+          <p
+            class="text-justify line-clamp-3 lg:line-clamp-1 xl:line-clamp-3 leading-[22px]"
+          >
+            {{$post.Short}}
+          </p>
+          <a
+            href="/blogs/{{$post.Slug}}"
+            class="hidden xl:block font-medium text-blue-500"
+            >Read more</a
+          >
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </div>
 </div>
 {{- end}}

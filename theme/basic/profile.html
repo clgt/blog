@@ -1,9 +1,71 @@
 {{template "layout.html" .}} {{define "main" -}}
-<div>
-	Hello {{.User.Username}} <br />
-	{{.User.Email}} <br />
-	<a href="/logout">Logout</a> <br />
-	<a href="/check-email/verify">Verify Email</a> <br />
-	<a href="/change-password">Change Password</a>
+<div class="w-full max-w-[1024px] mx-auto py-20 sm:px-8 grid grid-cols-3 gap-8">
+  <div class="col-span-3 md:col-span-1">
+    <img
+      src="/static/image/avatar.png"
+      alt="avatar"
+      class="block w-full aspect-square rounded-full object-cover"
+    />
+    <p class="mt-4 font-semibold text-xl text-center">@{{.User.Username}}</p>
+  </div>
+  <div class="col-span-3 md:col-span-2">
+    <div class="relative grid grid-cols-2 z-[2]">
+      <div
+        class="w-full py-3 flex items-center justify-center gap-x-3 text-lg font-medium hover:bg-sky-200 duration-300 border-b-[3px] border-sky-500 text-sky-500"
+      >
+        <span class="flex items-center text-3xl"
+          ><i class="ph-fill ph-user"></i
+        ></span>
+        <p>Profile</p>
+      </div>
+      <!-- <div
+        class="w-full py-3 flex items-center justify-center gap-x-3 text-lg font-medium hover:bg-sky-200 duration-300 border-b-[3px] border-transparent hover:border-sky-500 hover:text-sky-500"
+      >
+        <span class="flex items-center text-3xl"
+          ><i class="ph-fill ph-bookmark-simple"></i
+        ></span>
+
+        <p>Saved</p>
+      </div> -->
+      <div class="absolute h-[0.5px] left-0 right-0 bottom-0 bg-gray-300"></div>
+    </div>
+    <div class="w-full max-w-[460px] mx-auto mt-12 flex flex-col gap-y-8">
+      <div class="grid grid-cols-6 sm:grid-cols-5 gap-x-3 font-medium text-lg">
+        <p class="hidden sm:block">Email</p>
+        <p class="sm:hidden text-3xl">
+          <i class="ph-fill ph-key"></i>
+        </p>
+        <p class="col-span-5 sm:col-span-3 line-clamp-1">{{.User.Email}}</p>
+        <a
+          class="border border-sky-500 text-sky-500 rounded-lg w-full py-1 hover:bg-sky-500 hover:text-white text-base text-center font-medium col-span-2 col-end-7"
+          href="/check-email/verify"
+          >Verify</a
+        >
+      </div>
+      <div class="grid grid-cols-6 sm:grid-cols-5 gap-x-3 font-medium text-lg">
+        <p class="hidden sm:block">Password</p>
+        <p class="sm:hidden text-3xl">
+          <i class="ph-fill ph-key"></i>
+        </p>
+        <p class="col-span-5 sm:col-span-3 line-clamp-1 flex items-center">
+          ************
+        </p>
+        <a
+          class="border border-sky-500 text-sky-500 rounded-lg w-full py-1 hover:bg-sky-500 hover:text-white text-base text-center font-medium col-span-2 col-end-7"
+          href="/change-password"
+          >Change</a
+        >
+      </div>
+      <a
+        href="/logout"
+        class="mt-12 flex items-center justify-center gap-x-1 font-semibold text-lg text-red-400"
+      >
+        <span class="flex items-center justify-center text-3xl"
+          ><i class="ph-fill ph-sign-out"></i
+        ></span>
+        Logout
+      </a>
+    </div>
+  </div>
 </div>
 {{- end}}
