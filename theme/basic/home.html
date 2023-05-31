@@ -15,7 +15,8 @@
 			class="rounded-lg overflow-hidden m-0 hover:-m-2 duration-300"
 		>
 			<img
-				src="https://2miners.com/blog/wp-content/uploads/2019/04/Frame.png"
+				src="{{$post.Poster}}"
+				onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
 				alt="thumbnail"
 				class="block w-full aspect-video"
 			/>
@@ -49,7 +50,8 @@
 				class="rounded-lg overflow-hidden m-0 hover:-m-2 duration-300"
 			>
 				<img
-					src="https://2miners.com/blog/wp-content/uploads/2019/04/Frame.png"
+					src="{{$post.Poster}}"
+					onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
 					alt="thumbnail"
 					class="block w-full aspect-video"
 				/>
@@ -80,7 +82,8 @@
 			{{$editorspick := get_editors_pick 3}} {{range $post := $editorspick}}
 			<div class="grid grid-cols-3 gap-x-4 w-full rounded-lg overflow-hidden">
 				<img
-					src="https://2miners.com/blog/wp-content/uploads/2023/04/2miners_kaspa-768x430.png"
+					src="{{$post.Poster}}"
+					onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
 					alt="thumbnail"
 					class="aspect-square rounded-lg object-cover"
 				/>
