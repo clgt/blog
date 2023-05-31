@@ -9,8 +9,6 @@ type User struct {
 	Username            string
 	Email               string
 	Password            string
-	FirstName           string
-	LastName            string
 	Roles               []string
 	EmailToken          string
 	CreatedAt           time.Time

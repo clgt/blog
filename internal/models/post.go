@@ -9,20 +9,19 @@ import (
 )
 
 type Post struct {
-	ID                 int
-	Title              string
-	Slug               string
-	Poster             string
-	Tags               []string
-	Short              string
-	Body               string
-	PublisherID        int
-	PublishedAt        *time.Time
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
-	PublisherFirstName string
-	PublisherLastName  string
-	IsEditorsPick      bool
+	ID             int
+	Title          string
+	Slug           string
+	Poster         string
+	Tags           []string
+	Short          string
+	Body           string
+	AuthorID       int
+	AuthorUserName string
+	PublishedAt    *time.Time
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	IsEditorsPick  bool
 
 	Total int64
 }

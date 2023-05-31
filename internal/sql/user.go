@@ -28,8 +28,6 @@ var userColumes = []string{
 	"username",
 	"email",
 	"password",
-	"first_name",
-	"last_name",
 	"roles",
 	"email_token",
 	"created_at",
@@ -60,8 +58,6 @@ func scanUser(r Scanner, u *models.User) error {
 		&u.Username,
 		&u.Email,
 		&u.Password,
-		&u.FirstName,
-		&u.LastName,
 		pq.Array(&u.Roles),
 		&u.EmailToken,
 		&u.CreatedAt,
@@ -174,7 +170,7 @@ func (s *UserService) Auth(ctx context.Context, user *models.User) (*models.User
 
 func (s *UserService) Create(ctx context.Context, user *models.User) (*models.User, error) {
 	q := `
-		insert into users (username, first_name, last_name, email, password)
+		insert into users (username, email, password)
 		values ($1, $2, $3, $4, $5)
 		returning id, email
 	`
@@ -185,8 +181,6 @@ func (s *UserService) Create(ctx context.Context, user *models.User) (*models.Us
 
 	row := s.db.conn.QueryRowContext(ctx, q,
 		user.Username,
-		user.FirstName,
-		user.LastName,
 		user.Email,
 		hashedPassword,
 	)

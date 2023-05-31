@@ -26,8 +26,7 @@ var commentColumes = []string{
 	"comments.updated_at",
 	"comments.is_hidden",
 	"comments.user_id",
-	"users.first_name",
-	"users.last_name",
+	"users.username",
 }
 
 func NewCommentService(db *DB) *CommentService {
@@ -44,8 +43,7 @@ func scanComment(r Scanner, u *models.Comment) error {
 		&u.UpdatedAt,
 		&u.IsHidden,
 		&u.User.ID,
-		&u.User.FirstName,
-		&u.User.LastName,
+		&u.User.Username,
 		&u.Total,
 	); err != nil {
 		return err
