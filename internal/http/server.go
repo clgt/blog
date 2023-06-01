@@ -18,6 +18,7 @@ import (
 	"github.com/clgt/blog/internal/form"
 	"github.com/clgt/blog/internal/helper"
 	"github.com/clgt/blog/internal/models"
+	"github.com/clgt/blog/internal/pagination"
 	"github.com/clgt/blog/internal/sql"
 	"github.com/golangcollege/sessions"
 )
@@ -116,10 +117,12 @@ func (s *Server) posts(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	log.Println("total", total)
+	p := pagination.New(r.URL).SetTotal(total).Generate()
+	left, right := p.GetDataBound()
 
 	s.render(w, r, "posts.html", &templateData{
-		Posts: posts,
+		Posts:      posts[left:right],
+		Pagination: p,
 	})
 }
 
@@ -132,15 +135,19 @@ func (s *Server) postDetails(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comments, err := s.CommentService.FindBySlug(r.Context(), slug)
+	comments, total, err := s.CommentService.FindBySlug(r.Context(), slug)
 	if err != nil {
 		handleError(w, r, err)
 		return
 	}
 
+	p := pagination.New(r.URL).SetTotal(total).Generate()
+	left, right := p.GetDataBound()
+
 	s.render(w, r, "posts.details.html", &templateData{
-		Post:     post,
-		Comments: comments,
+		Post:       post,
+		Comments:   comments[left:right],
+		Pagination: p,
 	})
 }
 
@@ -622,7 +629,7 @@ func (s *Server) verifyEmailResult(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// token của email sẽ expired sau 1 tuần
+	// token expired after 7 days
 	isExpired := time.Unix(issueAt+3600*24*7, 0).UTC().Before(time.Now().UTC())
 	if isExpired {
 		log.Println(time.Unix(issueAt+3600*24*7, 0).UTC())
@@ -708,10 +715,12 @@ func (s *Server) adminPosts(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	log.Println("total", total)
+	p := pagination.New(r.URL).SetTotal(total).Generate()
+	left, right := p.GetDataBound()
 
 	s.adminRender(w, r, "posts.html", &templateData{
-		Posts: posts,
+		Posts:      posts[left:right],
+		Pagination: p,
 	})
 }
 
@@ -887,10 +896,12 @@ func (s *Server) adminComments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("total", total)
+	p := pagination.New(r.URL).SetTotal(total).Generate()
+	left, right := p.GetDataBound()
 
 	s.adminRender(w, r, "comments.html", &templateData{
-		Comments: comments,
+		Comments:   comments[left:right],
+		Pagination: p,
 	})
 }
 
@@ -932,10 +943,12 @@ func (s *Server) adminUsers(w http.ResponseWriter, r *http.Request) {
 		handleError(w, r, err)
 	}
 
-	log.Println("total", total)
+	p := pagination.New(r.URL).SetTotal(total).Generate()
+	left, right := p.GetDataBound()
 
 	s.adminRender(w, r, "users.html", &templateData{
-		Users: users,
+		Users:      users[left:right],
+		Pagination: p,
 	})
 }
 

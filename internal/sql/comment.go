@@ -143,17 +143,19 @@ func (s *CommentService) FindByID(ctx context.Context, id int) (*models.Comment,
 	return comments[0], nil
 }
 
-func (s *CommentService) FindBySlug(ctx context.Context, slug string) ([]*models.Comment, error) {
+func (s *CommentService) FindBySlug(ctx context.Context, slug string) ([]*models.Comment, int, error) {
 	comments, _, err := s.FindComments(ctx, models.CommentFilter{
 		Slug:      slug,
 		IsVisible: true,
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return BuildCommentTree(comments), nil
+	commentTree := BuildCommentTree(comments)
+
+	return commentTree, len(commentTree), nil
 }
 
 func (s *CommentService) Create(ctx context.Context, comment *models.Comment) error {

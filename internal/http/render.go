@@ -3,14 +3,17 @@ package http
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/clgt/blog/internal/form"
 	"github.com/clgt/blog/internal/models"
+	"github.com/clgt/blog/internal/pagination"
 	"github.com/dustin/go-humanize"
 	mathjax "github.com/litao91/goldmark-mathjax"
 	"github.com/yuin/goldmark"
@@ -31,6 +34,9 @@ type templateData struct {
 	LatestPosts []*models.Post
 	EditorsPick []*models.Post
 	Comments    []*models.Comment
+
+	CurrentURL string
+	Pagination *pagination.Pagination
 }
 
 var functions = template.FuncMap{
@@ -41,6 +47,7 @@ var functions = template.FuncMap{
 	"get_editors_pick": getEditorsPick,
 	"markdown":         markdownConvert,
 	"find_post":        findPostBySlug,
+	"build_pagination": buildPagination,
 }
 
 func parseTheme(theme string) (map[string]*template.Template, error) {
@@ -76,6 +83,9 @@ func (s *Server) render(w http.ResponseWriter, r *http.Request, name string, td 
 		http.Error(w, "missing template:"+name, 500)
 		return
 	}
+
+	td.CurrentURL = r.RequestURI
+
 	id := s.session.GetInt(r, "user")
 	if id > 0 {
 		// Get user by id
@@ -104,6 +114,9 @@ func (s *Server) adminRender(w http.ResponseWriter, r *http.Request, name string
 		http.Error(w, "missing template:"+name, 500)
 		return
 	}
+
+	td.CurrentURL = r.RequestURI
+
 	id := s.session.GetInt(r, "user")
 	if id > 0 {
 		// Get user by id
@@ -214,4 +227,29 @@ func findPostBySlug(slug string) *models.Post {
 		log.Println(err)
 	}
 	return post
+}
+
+func buildPagination(url string, page int) string {
+	if !strings.Contains(url, "?") {
+		return fmt.Sprintf("%s?page=%d", url, page)
+	}
+	if !strings.Contains(url, "page") {
+		return fmt.Sprintf("%s&page=%d", url, page)
+	}
+	if !strings.Contains(url, "&") {
+		return strings.Split(url, "?")[0] + fmt.Sprintf("?page=%d", page)
+	}
+	s := []string{}
+	if strings.Contains(url, "page") {
+		cURL := strings.Split(url, "&")
+		for _, v := range cURL {
+			if strings.Contains(v, "page") {
+				v = fmt.Sprintf("page=%d", page)
+			}
+			s = append(s, v)
+		}
+		return strings.Join(s, "&")
+	}
+
+	return ""
 }

@@ -41,3 +41,13 @@ func ParseTime(s string) (*time.Time, error) {
 	}
 	return nil, err
 }
+
+func Min(vars ...int) int {
+	min := vars[0]
+	for _, v := range vars {
+		if v < min {
+			min = v
+		}
+	}
+	return min
+}
