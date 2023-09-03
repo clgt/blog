@@ -7,20 +7,18 @@ import (
 	"io/fs"
 	"sort"
 
-	"github.com/clgt/blog/internal/config"
-	"github.com/jmoiron/sqlx"
+	"github.com/clgt/sport/internal/config"
 	"github.com/rs/xid"
 
-	// sqlx "database/sql"
-
-	"github.com/lib/pq"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 //go:embed migration/*.sql
 var migrationFS embed.FS
 
 type DB struct {
-	conn   *sqlx.DB
+	Conn   *pgx.Conn
 	ctx    context.Context
 	cancel func()
 
@@ -44,7 +42,7 @@ func (db *DB) Open() (err error) {
 		return fmt.Errorf("required: Datasource")
 	}
 
-	if db.conn, err = sqlx.Open("postgres", db.Datasource); err != nil {
+	if db.Conn, err = pgx.Connect(db.ctx, db.Datasource); err != nil {
 		return err
 	}
 
@@ -72,41 +70,41 @@ func (db *DB) migrate() error {
 
 // Run execute content of sql file into database
 func (db *DB) Run(file string) error {
-	tx, err := db.conn.Begin()
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
 	var n int
-	if err := db.conn.QueryRow(`select count(*) from migrations where name = $1`, file).Scan(&n); err != nil {
-		if e, ok := err.(*pq.Error); !ok {
+	if err := db.Conn.QueryRow(db.ctx, `select count(*) from migrations where name = $1`, file).Scan(&n); err != nil {
+		if e, ok := err.(*pgconn.PgError); !ok {
 			return err
-		} else if e.Code.Name() != "undefined_table" {
+		} else if e.Code != "42P01" {
 			return err
 		}
 	} else if n != 0 {
 		return nil
 	}
 
+	tx, err := db.Conn.Begin(db.ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(db.ctx)
+
 	if buf, err := fs.ReadFile(migrationFS, file); err != nil {
 		return err
-	} else if _, err := tx.Exec(string(buf)); err != nil {
+	} else if _, err := tx.Exec(db.ctx, string(buf)); err != nil {
 		return err
 	}
 
-	if _, err := tx.Exec(`insert into migrations (name) values($1);`, file); err != nil {
+	if _, err := tx.Exec(db.ctx, `insert into migrations (name) values($1);`, file); err != nil {
 		return err
 	}
 
-	return tx.Commit()
+	return tx.Commit(db.ctx)
 }
 
 func (db *DB) Close() error {
 	db.cancel()
 
-	if db.conn != nil {
-		return db.conn.Close()
+	if db.Conn != nil {
+		return db.Conn.Close(db.ctx)
 	}
 	return nil
 }
