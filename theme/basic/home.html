@@ -1,132 +1,1038 @@
-{{template "layout.html" .}} {{define "main" -}}
-<div class="">
-  <p
-    class="my-4 sm:my-8 text-[40px] sm:text-[80px] font-black sm:leading-[80px]"
-  >
-    Latest blogs
-  </p>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-    {{$latestPosts := get_latest_posts 3}} {{range $post := $latestPosts}}
-    <div
-      style="
-        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-          rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-      "
-      class="rounded-lg overflow-hidden m-0 hover:-m-2 duration-300"
-    >
-      <a class="block" href="/blogs/{{$post.Slug}}">
-        <img
-          src="{{$post.Poster}}"
-          onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
-          alt="thumbnail"
-          class="block w-full aspect-video"
-        />
-      </a>
-      <div class="p-4 flex w-full flex-col gap-y-2">
-        <a
-          href="/blogs/{{$post.Slug}}"
-          class="font-bold text-xl hover:text-sky-500"
-          >{{$post.Title}}</a
-        >
-        <div class="flex items-center gap-x-4 text-base text-gray-400">
-          <p>{{humanize_time $post.PublishedAt}}</p>
-          <p>{{$post.AuthorUserName}}</p>
+{{template "layout.html" .}}
+<!--  -->
+{{define "main" -}}
+<div class="container-fluid">
+  <div class="row site-content">
+    <div class="col-sm-2 d-none d-sm-block">
+      <h2 class="block-heading">Bài mới</h2>
+      <a href="https://hiepsibaotap.com/cat/game/" class="btn btn-light mb-2"
+        >Game</a
+      ><br />
+      <a href="https://hiepsibaotap.com/cat/giai-tri/" class="btn btn-light"
+        >Giải trí</a
+      >
+    </div>
+    <div class="col-sm-10">
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/van-de-cua-toi-voi-jujutsu-kaisen/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/jujutsu-kaisen-4k-fan-art-poster-097r2cgl542i5eez-1024x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/giai-tri"
+              >Giải trí</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>15.09.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/van-de-cua-toi-voi-jujutsu-kaisen/"
+                >Vấn đề của tôi với Jujutsu Kaisen</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/goldenknight/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/61876.jpg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/goldenknight/"
+                  >Golden Knight</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-common">
+                  Khách mới
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
         </div>
-        <p class="text-justify">{{$post.Short}}</p>
-        <div class="w-full flex justify-end">
-          <a href="/blogs/{{$post.Slug}}" class="font-medium text-blue-500"
-            >Read more</a
-          >
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/dragon-age-vol-4-toc-nguoi-lun-dwarf/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/556191-922x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>13.09.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/dragon-age-vol-4-toc-nguoi-lun-dwarf/"
+                >Dragon Age Vol 4 – Tộc người lùn Dwarf</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/ineedadog/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/May.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/ineedadog/"
+                  >INeedADog</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-rare">Khách quen</p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/baroque-1998-vs-2008-them-1-cau-chuyen-ve-tac-pham-goc-va-lam-lai/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/qjVaN3I-922x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>11.09.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/baroque-1998-vs-2008-them-1-cau-chuyen-ve-tac-pham-goc-va-lam-lai/"
+                >Baroque (1998) VS (2008): Thêm 1 câu chuyện về tác phẩm gốc và
+                làm lại</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/henrymason/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/352093-james4.jpg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/henrymason/"
+                  >Henry Mason</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-legend">
+                  Huyền thoại&nbsp;★&nbsp;★&nbsp;★&nbsp;★
+                </p>
+                &nbsp;&nbsp;<span class="badge-hiepsi">Hiệp Sĩ</span></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/prodigal-mot-game-puzzle-an-minh-duoi-lop-vo-rpg/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/prodigal-review-pc-cover-1024x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>11.09.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/prodigal-mot-game-puzzle-an-minh-duoi-lop-vo-rpg/"
+                >Prodigal – Một game puzzle ẩn mình dưới lớp vỏ RPG</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/bientrongxanh/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/rung-cua-thien-duong.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/bientrongxanh/"
+                  >Biển Trong Xanh</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-common">
+                  Khách mới
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/tong-hop-tat-ca-thanh-vien-cua-avengers-p-15/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/15.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/comic"
+              >Comic</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>09.09.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/tong-hop-tat-ca-thanh-vien-cua-avengers-p-15/"
+                >Tổng hợp tất cả thành viên của Avengers (P.15)</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/nguyet/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/MOON-KNIGHT-192-LEGACY-MARVEL-COMICS-01-03-18-6826-p.jpg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/nguyet/"
+                  >Nguyệt</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-legend">
+                  Huyền thoại&nbsp;★
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a href="https://hiepsibaotap.com/game-noi-gi-ve-hau-chien-tranh/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/IMG_0546-877x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>07.09.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a href="https://hiepsibaotap.com/game-noi-gi-ve-hau-chien-tranh/"
+                >Game nói gì về hậu chiến tranh?</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/thuongkinh/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/dsNCDZt.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/thuongkinh/"
+                  >Thường Kính</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-common">
+                  Khách mới
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/danh-gia-thrustmaster-sf1000-ban-sao-tuyet-my-cua-chiec-vo-lang-f1-ferrari/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/Bia-3-1024x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>03.09.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/danh-gia-thrustmaster-sf1000-ban-sao-tuyet-my-cua-chiec-vo-lang-f1-ferrari/"
+                >ĐÁNH GIÁ THRUSTMASTER SF1000: Bản sao tuyệt mỹ của chiếc vô
+                lăng F1 Ferrari</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/quocanhtran/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/5DFAA7CF-C1F8-46D2-83EC-0B4F6C17C364.jpeg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/quocanhtran/"
+                  >Omega Fadiz Tertas</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-legend">
+                  Huyền thoại&nbsp;★&nbsp;★
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/dragon-age-vol-3-hoi-phap-su-circle-of-magi-va-to-chuc-hiep-si-dong-den-templar-order/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/435604-922x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>01.09.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/dragon-age-vol-3-hoi-phap-su-circle-of-magi-va-to-chuc-hiep-si-dong-den-templar-order/"
+                >Dragon Age Vol 3 – Hội pháp&nbsp;Sư&nbsp;Circle of Magi và Tổ
+                Chức Hiệp Sĩ Dòng Đền Templar Order</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/ineedadog/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/May.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/ineedadog/"
+                  >INeedADog</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-rare">Khách quen</p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/backbone-vu-an-bi-an-cho-anh-chang-nguoi-chon-trong-thanh-pho-u-am-va-cho-nhung-pixel-art-lover/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/12-1024x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>31.08.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/backbone-vu-an-bi-an-cho-anh-chang-nguoi-chon-trong-thanh-pho-u-am-va-cho-nhung-pixel-art-lover/"
+                >Backbone – Vụ án bí ẩn cho anh chàng người chồn trong thành phố
+                u ám… và cho những pixel art lover</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/bientrongxanh/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/rung-cua-thien-duong.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/bientrongxanh/"
+                  >Biển Trong Xanh</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-common">
+                  Khách mới
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/ho-so-de-che-p-7-ky-nguyen-den-toi-cua-cong-nghe/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/daot09-1024x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>29.08.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/ho-so-de-che-p-7-ky-nguyen-den-toi-cua-cong-nghe/"
+                >Hồ Sơ Đế Chế (P.7): Kỷ Nguyên Đen Tối Của Công Nghệ</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/vu-khanh/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/Official_Galm_Team_Emblem.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/vu-khanh/"
+                  >Vu Khanh</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-rare">Khách quen</p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a href="https://hiepsibaotap.com/cold-fear-lenh-denh-tren-bien/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/cold-fear-cover-altar-of-gaming-1024x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>27.08.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a href="https://hiepsibaotap.com/cold-fear-lenh-denh-tren-bien/"
+                >Cold Fear – lênh đênh trên biển</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/henrymason/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/352093-james4.jpg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/henrymason/"
+                  >Henry Mason</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-legend">
+                  Huyền thoại&nbsp;★&nbsp;★&nbsp;★&nbsp;★
+                </p>
+                &nbsp;&nbsp;<span class="badge-hiepsi">Hiệp Sĩ</span></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/tong-hop-tat-ca-thanh-vien-cua-avengers-p-14/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/14-735x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/comic"
+              >Comic</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>27.08.2023</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/tong-hop-tat-ca-thanh-vien-cua-avengers-p-14/"
+                >Tổng hợp tất cả thành viên của Avengers (P.14)</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/nguyet/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/MOON-KNIGHT-192-LEGACY-MARVEL-COMICS-01-03-18-6826-p.jpg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/nguyet/"
+                  >Nguyệt</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-legend">
+                  Huyền thoại&nbsp;★
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <nav aria-label="Page navigation" role="navigation">
+            <span class="sr-only">Page navigation</span>
+            <ul class="pagination pagination-lg justify-content-center">
+              <li class="page-item active">
+                <span class="page-link"
+                  ><span class="sr-only">Current Page </span>1</span
+                >
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="https://hiepsibaotap.com/page/2/"
+                  ><span class="sr-only"></span>2</a
+                >
+              </li>
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="https://hiepsibaotap.com/page/2/"
+                  aria-label="Next Page"
+                  ><span class="hidden-sm-down d-md-block">Tiếp</span></a
+                >
+              </li>
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="https://hiepsibaotap.com/page/244/"
+                  aria-label="Last Page"
+                  ><span class="hidden-sm-down d-md-block">...</span></a
+                >
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </div>
-    {{end}}
   </div>
 </div>
-<div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-x-8">
-  <div class="col-span-2">
-    <p class="py-4 text-3xl uppercase font-medium">Explore More</p>
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-      {{$posts := get_more_posts 3}} {{range $post := $posts}}
-      <div
-        style="
-          box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-            rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-        "
-        class="rounded-lg overflow-hidden m-0 hover:-m-2 duration-300"
-      >
-        <a href="/blogs/{{$post.Slug}}">
-          <img
-            src="{{$post.Poster}}"
-            onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
-            alt="thumbnail"
-            class="block w-full aspect-video"
-        /></a>
-        <div class="p-4 flex w-full flex-col gap-y-2">
-          <a
-            href="/blogs/{{$post.Slug}}"
-            class="font-bold text-xl line-clamp-2 hover:text-sky-500"
-            >{{$post.Title}}</a
-          >
-          <div
-            class="grid grid-cols-1 xl:grid-cols-2 gap-x-4 text-base text-gray-400"
-          >
-            <p>{{humanize_time $post.PublishedAt}}</p>
-            <p>{{$post.AuthorUserName}}</p>
+<div class="container-fluid">
+  <div class="row site-content">
+    <div class="col-sm-2"><h2 class="block-heading">Đề xuất</h2></div>
+    <div class="col-sm-10">
+      <div class="row">
+        <div class="col-sm-6 col-6">
+          <div class="featured-image">
+            <a href="https://hiepsibaotap.com/danh-gia-the-long-dark-2/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/thumb-1920-542411-1024x485.jpg"
+            /></a>
           </div>
-          <p class="text-justify line-clamp-3 sm:line-clamp-5 leading-[24px]">
-            {{$post.Short}}
-          </p>
-          <div class="w-full flex justify-end">
-            <a href="/blogs/{{$post.Slug}}" class="font-medium text-blue-500"
-              >Read more</a
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
             >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>30.09.2019</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a href="https://hiepsibaotap.com/danh-gia-the-long-dark-2/"
+                >Đánh giá The Long Dark</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/fanacia/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/wpua-150x150.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/fanacia/"
+                  >Fanacia</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-common">
+                  Khách mới
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-6">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/tree-chuyen-binh-di-cua-mot-doi-nguoi/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/ss_47502504e9080c2eae07cb4ae61e5bd95f6d2405.1920x1080-1024x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>20.09.2018</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/tree-chuyen-binh-di-cua-mot-doi-nguoi/"
+                >TREE – Chuyện bình dị của một đời người</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/haistark/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/1bd7eede14884deeb0d729d1dd66fc26.jpeg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/haistark/"
+                  >Hải Stark</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-legend">
+                  Huyền thoại&nbsp;★&nbsp;★
+                </p>
+                &nbsp;&nbsp;<span class="badge-hiepsi"
+                  >Người quay số</span
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-6">
+          <div class="featured-image">
+            <a
+              href="https://hiepsibaotap.com/ban-nghi-la-ban-thiet-ke-puzzle-gioi-p2/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/e0dzthf0cidp8anduh9p-1024x576.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>24.09.2017</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a
+                href="https://hiepsibaotap.com/ban-nghi-la-ban-thiet-ke-puzzle-gioi-p2/"
+                >Bạn nghĩ là bạn thiết kế puzzle giỏi? (P.2)</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/hungvu/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/141571221_10214469674774646_4736957821003494858_n.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/hungvu/"
+                  >Hùng Vũ</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-rare">Khách quen</p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-6">
+          <div class="featured-image">
+            <a href="https://hiepsibaotap.com/may-hang-game-nho-nho-p-1/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/gaming-code-1-1024x576.png"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>27.09.2016</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a href="https://hiepsibaotap.com/may-hang-game-nho-nho-p-1/"
+                >Mấy hãng game nhỏ nhỏ (P.1)</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/chuotdong/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/wpua-150x150.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/chuotdong/"
+                  >Chuột Đồng</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-common">
+                  Khách mới
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-6">
+          <div class="featured-image">
+            <a href="https://hiepsibaotap.com/departed-thien-ta-lan-lon/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/1.jpg"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/phim"
+              >Phim</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>21.09.2021</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a href="https://hiepsibaotap.com/departed-thien-ta-lan-lon/"
+                >Departed: thiện, tà lẫn lộn</a
+              >
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/hiepsibaotap123/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/IMG_2178.jpg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/hiepsibaotap123/"
+                  >a passover writer</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-common">
+                  Khách mới
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-6">
+          <div class="featured-image">
+            <a href="https://hiepsibaotap.com/i-love-you/"
+              ><img
+                class="featured-img"
+                loading="lazy"
+                src="./Trang chủ – Hiệp Sĩ Bão Táp_files/fd-1003x576.png"
+            /></a>
+          </div>
+          <div>
+            <a
+              class="meta-text text-uppercase"
+              href="https://www.hiepsibaotap.com/cat/game"
+              >Game</a
+            >
+            <span class="meta-text">•</span>
+            <span class="meta-text"><a>19.09.2016</a></span>
+          </div>
+          <div class="pb-2">
+            <h4
+              class="pb-1"
+              style="
+                margin-top: 0rem !important;
+                margin-bottom: 0rem !important;
+              ">
+              <a href="https://hiepsibaotap.com/i-love-you/">I love you</a>
+            </h4>
+            <div class="pb-2">
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/antrampz/"
+                  ><img
+                    class="author avatar-40"
+                    src="./Trang chủ – Hiệp Sĩ Bão Táp_files/1479026963-1030569603.png"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/antrampz/"
+                  >An Trampz</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-common">
+                  Khách mới
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
           </div>
         </div>
       </div>
-      {{end}}
-    </div>
-  </div>
-  <div>
-    <p class="py-4 text-3xl uppercase font-medium">In case you missed it</p>
-    <div class="grid grid-cols-1 gap-y-4">
-      {{$editorspick := get_editors_pick 3}} {{range $post := $editorspick}}
-      <div class="grid grid-cols-3 gap-x-4 w-full rounded-lg overflow-hidden">
-        <a href="/blogs/{{$post.Slug}}">
-          <img
-            src="{{$post.Poster}}"
-            onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
-            alt="thumbnail"
-            class="aspect-square rounded-lg object-cover"
-          />
-        </a>
-        <div
-          class="col-span-2 flex w-full flex-col gap-y-1 lg:gap-y-0 xl:gap-y-1"
-        >
-          <a
-            href="/blogs/{{$post.Slug}}"
-            class="font-bold text-xl line-clamp-1 hover:text-sky-500"
-            >{{$post.Title}}</a
-          >
-          <div
-            class="grid grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-x-4 text-base text-gray-400"
-          >
-            <p>{{humanize_time $post.PublishedAt}}</p>
-            <p>{{$post.AuthorUserName}}</p>
-          </div>
-          <p
-            class="text-justify line-clamp-3 lg:line-clamp-1 xl:line-clamp-3 leading-[22px]"
-          >
-            {{$post.Short}}
-          </p>
-          <a
-            href="/blogs/{{$post.Slug}}"
-            class="hidden xl:block font-medium text-blue-500"
-            >Read more</a
-          >
-        </div>
-      </div>
-      {{end}}
     </div>
   </div>
 </div>

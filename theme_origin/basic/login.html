@@ -1,0 +1,61 @@
+{{template "layout.html" .}} {{define "main" -}}
+<div class="flex-1 flex items-center justify-center">
+  <div
+    class="w-[400px] flex flex-col items-center gap-y-4 border border-gray-400 rounded-lg px-8 py-12">
+    <h3 class="text-2xl font-bold uppercase">LOGIN</h3>
+    {{if .Form.Errors.Get `err`}}
+    <div class="rounded-md bg-red-50 p-4 mb-4" id="register-form-error">
+      <div class="flex">
+        <div class="ml-3">
+          <h3 class="text-sm font-bold text-red-600">
+            {{.Form.Errors.Get `err`}}
+          </h3>
+        </div>
+      </div>
+    </div>
+    {{end}}{{with .Form}}
+    <form class="flex flex-col gap-y-4 w-full" method="post">
+      <div class="block w-full">
+        <label for="username">User Name</label>
+        <input
+          class="block w-full border-[2px] border-gray-400 px-4 py-2 focus:outline-none focus:border-blue-400 rounded-lg"
+          type="text"
+          id="username"
+          name="Username"
+          placeholder="Your username"
+          value="{{.Get `Username`}}"
+          required />
+      </div>
+      <div class="block w-full">
+        <label for="password">Password</label>
+        <input
+          class="block w-full border-[2px] border-gray-400 px-4 py-2 focus:outline-none focus:border-blue-400 rounded-lg"
+          type="password"
+          id="password"
+          name="Password"
+          placeholder="Your password"
+          value="{{.Get `Passowrd`}}"
+          required />
+      </div>
+      <div class="flex w-full justify-end">
+        <a href="/forgot-password" class="hover:underline font-medium"
+          >Forgot password ?</a
+        >
+      </div>
+      <div class="block w-full text-xl uppercase">
+        <input
+          class="w-full rounded-lg py-2 bg-blue-600 text-white font-medium cursor-pointer"
+          type="submit"
+          value="Login" />
+      </div>
+    </form>
+    {{end}}
+    <div>
+      <p class="uppercase text-base my-4 text-center">or</p>
+      <a href="/register" class="text-lg font-medium hover:text-blue-600"
+        >Register</a
+      >
+    </div>
+  </div>
+</div>
+{{- end}}

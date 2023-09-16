@@ -1,0 +1,70 @@
+{{- define "pagination"}} {{if .Pagination}} {{$current_url := .CurrentURL}}
+{{with .Pagination}}
+<nav class="mt-12" aria-label="Pagination">
+  <div class="pagination flex w-full items-center justify-center gap-x-4">
+    <!-- First -->
+    {{if .First}}
+    <a
+      class=""
+      href="{{build_pagination $current_url .First}}"
+      aria-label="First Page">
+      First
+    </a>
+    {{else}}
+    <span class="text-gray-400" aria-disabled="true">First</span>
+    {{end}}
+    <!-- Prev -->
+    {{if .Prev}}
+    <a
+      class="previous_page"
+      href="{{build_pagination $current_url .Prev}}"
+      aria-label="Previous Page">
+      Previous
+    </a>
+    {{else}}
+    <span class="text-gray-400" aria-disabled="true">Previous</span>
+    {{end}}
+    <!-- LeftPages -->
+    {{range .LeftPages}}
+    <a
+      class="px-4 py-2 border border-sky-500 rounded-lg hover:bg-sky-100"
+      href="{{build_pagination $current_url .}}"
+      >{{.}}</a
+    >
+    {{end}}
+    <!-- CurrentPage -->
+    <div
+      class="px-4 py-2 border border-sky-500 rounded-lg bg-sky-500 text-white cursor-default">
+      {{.CurrentPage}}
+    </div>
+    <!-- RightPages -->
+    {{range .RightPages}}
+    <a
+      class="px-4 py-2 border border-sky-500 rounded-lg hover:bg-sky-100"
+      href="{{build_pagination $current_url .}}"
+      >{{.}}</a
+    >
+    {{end}} {{if .Next}}
+    <a
+      class="next_page"
+      href="{{build_pagination $current_url .Next}}"
+      aria-label="Next Page">
+      Next
+    </a>
+    {{else}}
+    <span class="text-gray-400" aria-disabled="true">Next</span>
+    {{end}}
+    <!-- Last -->
+    {{if .Last}}
+    <a
+      class="last_page"
+      href="{{build_pagination $current_url .Last}}"
+      aria-label="Last Page">
+      Last
+    </a>
+    {{else}}
+    <span class="text-gray-400" aria-disabled="true">Last</span>
+    {{end}}
+  </div>
+  {{end}} {{end}} {{- end}}
+</nav>

@@ -1,0 +1,154 @@
+{{template "layout.html" .}}
+<!--  -->
+{{define "header.scripts-before" -}}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css"
+  integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI"
+  crossorigin="anonymous"
+/>
+<link
+  rel="stylesheet"
+  href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css"
+/>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bytemd@1.21.0/dist/index.min.css"
+/>
+<link rel="stylesheet" href="/static/css/github-markdown.css" />
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gfm@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-frontmatter@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-gemoji@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-highlight-ssr@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-math-ssr@1.21.0/dist/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@bytemd/plugin-medium-zoom@1.21.0/dist/index.umd.min.js"></script>
+<script src="/static/js/bytemd@1.21.0/dist/index.umd.js"></script>
+
+{{- end}}
+<!--  -->
+{{define "main" -}}
+<!--  -->
+<div class="w-full max-w-[1024px] mx-auto">
+  {{if .Form.Errors.Get `err`}}
+  <div>{{.Form.Errors.Get `err`}}</div>
+  {{end}}
+  <!--  -->
+  {{with .Form}}
+  <form method="POST" class="flex flex-col gap-y-4">
+    <div>
+      <label class="mb-2 font-medium text-lg" for="title">Title</label>
+      <input
+        class="block w-full py-2 text-3xl font-semibold focus:outline-none"
+        id="title"
+        type="text"
+        name="Title"
+        placeholder="Title..."
+        value="{{.Get `Title`}}"
+        required
+      />
+    </div>
+    <div>
+      <label class="mb-2 font-medium text-lg" for="short">Description</label>
+      <input
+        id="short"
+        type="text"
+        name="Short"
+        placeholder="Short description..."
+        class="block w-full py-2 text-lg focus-visible:outline-none italic text-gray-600"
+        value="{{.Get `Short`}}"
+      />
+    </div>
+    <div>
+      <label class="mb-2 font-medium text-lg" for="tag">Hashtag</label>
+      <input
+        class="block w-full py-2 text-xl font-medium focus:outline-none"
+        type="text"
+        name="Tags"
+        placeholder="Tags"
+        value="{{.Get `Tags`}}"
+      />
+    </div>
+    <div>
+      <label class="mb-2 font-medium text-lg" for="time">Time Upload</label>
+      <input
+        class="block p-2 text-xl font-medium focus:outline-none border-[0.5px] border-gray-400 rounded-lg"
+        class="form-control"
+        type="datetime-local"
+        autocomplete="off"
+        spellcheck="false"
+        name="PublishedAt"
+        value="{{.Get `PublishedAt`}}"
+        step="1"
+        id="time"
+      />
+    </div>
+    <div>
+      <label class="mb-2 font-medium text-lg" for="poster"> Banner </label>
+      <input
+        id="poster"
+        type="url"
+        name="Poster"
+        placeholder="Poster URL..."
+        value="{{.Get `Poster`}}"
+        class="block w-full py-2 text-lg font-medium focus:outline-none"
+      />
+    </div>
+    <div>
+      <label class="mb-2 font-medium text-lg" for="body">Content</label>
+      <textarea hidden id="body" name="Body">{{.Get `Body`}}</textarea>
+    </div>
+    <div id="root"></div>
+    <script>
+      const plugins = [
+        bytemdPluginGfm(),
+        bytemdPluginHighlightSsr(),
+        bytemdPluginFrontmatter(),
+        bytemdPluginMathSsr(),
+        bytemdPluginMediumZoom(),
+        bytemdPluginGemoji(),
+      ];
+
+      const editor = new bytemd.Editor({
+        target: document.getElementById("root"),
+        props: {
+          value: "{{.Get `Body`}}",
+          plugins,
+        },
+      });
+
+      editor.$on("change", (e) => {
+        editor.$set({ value: e.detail.value });
+        document.querySelector("#body").value = e.detail.value;
+      });
+    </script>
+
+    <div>
+      <label class="mb-2 font-medium text-lg" for="IsEditorsPick"
+        >Is Editors Pick</label
+      >
+      <input class="inline ml-4" type="checkbox" name="IsEditorsPick"
+      id="IsEditorsPick" {{if eq (.Get `IsEditorsPick`) "true"}}checked{{end}}>
+    </div>
+
+    <input
+      class="block w-full py-3 rounded-lg bg-sky-400 font-semibold text-xl text-white cursor-pointer hover:bg-sky-600"
+      type="submit"
+      {{if
+      .Get
+      `ID`}}
+      value="Save"
+      {{else}}
+      value="Create"
+      {{end}}
+    />
+    <a
+      class="inline w-fit px-8 py-2 border-[0.5px] border-gray-400 rounded-lg text-xl font-medium text-red-400"
+      href="/admin/posts"
+      >Cancel</a
+    >
+  </form>
+  {{end}}
+</div>
+<!--  -->
+{{- end}}

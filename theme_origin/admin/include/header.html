@@ -1,0 +1,15 @@
+{{- define "header"}}
+
+<header class="h-20 bg-white flex items-center justify-between px-4">
+  <div class="flex items-center gap-x-2">
+    <p class="text-4xl">
+      <i class="ph-fill ph-user"></i>
+    </p>
+    <p class="text-lg font-medium">{{.User.Username}}</p>
+  </div>
+  <a href="/logout" class="flex items-center gap-x-2 text-red-400">
+    <i class="ph-fill ph-sign-out"></i>
+    <p class="text-lg">Logout</p>
+  </a>
+</header>
+{{- end}}

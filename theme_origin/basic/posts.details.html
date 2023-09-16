@@ -1,0 +1,146 @@
+{{template "layout.html" .}}
+<!---->
+{{define "header.scripts-after" -}}
+<link rel="stylesheet" href="/static/css/github-markdown.css" />
+<script
+	id="MathJax-script"
+	async
+	src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+></script>
+<script src="/static/js/comment.js" defer></script>
+{{- end}}
+<!---->
+{{define "main" -}}
+<!--  -->
+<div class="">
+	{{with .Post}}
+	<!--  -->
+	<div>
+		<div class="my-8 flex flex-col max-w-[1024px] mx-auto gap-y-8">
+			<h1 class="text-[60px] leading-[60px] font-medium">{{.Title}}</h1>
+			<div class="text-gray-400">
+				<p class="text-base">{{humanize_time .PublishedAt}}</p>
+				<p class="text-lg text-gray-600 italic text-justify">{{.Short}}</p>
+			</div>
+			<div class="flex items-center gap-x-4">
+				<img
+					src="https://robohash.org/{{.AuthorID}}sometext{{.AuthorUserName}}"
+					alt="author"
+					class="w-10 aspect-square rounded-full object-cover"
+				/>
+				<p class="text-lg font-medium">{{.AuthorUserName}}</p>
+			</div>
+			<img
+				src="{{.Poster}}"
+				onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
+				alt="banner"
+				class="block w-full aspect-video object-cover"
+			/>
+			<div id="blog_container" class="w-[720px] mx-auto text-justify text-lg">
+				{{markdown .Body}}
+			</div>
+		</div>
+	</div>
+	<!--  -->
+	<!-- comment -->
+	<!--  -->
+	<div class="w-[720px] mx-auto">
+		<p class="text-center text-3xl">Comments</p>
+		{{end}}
+		<!--  -->
+		{{if .Comments}}
+		<div class="my-4 flex flex-col gap-y-8">
+			<!-- parent comment -->
+			{{range .Comments}}
+			<div class="w-full flex gap-x-4 items-start">
+				<img
+					src="https://robohash.org/{{.User.ID}}sometext{{.User.Username}}"
+					alt="avatar"
+					class="w-10 aspect-square rounded-full object-cover"
+				/>
+				<div class="flex flex-col w-full gap-y-1">
+					<p class="text-lg font-medium">{{.User.Username}}</p>
+					<p>{{.Body}}</p>
+					<div class="flex items-center gap-x-4">
+						<p>{{humanize_time .CreatedAt }}</p>
+						<button
+							data-comment="reply"
+							data-parent="{{.ID}}"
+							class="cursor-pointer font-medium hover:underline"
+						>
+							Reply
+						</button>
+					</div>
+					<div
+						class="mt-4 hidden flex items-center w-full gap-x-3"
+						data-comment="reply-section"
+						data-parent="{{.ID}}"
+					>
+						<textarea
+							data-comment="comment"
+							data-parent="{{.ID}}"
+							rows="1"
+							class="block flex-1 py-2 px-4 w-full rounded-md border-[0.5px] border-gray-300 shadow-sm focus:outline-none focus:border-sky-500"
+						></textarea>
+						<button
+							data-comment="submit"
+							data-parent="{{.ID}}"
+							data-slug="{{$.Post.Slug}}"
+							type="button"
+							class="block h-full bg-sky-600 text-white font-medium py-2 px-4 rounded-lg"
+						>
+							Send
+						</button>
+					</div>
+					<!-- child comment -->
+					{{range .ChildComments}}
+					<div class="w-full mt-4 flex gap-x-4 items-start">
+						<img
+							src="https://robohash.org/{{.User.ID}}sometext{{.User.Username}}"
+							alt="avatar"
+							class="w-10 aspect-square rounded-full object-cover"
+						/>
+						<div class="flex flex-col w-full gap-y-1">
+							<p class="text-lg font-medium">{{.User.Username}}</p>
+							<p>{{.Body}}</p>
+							<div class="flex items-center gap-x-4">
+								<p>{{humanize_time .CreatedAt }}</p>
+							</div>
+						</div>
+					</div>
+					{{end}}
+				</div>
+			</div>
+			{{end}}
+		</div>
+		{{end}}
+		<!--  -->
+		{{$user := .User}} {{if $user}}
+		<div class="mt-8">
+			<div class="flex flex-col w-full items-end justify-end">
+				<textarea
+					rows="4"
+					id="comment"
+					class="block w-full p-4 rounded-md border-[0.5px] border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500"
+				></textarea>
+			</div>
+			<div class="flex w-full justify-end">
+				<button
+					id="comment-submit"
+					data-slug="{{.Post.Slug}}"
+					type="button"
+					class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
+				>
+					Send
+				</button>
+			</div>
+		</div>
+	</div>
+	<!-- comment-end -->
+
+	{{end}}
+	<!---->
+	{{template "pagination" .}}
+</div>
+<!--  -->
+{{- end}}

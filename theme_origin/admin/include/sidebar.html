@@ -1,0 +1,51 @@
+{{- define "sidebar"}}
+<div
+  class="bg-white rounded-lg p-4 container mx-auto py-4 flex flex-col items-start gap-y-2"
+>
+  <a
+    class="flex items-end gap-x-2 w-full uppercase font-medium text-lg leading-[20px] py-2 px-4"
+    href="/admin"
+  >
+    <span class="text-2xl flex items-end justify-center"
+      ><i class="ph-fill ph-house"></i
+    ></span>
+    Home
+  </a>
+  <a
+    class="flex items-end gap-x-2 w-full uppercase font-medium text-lg leading-[20px] py-2 px-4"
+    href="/admin/posts"
+  >
+    <span class="text-2xl flex items-end justify-center">
+      <i class="ph-fill ph-file"></i>
+    </span>
+    Blogs
+  </a>
+  <a
+    class="flex items-end gap-x-2 w-full uppercase font-medium text-lg leading-[20px] py-2 px-4"
+    href="/admin/comments"
+  >
+    <span class="text-2xl flex items-end justify-center">
+      <i class="ph-fill ph-chat-teardrop"></i>
+    </span>
+    Comments
+  </a>
+  <a
+    class="flex items-end gap-x-2 w-full uppercase font-medium text-lg leading-[20px] py-2 px-4"
+    href="/admin/users"
+  >
+    <span class="text-2xl flex items-end justify-center">
+      <i class="ph-fill ph-user"></i>
+    </span>
+    Users
+  </a>
+  <a
+    class="flex items-end gap-x-2 w-full uppercase font-medium text-lg leading-[20px] py-2 px-4"
+    href="/"
+  >
+    <span class="text-2xl flex items-center justify-center">
+      <i class="ph-fill ph-arrow-u-up-left"></i>
+    </span>
+    Back
+  </a>
+</div>
+{{- end}}

@@ -1,114 +1,132 @@
 {{- define "header"}}
-<header class="bg-white sm:pb-4 relative">
-	<div
-		class="container mx-auto py-4 px-2 sm:px-0 flex items-center justify-between"
-	>
-		<a class="h-[40px] sm:h-[60px]" href="/">
-			<img class="block h-full" src="/static/image/logo.png" alt="logo" />
-		</a>
-		<div class="hidden sm:flex items-center gap-4 h-full">
-			{{if .User}}
-			<a href="/profile">{{.User.Username}}</a>
-			<div class="h-full cursor-pointer relative user-button">
-				<img
-					class="block h-10 w-auto p-2"
-					src="/static/image/user.png"
-					alt="logo"
-				/>
-				<div
-					class="absolute min-w-[120px] right-0 top-full bg-white rounded-lg overflow-hidden border border-gray-400 hidden user-dropdown duration-300"
-				>
-					<!--  -->
-					{{if and .User (has_role .User.Roles "admin")}}
-					<a class="px-4 py-2 hover:bg-gray-200" href="/admin">Admin</a>
-					{{end}}
-					<!--  -->
-					<a class="px-4 py-2 hover:bg-gray-200" href="/logout">
-						<div class="w-full flex items-center justify-between">
-							<p>Logout</p>
-							<i class="ph-thin ph-sign-out"></i>
-						</div>
-					</a>
-				</div>
-			</div>
-			<!-- <a href="/logout">Log Out</a> -->
-			{{else}}
-			<a class="px-8 py-2 rounded-full border border-black" href="/register"
-				>Register</a
-			>
-			<a
-				class="px-8 py-2 rounded-full bg-blue-600 border border-transparent text-white"
-				href="/login"
-				>Login</a
-			>
-			{{end}}
-		</div>
-		<label for="menuToggle" class="text-3xl block sm:hidden">
-			<i class="ph-thin ph-list"></i>
-		</label>
-	</div>
-	<div
-		class="hidden sm:flex border-t border-b border-black py-4 my-1 container mx-auto py-4 items-center gap-x-2"
-	>
-		<a class="uppercase font-medium text-lg p-2" href="/">home</a>
-		<a class="uppercase font-medium text-lg p-2" href="/blogs">all Blogs</a>
-		<a class="uppercase font-medium text-lg p-2" href="/blogs/about">about</a>
-		<a class="uppercase font-medium text-lg p-2" href="/blogs/contact"
-			>contact</a
-		>
-	</div>
-	<input
-		title="checkbox"
-		type="checkbox"
-		name="checkbox"
-		id="menuToggle"
-		hidden
-	/>
-	<!-- mobile menu -->
-	<div
-		class="mobile-menu -translate-x-full duration-300 absolute top-0 left-0 h-screen min-w-[200px] bg-white py-2"
-	>
-		<div class="flex w-full flex-col">
-			<a class="py-2 px-4 mb-4 h-[60px] sm:h-[60px]" href="/">
-				<img class="block h-full" src="/static/image/logo.png" alt="logo" />
-			</a>
-			<div class="text-xl font-medium uppercase">
-				<p class="py-2 px-4">blog</p>
-				<p class="py-2 px-4">about</p>
-				<p class="py-2 px-4">contact</p>
-				<p class="py-2 px-4">clgt</p>
-			</div>
-			<div class="my-8 h-[0.5px] w-full bg-gray-400"></div>
-			<div
-				class="flex flex-col w-full items-start gap-4 h-full py-2 px-4 text-base font-normal text-left"
-			>
-				{{if .User}}
-				<a href="/profile">{{.User.Username}}</a>
-				{{if and .User (has_role .User.Roles "admin")}}
-				<a class="hover:bg-gray-200 w-full" href="/admin">Admin</a>
-				{{end}}
-				<!--  -->
-				<a class="hover:bg-gray-200 w-full" href="/logout">
-					<div class="w-full flex items-center gap-x-2">
-						<p>Logout</p>
-						<i class="ph-thin ph-sign-out"></i>
-					</div>
-				</a>
-				<!-- <a href="/logout">Log Out</a> -->
-				{{else}}
-				<a
-					class="w-full text-center py-2 rounded-full bg-blue-600 border border-transparent text-white"
-					href="/login"
-					>Login</a
-				>
-				<a
-					class="w-full text-center py-2 rounded-full border border-black"
-					href="/register"
-					>Register</a
-				>
-				{{end}}
-			</div>
-		</div>
-	</div>
-</header>
+<div class="pt-2 pb-2 not-on-mobile sticky-top bg-light">
+  <div class="row site-content align-items-center text-end">
+    <div class="col-2">
+      <a href="https://hiepsibaotap.com/">
+        <img
+          class="logo"
+          style="width: 48px !important"
+          src="./Trang chủ – Hiệp Sĩ Bão Táp_files/hsbt-logo.png" />
+        <span class="secondary-text">Hiệp Sĩ Bão Táp</span>
+      </a>
+    </div>
+    <div class="col-10">
+      <div class="row">
+        <div class="col-8">
+          <form
+            class="form-inline"
+            role="search"
+            id="search_form"
+            method="get"
+            action="https://www.hiepsibaotap.com/?s=">
+            <input
+              class="form-control form-search"
+              type="search"
+              placeholder="Gõ thông tin cần tìm..."
+              aria-label="Search"
+              id="s"
+              name="s" />
+          </form>
+        </div>
+        <div class="col-4 my-auto text-right">
+          <a href="https://www.hiepsibaotap.com/wp-admin/" target="_blank"
+            ><i class="fas fa-sign-in-alt"></i
+          ></a>
+          <a class="wp-night-mode d-inline-block pe-3"
+            ><div class="wpnm-button style-1">
+              <div class="wpnm-slider round"></div></div
+          ></a>
+          <a
+            class="btn-primary secondary-text"
+            href="https://www.hiepsibaotap.com/gui-bai/"
+            >Viết bài có tiền công</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid navbar-container not-on-desktop">
+  <nav
+    id="main-nav"
+    class="navbar navbar-light justify-content-between"
+    role="navigation">
+    <a href="https://hiepsibaotap.com/">
+      <img
+        class="logo"
+        src="./Trang chủ – Hiệp Sĩ Bão Táp_files/hsbt-logo.png" />
+      <span class="pl-1 title-special">Hiệp Sĩ Bão Táp</span>
+    </a>
+    <div>
+      <button class="btn btn-link pb-2">
+        <div class="wpnm-button style-1">
+          <div class="wpnm-slider round"></div>
+        </div></button
+      ><span
+        ><a href="https://www.hiepsibaotap.com/wp-admin/" target="_blank">
+          <i class="fas fa-sign-in-alt align-end"></i> </a
+      ></span>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation">
+        <i class="fas fa-ellipsis-h"></i>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="row no-gutters pb-3">
+        <div class="col-12 align-self-center">
+          <form
+            class="form-inline pt-3"
+            role="search"
+            id="search_form"
+            method="get"
+            action="https://hiepsibaotap.com/">
+            <input
+              class="form-control mr-sm-2 form-search"
+              type="search"
+              placeholder="Gõ thông tin cần tìm (vd: mario...)"
+              aria-label="Search"
+              id="s"
+              name="s" />
+          </form>
+        </div>
+        <div class="col-sm-12 pt-3">
+          <div class="row text-center">
+            <div class="col-6 text-center">
+              <div class="pb-1">
+                <a href="https://www.hiepsibaotap.com/cat/game/">Game</a>
+              </div>
+              <div class="pt-1 pb-1">
+                <a href="https://hiepsibaotap.com/cat/giai-tri/manga-anime"
+                  >Wibu</a
+                >
+              </div>
+              <div class="pt-1 pb-1">
+                <a href="https://hiepsibaotap.com/cat/giai-tri/">Giải trí</a>
+              </div>
+            </div>
+            <div class="col-6 text-center">
+              <div class="pb-1">
+                <a href="https://www.hiepsibaotap.com/quan-beer-cho-gamer/"
+                  >Về HSBT</a
+                >
+              </div>
+              <div class="pt-1 pb-1">
+                <a href="https://www.hiepsibaotap.com/gui-bai/"
+                  >Viết có nhuận bút</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 pt-2 pb-2"><hr /></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
 {{- end}}
