@@ -34,6 +34,9 @@ type Server struct {
 	PostService    *sql.PostService
 	UserService    *sql.UserService
 	CommentService *sql.CommentService
+
+	// slc service
+	sql.Queries
 }
 
 var server *Server
