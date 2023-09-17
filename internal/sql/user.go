@@ -114,7 +114,7 @@ func (s *UserService) FindUsers(ctx context.Context, filter models.UserFilter) (
 		offset $7
 	`, strings.Join(userColumes, ", "))
 
-	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Username, filter.Email, filter.EmailToken, filter.ResetPasswordToken, filter.Limit, filter.Offset)
+	rows, err := s.db.conn.Query(ctx, q, filter.ID, filter.Username, filter.Email, filter.EmailToken, filter.ResetPasswordToken, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
