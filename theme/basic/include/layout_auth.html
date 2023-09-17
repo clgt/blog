@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<!-- saved from url=(0107)https://hiepsibaotap.com/wp-login.php?redirect_to=https%3A%2F%2Fwww.hiepsibaotap.com%2Fwp-admin%2F&reauth=1 -->
+<html lang="vi-VN">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta
+      http-equiv="origin-trial"
+      content="Az520Inasey3TAyqLyojQa8MnmCALSEU29yQFW8dePZ7xQTvSt73pHazLFTK5f7SyLUJSo2uKLesEtEa9aUYcgMAAACPeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZS5jb206NDQzIiwiZmVhdHVyZSI6IkRpc2FibGVUaGlyZFBhcnR5U3RvcmFnZVBhcnRpdGlvbmluZyIsImV4cGlyeSI6MTcyNTQwNzk5OSwiaXNTdWJkb21haW4iOnRydWUsImlzVGhpcmRQYXJ0eSI6dHJ1ZX0=" />
+
+    <title>Đăng nhập ‹ Hiệp Sĩ Bão Táp</title>
+    <meta name="robots" content="max-image-preview:large, noindex, noarchive" />
+    <link
+      rel="stylesheet"
+      id="dashicons-css"
+      href="/static/css/dashicons.min.css"
+      type="text/css"
+      media="all" />
+    <link
+      rel="stylesheet"
+      id="buttons-css"
+      href="/static/css/buttons.min.css"
+      type="text/css"
+      media="all" />
+    <link
+      rel="stylesheet"
+      id="forms-css"
+      href="/static/css/forms.min.css"
+      type="text/css"
+      media="all" />
+    <link
+      rel="stylesheet"
+      id="l10n-css"
+      href="/static/css/l10n.min.css"
+      type="text/css"
+      media="all" />
+    <link
+      rel="stylesheet"
+      id="login-css"
+      href="/static/css/login.min.css"
+      type="text/css"
+      media="all" />
+    <link
+      rel="stylesheet"
+      id="anr-login-style-css"
+      href="/static/css/style.css"
+      type="text/css"
+      media="all" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/css/custom-login-style.css" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="viewport" content="width=device-width" />
+    <link
+      rel="icon"
+      href="https://hiepsibaotap.com/wp-content/uploads/2016/02/cropped-hiepsi_logo-150x150.png"
+      sizes="32x32" />
+    <link
+      rel="icon"
+      href="https://hiepsibaotap.com/wp-content/uploads/2016/02/cropped-hiepsi_logo-300x300.png"
+      sizes="192x192" />
+    <link
+      rel="apple-touch-icon"
+      href="https://hiepsibaotap.com/wp-content/uploads/2016/02/cropped-hiepsi_logo-300x300.png" />
+    <meta
+      name="msapplication-TileImage"
+      content="https://hiepsibaotap.com/wp-content/uploads/2016/02/cropped-hiepsi_logo-300x300.png" />
+  </head>
+  <body class="login js login-action-login wp-core-ui locale-vi">
+    <script
+      src="/static/js/zxcvbn.min.js"
+      type="text/javascript"
+      async=""></script>
+    <script
+      type="text/javascript"
+      async=""
+      src="/static/js/recaptcha__vi.js"
+      crossorigin="anonymous"
+      integrity="sha384-3ymX2DSDFrUJ4qDKF0Z1DjQs+ALFma6uhv/T661mnos1u1Dy4ZZvRH7EUv/WxXw3"></script>
+    <script type="text/javascript">
+      document.body.className = document.body.className.replace('no-js', 'js');
+    </script>
+    <div id="login">
+      <h1><a href="https://hiepsibaotap.com/">Default Site Title</a></h1>
+      <form
+        name="loginform"
+        id="loginform"
+        action="https://hiepsibaotap.com/wp-login.php"
+        method="post">
+        <p>
+          <label for="user_login">Tên người dùng hoặc Địa chỉ Email</label>
+          <input
+            type="text"
+            name="log"
+            id="user_login"
+            class="input"
+            value=""
+            size="20"
+            autocapitalize="off"
+            autocomplete="username" />
+        </p>
+        <div class="user-pass-wrap">
+          <label for="user_pass">Mật khẩu</label>
+          <div class="wp-pwd">
+            <input
+              type="password"
+              name="pwd"
+              id="user_pass"
+              class="input password-input"
+              value=""
+              size="20"
+              autocomplete="current-password"
+              spellcheck="false" />
+            <button
+              type="button"
+              class="button button-secondary wp-hide-pw hide-if-no-js"
+              data-toggle="0"
+              aria-label="Hiện mật khẩu">
+              <span class="dashicons dashicons-visibility" aria-hidden="true">
+              </span>
+            </button>
+          </div>
+        </div>
+        <p class="forgetmenot">
+          <input
+            name="rememberme"
+            type="checkbox"
+            id="rememberme"
+            value="forever" />
+          <label for="rememberme">Tự động đăng nhập</label>
+        </p>
+        <p class="submit">
+          <input
+            type="submit"
+            name="wp-submit"
+            id="wp-submit"
+            class="button button-primary button-large"
+            value="Đăng nhập" />
+          <input type="hidden" name="redirect_to" value="/wp-admin/edit.php" />
+          <input type="hidden" name="testcookie" value="1" />
+        </p>
+      </form>
+      <p id="nav">
+        <a href="https://hiepsibaotap.com/wp-login.php?action=lostpassword"
+          >Bạn quên mật khẩu?</a
+        >
+      </p>
+      <script type="text/javascript">
+        function wp_attempt_focus() {
+          setTimeout(function () {
+            try {
+              d = document.getElementById('user_login');
+              d.focus();
+              d.select();
+            } catch (er) {}
+          }, 200);
+        }
+        wp_attempt_focus();
+        if (typeof wpOnload === 'function') {
+          wpOnload();
+        }
+      </script>
+      <p id="backtoblog">
+        <a href="https://hiepsibaotap.com/">← Go to Hiệp Sĩ Bão Táp</a>
+      </p>
+    </div>
+    <script
+      type="text/javascript"
+      src="/static/js/jquery.min.js"
+      id="jquery-core-js"></script>
+    <script
+      type="text/javascript"
+      src="/static/js/jquery-migrate.min.js"
+      id="jquery-migrate-js"></script>
+    <script type="text/javascript" id="zxcvbn-async-js-extra">
+      /* <![CDATA[ */
+      var _zxcvbnSettings = {
+        src: 'https:\/\/hiepsibaotap.com\/wp-includes\/js\/zxcvbn.min.js',
+      };
+      /* ]]> */
+    </script>
+    <script
+      type="text/javascript"
+      src="/static/js/zxcvbn-async.min.js"
+      id="zxcvbn-async-js"></script>
+    <script
+      type="text/javascript"
+      src="/static/js/wp-polyfill-inert.min.js"
+      id="wp-polyfill-inert-js"></script>
+    <script
+      type="text/javascript"
+      src="/static/js/regenerator-runtime.min.js"
+      id="regenerator-runtime-js"></script>
+    <script
+      type="text/javascript"
+      src="/static/js/wp-polyfill.min.js"
+      id="wp-polyfill-js"></script>
+    <script
+      type="text/javascript"
+      src="/static/js/hooks.min.js"
+      id="wp-hooks-js"></script>
+    <script
+      type="text/javascript"
+      src="/static/js/i18n.min.js"
+      id="wp-i18n-js"></script>
+    <script type="text/javascript" id="wp-i18n-js-after">
+      wp.i18n.setLocaleData({ 'text direction\u0004ltr': ['ltr'] });
+    </script>
+    <script type="text/javascript" id="password-strength-meter-js-extra">
+      /* <![CDATA[ */
+      var pwsL10n = {
+        unknown:
+          'M\u1eadt kh\u1ea9u m\u1ea1nh kh\u00f4ng x\u00e1c \u0111\u1ecbnh',
+        short: 'R\u1ea5t y\u1ebfu',
+        bad: 'Y\u1ebfu',
+        good: 'Trung b\u00ecnh',
+        strong: 'M\u1ea1nh',
+        mismatch: 'M\u1eadt kh\u1ea9u kh\u00f4ng kh\u1edbp',
+      };
+      /* ]]> */
+    </script>
+    <script
+      type="text/javascript"
+      src="/static/js/password-strength-meter.min.js"
+      id="password-strength-meter-js"></script>
+    <script
+      type="text/javascript"
+      src="/static/js/underscore.min.js"
+      id="underscore-js"></script>
+    <script type="text/javascript" id="wp-util-js-extra">
+      /* <![CDATA[ */
+      var _wpUtilSettings = { ajax: { url: '\/wp-admin\/admin-ajax.php' } };
+      /* ]]> */
+    </script>
+    <script
+      type="text/javascript"
+      src="/static/js/wp-util.min.js"
+      id="wp-util-js"></script>
+    <script type="text/javascript" id="user-profile-js-extra">
+      /* <![CDATA[ */
+      var userProfileL10n = { user_id: '0', nonce: '214abfb465' };
+      /* ]]> */
+    </script>
+    <script
+      type="text/javascript"
+      src="/static/js/user-profile.min.js"
+      id="user-profile-js"></script>
+    <script type="text/javascript">
+      var anr_onloadCallback = function () {
+        for (var i = 0; i < document.forms.length; i++) {
+          var form = document.forms[i];
+          var captcha_div = form.querySelector('.anr_captcha_field_div');
+
+          if (null === captcha_div) continue;
+          captcha_div.innerHTML = '';
+          (function (form) {
+            var anr_captcha = grecaptcha.render(captcha_div, {
+              sitekey: '6LdVKXwUAAAAADi2-qtToZLw35LUSZxOHjo29M0X',
+              size: 'normal',
+              theme: 'light',
+            });
+            if (typeof jQuery !== 'undefined') {
+              jQuery(document.body).on('checkout_error', function () {
+                grecaptcha.reset(anr_captcha);
+              });
+            }
+            if (typeof wpcf7 !== 'undefined') {
+              document.addEventListener(
+                'wpcf7submit',
+                function () {
+                  grecaptcha.reset(anr_captcha);
+                },
+                false
+              );
+            }
+          })(form);
+        }
+      };
+    </script>
+    <script src="/static/js/api.js" async="" defer=""></script>
+    <div class="clear"></div>
+
+    <div
+      style="
+        background-color: rgb(255, 255, 255);
+        border: 1px solid rgb(204, 204, 204);
+        box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 3px;
+        position: absolute;
+        transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 2000000000;
+        left: 0px;
+        top: -10000px;
+      ">
+      <div
+        style="
+          width: 100%;
+          height: 100%;
+          position: fixed;
+          top: 0px;
+          left: 0px;
+          z-index: 2000000000;
+          background-color: rgb(255, 255, 255);
+          opacity: 0.05;
+        "></div>
+      <div
+        class="g-recaptcha-bubble-arrow"
+        style="
+          border: 11px solid transparent;
+          width: 0px;
+          height: 0px;
+          position: absolute;
+          pointer-events: none;
+          margin-top: -11px;
+          z-index: 2000000000;
+        "></div>
+      <div
+        class="g-recaptcha-bubble-arrow"
+        style="
+          border: 10px solid transparent;
+          width: 0px;
+          height: 0px;
+          position: absolute;
+          pointer-events: none;
+          margin-top: -10px;
+          z-index: 2000000000;
+        "></div>
+      <div style="z-index: 2000000000; position: relative">
+        <iframe
+          title="hình ảnh xác thực reCAPTCHA sẽ hết hạn sau 2 phút nữa"
+          src="/static/js/bframe.html"
+          name="c-wirrfjgr0u8v"
+          frameborder="0"
+          scrolling="no"
+          sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"
+          style="width: 100%; height: 100%">
+        </iframe>
+      </div>
+    </div>
+  </body>
+</html>

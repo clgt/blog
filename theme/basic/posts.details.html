@@ -3,144 +3,892 @@
 {{define "header.scripts-after" -}}
 <link rel="stylesheet" href="/static/css/github-markdown.css" />
 <script
-	id="MathJax-script"
-	async
-	src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-></script>
-<script src="/static/js/comment.js" defer></script>
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 {{- end}}
 <!---->
 {{define "main" -}}
 <!--  -->
-<div class="">
-	{{with .Post}}
-	<!--  -->
-	<div>
-		<div class="my-8 flex flex-col max-w-[1024px] mx-auto gap-y-8">
-			<h1 class="text-[60px] leading-[60px] font-medium">{{.Title}}</h1>
-			<div class="text-gray-400">
-				<p class="text-base">{{humanize_time .PublishedAt}}</p>
-				<p class="text-lg text-gray-600 italic text-justify">{{.Short}}</p>
-			</div>
-			<div class="flex items-center gap-x-4">
-				<img
-					src="https://robohash.org/{{.AuthorID}}sometext{{.AuthorUserName}}"
-					alt="author"
-					class="w-10 aspect-square rounded-full object-cover"
-				/>
-				<p class="text-lg font-medium">{{.AuthorUserName}}</p>
-			</div>
-			<img
-				src="{{.Poster}}"
-				onerror="this.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png';"
-				alt="banner"
-				class="block w-full aspect-video object-cover"
-			/>
-			<div id="blog_container" class="w-[720px] mx-auto text-justify text-lg">
-				{{markdown .Body}}
-			</div>
-		</div>
-	</div>
-	<!--  -->
-	<!-- comment -->
-	<!--  -->
-	<div class="w-[720px] mx-auto">
-		<p class="text-center text-3xl">Comments</p>
-		{{end}}
-		<!--  -->
-		{{if .Comments}}
-		<div class="my-4 flex flex-col gap-y-8">
-			<!-- parent comment -->
-			{{range .Comments}}
-			<div class="w-full flex gap-x-4 items-start">
-				<img
-					src="https://robohash.org/{{.User.ID}}sometext{{.User.Username}}"
-					alt="avatar"
-					class="w-10 aspect-square rounded-full object-cover"
-				/>
-				<div class="flex flex-col w-full gap-y-1">
-					<p class="text-lg font-medium">{{.User.Username}}</p>
-					<p>{{.Body}}</p>
-					<div class="flex items-center gap-x-4">
-						<p>{{humanize_time .CreatedAt }}</p>
-						<button
-							data-comment="reply"
-							data-parent="{{.ID}}"
-							class="cursor-pointer font-medium hover:underline"
-						>
-							Reply
-						</button>
-					</div>
-					<div
-						class="mt-4 hidden flex items-center w-full gap-x-3"
-						data-comment="reply-section"
-						data-parent="{{.ID}}"
-					>
-						<textarea
-							data-comment="comment"
-							data-parent="{{.ID}}"
-							rows="1"
-							class="block flex-1 py-2 px-4 w-full rounded-md border-[0.5px] border-gray-300 shadow-sm focus:outline-none focus:border-sky-500"
-						></textarea>
-						<button
-							data-comment="submit"
-							data-parent="{{.ID}}"
-							data-slug="{{$.Post.Slug}}"
-							type="button"
-							class="block h-full bg-sky-600 text-white font-medium py-2 px-4 rounded-lg"
-						>
-							Send
-						</button>
-					</div>
-					<!-- child comment -->
-					{{range .ChildComments}}
-					<div class="w-full mt-4 flex gap-x-4 items-start">
-						<img
-							src="https://robohash.org/{{.User.ID}}sometext{{.User.Username}}"
-							alt="avatar"
-							class="w-10 aspect-square rounded-full object-cover"
-						/>
-						<div class="flex flex-col w-full gap-y-1">
-							<p class="text-lg font-medium">{{.User.Username}}</p>
-							<p>{{.Body}}</p>
-							<div class="flex items-center gap-x-4">
-								<p>{{humanize_time .CreatedAt }}</p>
-							</div>
-						</div>
-					</div>
-					{{end}}
-				</div>
-			</div>
-			{{end}}
-		</div>
-		{{end}}
-		<!--  -->
-		{{$user := .User}} {{if $user}}
-		<div class="mt-8">
-			<div class="flex flex-col w-full items-end justify-end">
-				<textarea
-					rows="4"
-					id="comment"
-					class="block w-full p-4 rounded-md border-[0.5px] border-gray-300 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-sky-500"
-				></textarea>
-			</div>
-			<div class="flex w-full justify-end">
-				<button
-					id="comment-submit"
-					data-slug="{{.Post.Slug}}"
-					type="button"
-					class="mt-4 inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 font-bold text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
-				>
-					Send
-				</button>
-			</div>
-		</div>
-	</div>
-	<!-- comment-end -->
-
-	{{end}}
-	<!---->
-	{{template "pagination" .}}
+<div id="primary" class="content-area">
+  <main id="main" class="site-main" role="main">
+    <article class="post-74602">
+      <div class="container-fluid site-content">
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10">
+            <a
+              href="https://www.nshop.com.vn/pages/nintendo-switch-1"
+              target="blank"
+              ><img
+                src="https://hiepsibaotap.com/wp-content/uploads/2023/08/1.png"
+            /></a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-7">
+            <div class="pb-1">
+              <a
+                class="meta-text text-uppercase"
+                href="https://www.hiepsibaotap.com/cat/comic"
+                >Comic</a
+              >
+              <span class="meta-text">•</span>
+              <span class="meta-text"><a>17.09.2023</a></span>
+            </div>
+            <h1>Doctor Doom – Bá chủ của Thế Giới</h1>
+            <div>
+              <div class="pe-2 float-start">
+                <a href="https://hiepsibaotap.com/author/nguyet/"
+                  ><img
+                    class="author avatar-40"
+                    src="https://hiepsibaotap.com/wp-content/uploads/2020/07/MOON-KNIGHT-192-LEGACY-MARVEL-COMICS-01-03-18-6826-p.jpg"
+                /></a>
+              </div>
+              <div>
+                <a
+                  class="secondary-text"
+                  href="https://hiepsibaotap.com/author/nguyet/"
+                  >Nguyệt</a
+                >
+              </div>
+              <span class="author-card" style="display: block !important"
+                ><p class="meta-text badge badge-pill badge-legend">
+                  Huyền thoại&nbsp;★
+                </p>
+                &nbsp;&nbsp;</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3"></div>
+        <div class="row pb-3">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-7">
+            <div class="featured-image">
+              <img
+                width="1384"
+                height="800"
+                src="https://hiepsibaotap.com/wp-content/uploads/2020/10/Victor-Von-Doom.jpg"
+                class="attachment-post-thumbnail size-post-thumbnail wp-post-image"
+                alt=""
+                decoding="async"
+                srcset="
+                  https://hiepsibaotap.com/wp-content/uploads/2020/10/Victor-Von-Doom.jpg         1384w,
+                  https://hiepsibaotap.com/wp-content/uploads/2020/10/Victor-Von-Doom-554x320.jpg  554w,
+                  https://hiepsibaotap.com/wp-content/uploads/2020/10/Victor-Von-Doom-996x576.jpg  996w,
+                  https://hiepsibaotap.com/wp-content/uploads/2020/10/Victor-Von-Doom-263x152.jpg  263w,
+                  https://hiepsibaotap.com/wp-content/uploads/2020/10/Victor-Von-Doom-768x444.jpg  768w
+                "
+                sizes="(max-width: 1384px) 100vw, 1384px" />
+            </div>
+            <div class="article-content">
+              <p>
+                <span style="font-weight: 400"
+                  >Giống như Joker là phản diện nổi tiếng nhất của DC Comics,
+                  thì bên Marvel Comics, đã có một siêu ác nhân có nổi tiếng bậc
+                  nhất, vượt trên cả gã Titan điên Thanos, một kẻ có đầu óc của
+                  một thiên tài, rất nhiều lần nắm trong tay những quyền năng
+                  khủng khiếp, một kẻ tự cho mình là bá chủ của cả thế giới, Dr
+                  Doom. Và ngày hôm nay, chúng ta sẽ cùng tìm hiểu về gã ác nhân
+                  số một không chỉ của nhóm Bộ Tứ Fantastic Four, mà của rất
+                  nhiều nhóm siêu anh hùng này!</span
+                >
+              </p>
+              <h2><b>Lần đâu xuất hiện</b></h2>
+              <p>
+                <span style="font-weight: 400"
+                  >Dr Doom lần đầu xuất hiện trong tập truyện Fantastic Four #5,
+                  xuất bản vào tháng 7 năm 1962, với sự ra mắt đầu tiên của
+                  mình, Doom đã trở thành một nhân vật vô cùng được yêu thích,
+                  và trở thành siêu phản diện chính trong suốt hành trình dài
+                  lịch sử của Fantastic Four.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://i.pinimg.com/originals/63/c6/6c/63c66cb4a30362ec31051c1c908848db.jpg"
+                  alt="Doom by Reiver85 on deviantART | Doctor doom marvel, Marvel comics art, Marvel villains" />
+              </p>
+              <div
+                class="code-block code-block-5"
+                style="margin: 8px 0; clear: both">
+                <a href="https://www.nshop.com.vn/pages/gundam/" target="blank"
+                  ><img
+                    src="https://hiepsibaotap.com/wp-content/uploads/2023/08/2.png"
+                /></a>
+              </div>
+              <h2><strong>Nguồn gốc nhân vật</strong></h2>
+              <p>
+                <strong
+                  >“I am Doom. Destroyer of worlds…What gods dare stand against
+                  me?” – Doctor Doom.</strong
+                >
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Vì Dr Doom là một trong những nhân vật xuất hiện từ rất lâu
+                  rồi và cũng là một nhân vật có bề dày lịch sử cao ngất ngưởng,
+                  nên chúng mình sẽ chỉ tóm gọn sơ lược về hành trình của Doom
+                  trở thành ác nhân vĩ đại nhất của nhóm Fantastic Four.</span
+                >
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Dr Doom tên thật là Victor von Doom, một nhân vật có thể nói
+                  là có quá khứ đau thương nhất của Marvel Comics, trải qua một
+                  tuổi thơ bất hạnh – cho tới thời điểm hiện tại vẫn là một nhân
+                  vật chịu nhiều đau đớn trong số phận. Được sinh ra tại một
+                  trại Romani nằm bên ngoài vương quốc Latveria, mẹ của cậu bị
+                  giết khi thua một giao kèo với chúa quỷ Mephisto – dẫn tới
+                  việc Doom có một mối thù rất lớn với Mephisto, vì mẹ là người
+                  mà cậu yêu thương nhất. Sau khi mẹ mất, bị đổ tội gây ra cái
+                  chết của hoàng hậu Latveria, cha anh đã đem anh chạy trốn khỏi
+                  Latveria trong một đêm đông giá rét. Để cứu con trai mình, cha
+                  anh đã quấn anh vào trong cơ thể mình, và ông qua đời. Khi còn
+                  ở Latveria, Doom đem lòng yêu một cô bé sống cùng trại với
+                  mình, Valeria, nhưng cô lại không chấp nhận tình cảm của Doom
+                  dành cho cô.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://vignette.wikia.nocookie.net/marveldatabase/images/4/4a/Victor_von_Doom_%28Earth-616%29_and_Werner_von_Doom_%28Earth-616%29_from_Books_of_Doom_Vol_1_1_0001.jpg/revision/latest?cb=20140703180122"
+                  alt="Victor von Doom (Earth-616)/Expanded History | Marvel Database | Fandom" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Lớn lên, Doom nhận được học bổng của Đại Học State University
+                  và theo học ở đó, đây cũng là khoảng thời gian mà Doom gặp
+                  được kẻ thù truyền kiếp của mình, thiên tài Reed Richards và
+                  bạn của cậu, Ben Grimm. Doom và Reed sớm nảy sinh thái độ thù
+                  địch với nhau, và cạnh tranh với nhau ở nhiều khía cạnh, mặc
+                  dù cả hai đều là thiên tài với trí tuệ tuyệt vời. Khi còn đang
+                  theo học ở đấy, Doom đã chế tạo ra một cỗ máy mà anh cho rằng
+                  sẽ giải phóng linh hồn của mẹ mình khỏi Mephisto, nhận ra một
+                  số trục trặc, Reed đã cảnh báo Doom nhưng lại bị phớt lờ. Cỗ
+                  máy phát nổ, khiến cho khuôn mặt của Doom bị biến dạng và hình
+                  thành nên một vết sẹo xấu xí trên khuôn mặt của Doom. Doom bị
+                  đuổi học, nhận thêm một thứ xấu xí trên khuôn mặt – thứ mà
+                  ngay cả chính Doom cũng vô cùng ghê tởm xuyên suốt lịch sử,
+                  Doom đổ hết tội lỗi cho Reed vì đã khiến anh trở nên như thế
+                  này.</span
+                >
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Doom ẩn náu một thời gian, trải qua biết bao sự kiện, cho tới
+                  khi Doom tới Tây Tạng và gặp những vị thầy tu ở đây, họ đã
+                  cùng anh chế tạo ra một bộ giáp đặc biệt, giúp che đi khuôn
+                  mặt xấu xí của mình cũng như sống qua được khí hậu khắc
+                  nghiệt. Bộ giáp còn giúp anh mạnh mẽ hơn rất nhiều lần bình
+                  thường, Doom đã giết chết Valeria – người mà hắn vô cùng yêu
+                  thương, đổi linh hồn của cô cho bộ tam quỷ Haazareth Three để
+                  đổi lấy quyền năng sử dụng phép thuật và để tạo giáp nữa</span
+                >
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Và trước khi trả mối thù với Reed, Doom cần tới một nơi trước
+                  đó đã – Latveria. Tại nơi đây, Doom đã tiến hành một cuộc
+                  chiến với Latveria, giết chết vua Vladimir – kẻ đã gián tiếp
+                  gây nên cái chết của cha mẹ của anh. Sau khi trả được mối thù
+                  này, Doom đã xưng đế vương, trở thành kẻ thống trị mới của
+                  Latveria.</span
+                >
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Và khoảnh khắc mà Doom trở thành ác nhân vĩ đại nhất của
+                  Fantastic Four, lần đầu tiên đụng độ với nhóm bộ tứ, hắn đã
+                  bắt cóc Sue Storm và ra lệnh cho cho 3 thành viên còn lại phải
+                  du hành thời gian để tìm viên đá bí ẩn của Merlin. Sau vụ ấy,
+                  Doom đã chiến đấu với Fantastic Four rất nhiều lần, và cho tới
+                  tận bây giờ.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://i.annihil.us/u/prod/marvel/i/mg/9/03/5aa8298921154/clean.jpg"
+                  alt="Fantastic Four (1961) #5 | Comic Issues | Marvel" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Doom đã trải qua dòng lịch sử vô cùng dài, từ những năm đầu
+                  của Marvel Comics, cho tới hiện tại, tham gia vô số những sự
+                  kiện, những đầu truyện, và trở thành gã ác nhân nổi tiếng nhất
+                  của hãng truyện này, không những nổi tiếng nhất, mà còn sâu
+                  sắc và vĩ đại nhất nữa.</span
+                >
+              </p>
+              <h2><b>Sức mạnh và Năng lực</b></h2>
+              <p>
+                <span style="font-weight: 400"
+                  >Một trong những thứ sức mạnh nổi bật nhất của Dr Doom chắc
+                  chắn là phép thuật, không thể bàn cãi được. Được kế thừa khả
+                  năng sử dụng phép thuật từ người mẹ của mình, Cynthia von Doom
+                  cũng từng là một nữ pháp sư, nên Doom có tiềm năng phát triển
+                  sức mạnh phép thuật. Không những thế, Doom đã hiến tế linh hồn
+                  của người con gái mà mình từng đem lòng yêu cho các Haazareth
+                  Three, và được chúng ban tặng quyền năng điều khiển phép
+                  thuật. Doom là một trong những pháp sư quyền năng nhất của
+                  Marvel Comics, sánh ngang với những nhân vật có số má khác như
+                  Dr Strange và Morgan le Fay.&nbsp;</span
+                >
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Không những phép thuật, mà điều gì đã tạo nên một Doom được
+                  xem như sự kết hợp của phép thuật của Dr Strange, tài năng chế
+                  tạo của Tony Stark và đặc biệt nhất, trí tuệ của một thiên tài
+                  giống như Reed Richards. Doom là một trong những siêu thiên
+                  tài của Trái Đất, giống như Reed hay Tony, Doom chế tạo rất ra
+                  hàng trăm thiết bị, máy móc, và những cỗ máy có thể vươn lên
+                  tới tầm vũ trụ. Trí tuệ của con người không chỉ là về kiến
+                  thức, mà còn được xếp vào những loại khác nhau, như trí tuệ
+                  của một lãnh đạo, của một chiến thuật gia, của một chính trị
+                  gia, và đoán xem, Doom có tất cả chúng. Đừng hỏi tại sao Doom
+                  lại là vị chúa của một trong những quốc gia hùng mạnh nhất
+                  Marvel.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://vignette.wikia.nocookie.net/marveldatabase/images/f/f9/Victor_von_Doom_%28Earth-616%29_from_Thor_Vol_1_600.jpg/revision/latest?cb=20130528050125"
+                  alt="Victor von Doom (Earth-616)/Expanded History | Marvel Database | Fandom" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Bên cạnh đó, gã ác nhân này còn có một ý chí bất khuất, thứ ý
+                  chí mạnh mẽ tới mức không thể bị lung lay. Đối đầu với những
+                  nhà ngoại cảm mạnh mẽ như Emma Frost hay Purple Man, tâm trí
+                  của Doom không thể bị thao túng được, mà còn kháng lại những
+                  đòn tâm linh cho dù nó mạnh đến thế nào. Không ai có thể lung
+                  lay được tinh thần thép của gã tự xưng mình là chúa được,
+                  không một ai, ngay cả khi bị tra tấn ở dưới Địa Ngục, Doom
+                  cũng từ chối phát ra một âm thanh gì thể hiện cơn đau đớn thể
+                  xác được. Cho dù thể xác có chịu những cơn đau thấy máu thịt
+                  cỡ nào, nhưng chúng cũng không hề tác động được tinh thần của
+                  Dr Doom.</span
+                >
+              </p>
+              <h2><b>Một số những lần Doom trở nên vô cùng quyền năng</b></h2>
+              <p>
+                <span style="font-weight: 400"
+                  >Như đã nói ở trên, Dr Doom là một tronh những bộ óc thiên tài
+                  nhất Trái Đất, và gần như thông minh ngang bằng Reed Richards
+                  – người đàn ông được xem như có trí tuệ siêu đẳng nhất Marvel
+                  Comics, và còn được Doom thừa nhận rằng thông minh hơn bản
+                  thân hắn. Doom cũng là một kẻ vô cùng ranh ma, luôn chọn thời
+                  điểm thích hợp nhất và ra tay, và chính nhờ vào việc ấy, Doom
+                  đã không biết bao lần chiếm đoạt được những quyền năng không
+                  tưởng, và nhiều lần thay thế các thực thể vĩ đại. Vậy chúng ta
+                  hãy cùng xem thử coi gã ác nhân này làm sao mà lại bá đạo đến
+                  như vậy.</span
+                >
+              </p>
+              <ol>
+                <li><b></b> <b>Hấp thụ Power Cosmic của Silver Surfer</b></li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Silver Surfer ban đầu cũng chỉ là một nhà khoa học mang tên
+                  Norrin Radd, được Galactus chọn làm sứ giả của mình, ban cho
+                  anh thứ quyền năng Power Cosmic tới từ vũ trụ, thứ quyền năng
+                  ấy đã ban tặng cho anh khả năng thao túng năng lượng và vật
+                  chất, cảm quan vũ trụ và rất nhiều thứ khác.&nbsp;</span
+                >
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Trong tập truyện Fantastic Four #57, lợi dụng lúc Fantastic
+                  Four đang bận việc với các Inhumans, Doom đã mời Silver Surfer
+                  tới Latveria và lừa anh bước vào cỗ máy của hắn, hòng tước
+                  đoạt Power Cosmic của Silver Sufer. Có thứ quyền năng mạnh mẽ
+                  trong tay, Doom cùng với tấm ván của Silver Surfer đi phá hủy
+                  khắp nơi, dễ dàng đánh bại Fantastic Four, đóng băng cả một
+                  vùng nhiệt đối và đẩy nhanh quá trình tiến hóa của những con
+                  vượn thành những sinh vật quái dị. Cho tới khi Doom bị Reed
+                  lừa bay ra khỏi quỹ đạo Trái Đất và nhận cái đắng. Giải thích
+                  cho các bạn một chút, lúc này Silver Sufer đang bị chủ nhân
+                  Galactus của mình giam cầm ở Trái Đất, Doom cưỡi tấm ván bay
+                  ra khỏi quỹ đạo và bị trường lực do Galactus tạo ra hất văng
+                  trở lại, tấm ván bay trở lại với Silver Surfer, còn Doom thì
+                  tiếp tục tay trắng.</span
+                >
+              </p>
+              <div
+                class="code-block code-block-3"
+                style="margin: 8px 0; clear: both">
+                <div class="not-on-desktop">
+                  <script
+                    async=""
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                  <ins
+                    class="adsbygoogle"
+                    style="display: block"
+                    data-ad-client="ca-pub-8227174949201104"
+                    data-ad-slot="7391735206"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                  <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                      (adsbygoogle = window.adsbygoogle || []).push({});
+                    });
+                  </script>
+                  <br />
+                </div>
+              </div>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://static.comicvine.com/uploads/original/7/79709/2286254-1_1280.jpg"
+                  alt="Doctor Doom (Character) - Comic Vine" />
+              </p>
+              <ol start="2">
+                <li><b></b> <b>Nhận được quyền năng Life Force</b></li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Từ trước kia cho tới Avengers: The Children’s Crussade, lúc
+                  này Wanda đã mất đi trí nhớ của mình, và bị Doom lợi dụng, nói
+                  dối về việc hắn là hôn phu của Wanda, và cũng là một tác động
+                  không nhỏ đã khiến cho sự kiện House of M xảy ra. Doom đã cùng
+                  Wanda triệu hồi thứ quyền năng mang tên Life Force – một thứ
+                  quyền năng mạnh mẽ tới mức đã giúp cho Wanda tạo ra làn sóng
+                  hủy diệt Chaos Wave – khiến cho thực tại bị đảo lộn trong
+                  House of M. Doom cướp lấy Life Force từ tay Wanda, và trở
+                  thành một vị thần mới, đủ quyền năng để hồi sinh cho những
+                  người đã chết, nhưng cũng chính thứ quyền năng này quá lớn so
+                  với Doom, và ngay sau khi nhận được quyền năng này, nó đã tự
+                  thoát ra khỏi cơ thể hắn.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://comicvine1.cbsistatic.com/uploads/scale_super/5/56904/2035975-scan10214.jpg"
+                  alt="Doctor Doom vs Legion - Battles - Comic Vine" />
+              </p>
+              <ol start="3">
+                <li><b></b> <b>Hấp thụ sức mạnh của thực thể Beyonder</b></li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Beyonder là một thực thể tới từ một nơi nằm rất xa Vũ Trụ
+                  Marvel. Ông chỉ xem M-Body Living Tribunal như một con vi
+                  khuẩn, và cả Vũ Trụ Marvel cũng chỉ như một giọt nước đối với
+                  ông. Beyonder cũng chính là nơi ở của chính mình,
+                  Beyond-Realm, một chiều không gian mà to hơn cả Vũ Trụ Marvel
+                  vô hạn vô hạn lần, không thể nào đong đếm hết được sức mạnh
+                  thật sự của Beyonder. Beyonder gần như toàn năng và toàn hiện,
+                  mọi thứ ông đã thể hiện có thể so sánh với The One Above All,
+                  thậm chí còn nhỉnh hơn. Thử nghĩ xem, chuyện gì sẽ xảy ra khi
+                  Doom có được quyền năng của ông?</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://gamek.mediacdn.vn/k:thumb_w/660/2016/1-1465436691506/quyen-nang-cua-beyonder--ke-den-tu-vo-cuc.jpg"
+                  alt="Quyền năng của Beyonder – Kẻ đến từ vô cực" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Trong sự kiện Secret Wars năm 1984, Beyonder đã tạo nên một
+                  thế giới mang tên Battleworld, đưa các siêu anh hùng và các
+                  siêu phản diện từ Trái Đất lên và tạo ra một cuộc chiến tại
+                  nơi đây. Doom trở thành thủ lĩnh của phe phản diện, hắn đã tạo
+                  nên một cỗ máy từ cơ thể của Klaw, và sử dụng nó để rút cạn
+                  năng lương của Beyonder, thay thế ông trở thành một vị thần
+                  mới, thao túng vạn vật. Nhưng Doom đã quá chủ quan, khi
+                  Beyonder vẫn còn tồn tại, ông mượn cơ thể của Klaw nhằm tiếp
+                  cận và đoạt lại thứ sức mạnh cũ của mình.</span
+                >
+              </p>
+              <ol start="4">
+                <li>
+                  <b></b> <b>Hấp thụ sức mạnh của các Beyonders MỘT-LẦN-NỮA</b>
+                </li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Các Beyonders, hay các Ivory Kings, khác với Beyonder, là
+                  chủng loài tồn tại bên trong Beyond-Realm, sở hữu sức mạnh
+                  không kém cạnh gì Beyonder, họ là những người đã thúc đẩy hiện
+                  tượng Incursions – hiện tượng hủy diệt cả thực tại bằng cách
+                  tạo ra ở mỗi Trái Đất một Molecule như một quả bom sống, cùng
+                  với đó, họ đi tiêu diệt từng thực thể , trong số đó có Living
+                  Tribunal, Eternity, Infinity, các Celestials,…</span
+                >
+              </p>
+              <div
+                class="code-block code-block-1 ai-viewport-3"
+                style="
+                  margin: 8px auto;
+                  text-align: center;
+                  display: block;
+                  clear: both;
+                ">
+                <div class="not-on-desktop">
+                  <script
+                    async=""
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                  <ins
+                    class="adsbygoogle"
+                    style="display: block"
+                    data-ad-client="ca-pub-8227174949201104"
+                    data-ad-slot="7365838561"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                  <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                      (adsbygoogle = window.adsbygoogle || []).push({});
+                    });
+                  </script>
+                  <br />
+                </div>
+              </div>
+              <p>
+                <span style="font-weight: 400"
+                  >Nhưng Doom không phải dạng vừa, hắn là một kẻ vô cùng mưu mô
+                  và thâm hiểm. Trong sự kiện Secret Wars năm 2015, hắn đã hợp
+                  tác cùng với Molecule Man ở Earth-616 đi giết các Molecule Man
+                  ở các Trái Đát còn lại. Ngay trong khoảnh khắc cuối cùng của
+                  Đa Vũ Trụ, Doom, Molecule Man và Dr Strange đã hợp lực, hấp
+                  thụ sức mạnh của các Beyonders, Doom tự hóa bản thân mình
+                  thành một vị chúa, Emperor God Doom, hắn tái tạo lại
+                  Battleworld và trở thành vị chúa của thế giới mới, trở nên gần
+                  như toàn năng, dễ dàng hạ gục như thế lực mạnh mẽ như Phoenix
+                  Force hay Infinity Gauntlet. Nhưng sức mạnh của Doom cũng là
+                  do Molecule man ban cho, và đó cũng chính là yếu điểm chí mạng
+                  của Doom. Cuối sự kiện Secret Wars, Reed Richards đã chiến
+                  thắng trong cuộc nói chuyện với Doom, khiến Doom phải thừa
+                  nhận rằng Reed thực sự tài năng hơn mình, Molecule Man tước
+                  lấy sức mạnh của Doom, biến thế giới trở lại như ban đầu của
+                  nó.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://vignette.wikia.nocookie.net/marveldatabase/images/7/7d/Victor_von_Doom_%28Earth-616%29_from_Secret_Wars_Vol_1_4_cover.jpg/revision/latest?cb=20160113200956"
+                  alt="Виктор фон Дум (616) | Марвелпедия | Fandom" />
+              </p>
+              <ol start="5">
+                <li>
+                  <b></b> <b>Trở thành Sorcerer Supreme – Pháp Sư Tối Thượng</b>
+                </li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Sorcerer Supreme – Pháp sư Tối thượng, là một danh hiệu cao
+                  quý chỉ dành cho pháp sư mạnh mẽ nhất ở Trái Đất, và truyền
+                  lại từ đời này sang đời khác, một số người đạt được danh hiệu
+                  này như Agamotto, Ancient One, Dr Strange, Dr Voodoo,… và ngay
+                  cả Dr Doom.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://insidepulse.com/wp-content/uploads/2018/10/The-Sorcerer-Supreme-Starbrand-and-Iron-Fist-Powered-Doctor-Doom-Not-Strange-Thor-5-finale-cliffhanger.jpg"
+                  alt="Marvel Comics Universe &amp; Thor #6 Spoilers: Future Thor Fight Alongside A Phoenix Powered Wolverine Against The Sorcerer Supreme, Starbrand &amp; Iron Fist Powered Doctor Doom Strange?! | Inside Pulse" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Trong một tương lai rất xa, khi mà Thor lúc này đã trở thành
+                  Old King Thor, một vị vua già cỗi ngồi trên ngai vương của
+                  Asgard sau khi Odin qua đời, Doom lúc này đã trở thành
+                  Sorcerer Supreme, hắn có được sức mạnh của các Avengers cổ
+                  đại, bao gồm quyền năng của Starbrand, Iron Fist, Spirit of
+                  Vengeance của Ghost Rider, Eye of Agamotto và Cloak of
+                  Levitation, Doom lúc này đã quyền năng hơn bao giờ hết. Bực
+                  tức vì Latveria bây giờ đã bị biến thành một khu vườn nho nhỏ,
+                  Doom giáng tai họa xuống Trái Đất, nhưng đã bị Old King Thor
+                  cùng với Old Man Phoenix (một phiên bản Wolverine lúc này đã
+                  già và có được quyền năng của Phoenix Force) ngăn chặn.</span
+                >
+              </p>
+              <h2><b>Điểm yếu</b></h2>
+              <p>
+                <span style="font-weight: 400"
+                  >Cho dù có quyền năng đến mấy, nhưng Doom vẫn chỉ là một con
+                  người, một sinh vật không thể hoàn hảo được nếu như không có
+                  những khuyết điểm của bản thân. Và điểm yếu chí mạng của Doom
+                  cũng chính là cái tôi quá lớn của hắn ta. Là một kẻ vô cùng
+                  ngạo mạn, kiêu căng, lí do Doom cứu Trái Đất bao nhiêu lần
+                  không phải là một việc làm anh hùng, mà chỉ đơn giản rằng,
+                  Doom luôn cho rằng chính hắn là bá chủ của thế giới này, không
+                  phải là ai khác. Cái tôi cũng chính là nhược điểm của chính
+                  hắn, Doom luôn mang trong mình một hoài nghi về việc liệu
+                  chính hắn có vượt trội hơn Reed không, suốt những năm tháng
+                  trong cuộc đời của mình, Doom không chỉ muốn có được mọi thứ,
+                  và hắn luôn tranh đấu với Reed để xem rằng kẻ nào mới hơn kẻ
+                  nào, để rồi hắn mới ngộ ra rằng Reed luôn đi trước Doom, điều
+                  mà Doom không thể chấp nhận được, dẫn tới sự kết thúc sự kiện
+                  Secret Wars.</span
+                >
+              </p>
+              <h2><b>Một số fact về Doom</b></h2>
+              <ol>
+                <li><b></b> <b>Doom từng trở thành Iron Man</b></li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Sau sự kiện Secret Wars, khuôn mặt bị biến dạng của Doom đã
+                  được phục hồi, biến hắn trở lại thành một Victor von Doom điển
+                  trai soái ca, và vì vậy, Doom quyết định sẽ trở thành một
+                  người tốt, một siêu anh hùng. Doom quyết định sẽ giúp đỡ Tony
+                  Stark trong một số nhiệm vụ, và sau khi Tony chết trong sự
+                  kiện Civil War II, Doom đã chôm lấy bộ Model 51 của Tony, đem
+                  về cải tiến và thay Tony trở thành một Iron Man hoàn toàn mới,
+                  một Iron Man kết hợp giữa công nghệ và phép thuật, nhưng cũng
+                  chỉ trong một thời gian ngắn, sau khi Tony được hồi sinh trở
+                  lại, cũng là lúc khuôn mặt của Doom trở lại với những vết biến
+                  dạng ngày nào, tức giận, hắn quyết định trở lại với con đường
+                  ác nhân của mình.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://i.pinimg.com/originals/7a/40/e8/7a40e8418edec357921e78d9a20fa9fb.jpg"
+                  alt="Dr Doom <Comic> INTERNET-CON Channel features Truth News &amp; Original Shows: YouTube.com/Imgur | Doctor doom marvel, Marvel art, Marvel villains" />
+              </p>
+              <ol start="2">
+                <li><b></b> <b>Doom đã lừa Luke Cage mất 200 dollars</b></li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Đây có lẽ là một phốt lớn nhất của Doom trong suốt cuộc đời
+                  mình, ai đời một siêu ác nhân lại đi lừa tiền người khác nhỉ.
+                  Nhưng nó xảy ra torng hai tập truyện Heroes for Hire #8 và #9,
+                  trong hai tập truyện này, để tìm kiếm những Doombots giả trang
+                  thành người dân sống ở New York, Doom đã thuê Luke Cage tiêu
+                  diệt đống Doombots hộ mình với mức lương là 200 dollars. Luke
+                  Cage hoàn thành xong việc khá là dễ dàng, nhưng khi vừa hoàn
+                  thành xong thì Doom chuồn mất và không trả tiền cho anh. Tức
+                  tím người, Luke Cage mượn máy bay của nhóm Fantastic Four, bay
+                  thẳng tới Latveria để đòi Doom trả tiền, sau khi ăn vạ một hồi
+                  lâu thì Doom cũng chịu trả tiền để Luke Cage biến hộ khỏi
+                  vương quốc của hắn.&nbsp;</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://puzzledpagan.files.wordpress.com/2015/12/luke-cage-money-honey.png?w=1300"
+                  alt="That Time Luke Cage Called Dr. Doom “Honey” – PUZZLED PAGAN PRESENTS" />
+              </p>
+              <ol start="3">
+                <li><b></b> <b>Từng lập giao kèo với Mephisto</b></li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >&nbsp;Không chỉ là một siêu ác nhân vĩ đại, mà Doom còn là
+                  một người con trai cưng của mẹ. Doom rất yêu quý mẹ của hắn,
+                  nhưng linh hồn của bà hiện đang nằm trong tay của chúa quỷ
+                  Mephisto, điều đó đã nảy sinh ra giao kèo của Doom và
+                  Mephisto. Doom luôn bị ám ảnh về việc giải thoát linh hồn mẹ
+                  khỏi tay chúa quỷ, cả hai đã thỏa thuận với nhau rằng, mỗi năm
+                  một lần, Doom được phép triệu hồi Mephisto để hai bên chiến
+                  đấu, nếu Doom thắng, hắn sẽ có được linh hồn của người mẹ quá
+                  cố, còn nếu thua, người dân Latveria sẽ càng căm ghét Doom
+                  hơn.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://static0.cbrimages.com/wordpress/wp-content/uploads/2019/11/doctor-doom-header.jpg"
+                  alt="Doctor Doom Just Disrespected the Devil on His Own Hell Turf" />
+              </p>
+              <ol start="4">
+                <li>
+                  <b></b>
+                  <b>Doom đặt ngày sinh nhật của mình làm lễ quốc khánh</b>
+                </li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Nghe có vẻ khá buồn cười khi nói về một siêu ác nhân bậc nhất
+                  Marvel Comics, nhưng thật đấy, Doom đã chọn ngày sinh nhật của
+                  mình để làm ngày quốc khánh của vương quốc Latveria của hắn.
+                  Mặc dù chưa bao giờ tiết lộ sinh nhật của mình là ngày bao
+                  nhiêu, nhưng các fan hâm mộ trên thế giới vẫn chọn ngày 1
+                  tháng 7 – ngày mà Doom lần đầu xuất hiện trong comics, làm
+                  Doom’s Day (Ngày của Doom)</span
+                >
+              </p>
+              <ol start="5">
+                <li>
+                  <b></b>
+                  <b>Doom từng bị Squirrel Girl đánh bại những hai lần</b>
+                </li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Squirrel Girl, có người biết, cũng có người không biết, nhưng
+                  đây là cô nàng có sức mạnh phi lý nhất Marvel Comics. Từng bị
+                  nhầm rằng là một dị nhân, như Squirrel Girl lại là một người
+                  có năng lực đột biến và có thể điều khiển những con sóc. Nhưng
+                  phi lý nhất ở chỗ, Squirrel Girl đã từng hạ gục vô số những ác
+                  nhân vô cùng máu mặt, chẳng hạn như Thanos, thậm chí máy ông
+                  tác giả Marvel còn không thèm tiết lộ lí do tại sao cô có thể
+                  hạ gục được chúng, và đương nhiên, Doom cũng thuộc một trong
+                  số chúng.</span
+                >
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Số là trong lần đầu tiên xuất hiện của mình trong tập truyện
+                  Marvel Super-Heroes #8 (1992), Squirrel Girl đã điều khiển một
+                  đàn sóc và đánh bại Doom trong công cuộc giúp Iron Man đánh
+                  bại hắn. Và trong lần thứ hai, trong tập truyện Unbeatable
+                  Squirrel Girl #5 (2016), Doom tiếp tục bị đánh bại, nhưng lần
+                  này không phải là một đàn sóc, mà là MỘT ĐÀN SQUIRREL GIRL!
+                  Cay vl</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://static.comicvine.com/uploads/original/5/52246/1454907-squirrel_girl_vs_dr_doom_01.jpg"
+                  alt="The Unbeatable Squirrel Girl (Comic Book) - TV Tropes" />
+              </p>
+              <ol start="6">
+                <li>
+                  <b></b>
+                  <b>Doom từng lập nên một hội đồng…chỉ bao gồm mỗi Doom</b>
+                </li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Reed Richards từng có một hội đồng bao gồm những Reed
+                  Richards khác ở khắp Đa Vũ Trụ, cùng với nhau, họ đã lập ra
+                  một hội đồng mang tên The Interdimensional Council of Reed,
+                  và….Doom cũng có một cái tương tự như vậy. Sau khi chết trong
+                  lúc câu giờ để nhóm Future Foundation giải quyết các Mad
+                  Celestials, Doom tỉnh giấc và thấy mình đang nằm ở đống đổ nát
+                  tại căn cứ cũ của Council of Reed, cũng tại nơi này, Doom đã
+                  tìm thấy các Dr Doom khác của các vũ trụ bị Council giam cầm ở
+                  đây. Hắn giải thoát cho họ, và vì sở hữu cùng một lúc hai
+                  Infinity Gauntlet, Doom của Earth-616 (Earth chính) đã được
+                  suy tôn làm lãnh đạo của họ, và thành lập nên Parliament of
+                  Doom (Quốc Hội Doom).</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://vignette.wikia.nocookie.net/marveldatabase/images/6/64/Parliament_of_Doom_from_FF_Vol_1_16.jpg/revision/latest?cb=20120329010213"
+                  alt="Parliament of Doom (Multiverse) | Marvel Database | Fandom" />
+              </p>
+              <ol start="7">
+                <li>
+                  <b></b> <b>Doom là người đã đặt tên cho con gái của Reed</b>
+                </li>
+              </ol>
+              <p>
+                <span style="font-weight: 400"
+                  >Khi Sue bắt đầu kì sinh nở thứ hai của mình sau khi hạ sinh
+                  cậu con trai Franklin Richards, cũng trong khoảng thời gian
+                  ấy, Reed vắng mặt nên Johnny Storm buộc phải nhờ sự giúp đỡ
+                  của Doom. Doom trở thành người đỡ đẻ cho Sue, giúp cô không bỉ
+                  sẩy thai, và trở thành cha đỡ đầu cho đứa con gái của Reed.
+                  Doom đặt tên cho con bé là Valeria – cũng là cái tên của người
+                  con gái mà Doom đem lòng yêu. Chính vì vậy, Doom rất yêu
+                  thương cô bé Valeria, và Valeria còn thân thiết với Doom hơn
+                  cả bố của mình.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://2.bp.blogspot.com/-kcjWl20IjoY/WzRi8vjLfaI/AAAAAAAABPE/lfHOKTZfqpkezt_OMCo1uBkF9Hk7YFdMgCLcBGAs/s1600/ca1f6a80dc5408f5dcabe5fd392cd6c7.jpg"
+                  alt="TIỂU SỬ VỀ VALERIA RICHARDS" />
+              </p>
+              <h2><b>Một số đầu truyện nên đọc về Dr Doom</b></h2>
+              <p>
+                <span style="font-weight: 400"
+                  >Book of Doom (2005) được tạo ra bởi bộ đôi nhà văn Ed
+                  Brubaker và Raulo Raimondi, một trong những đầu truyện tuyệt
+                  vời nhất của Dr Doom, tái hiện lại nguồn gốc và định hình lại
+                  hành trình trở thành một siêu phản diện vĩ đại này.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  src="https://i.annihil.us/u/prod/marvel/i/mg/c/80/5b3b8e660a6fe/clean.jpg"
+                  alt="Books of Doom (2005) #5 | Comic Issues | Marvel" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Secret Wars (1984) của Jim Shooter và Mike Zeck, cùng với
+                  Secret Wars (2015), hai sự kiện kể về hai lần Doom đoạt lấy
+                  quyền năng thần thánh của Beyonder và các Beyonders, trở thành
+                  một vị thần toàn năng, đứng trên vạn vật, nhưng rồi mọi thứ
+                  cũng tiêu tan trong phút chốc.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://ss-images.catscdn.vn/2018/11/30/4161369/secret-wars-0-0.jpg"
+                  alt="Sau 'Avengers 4', anh em đạo diễn Russo muốn chuyển thể bộ truyện tranh 'Secret Wars' đình đám" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Marvel Graphic Novel: Emperor Doom (1987) của David
+                  Michelinie, Mark Gruenwald, Jim Shooter và Bob Hall, một câu
+                  chuyện tuyệt vời, có lẽ Doom chưa bao giờ thành công trong
+                  việc thống trị thế giới, nhưng lần này đã khác, khi Emperor
+                  Doom đã sử dụng khả năng điều khiển tâm trí của Purple Man để
+                  đưa cả thế giới vào tầm kiểm soát của mình. Đây có lẽ là một
+                  đầu truyện sâu sắc nhất, đào sâu vào những khía cạnh của ý
+                  chí, của sự tự do để tồn tại, thứ mà ít khi được đề cập trong
+                  truyện tranh.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://images-na.ssl-images-amazon.com/images/I/A1Tg7yfs-NL.jpg"
+                  alt="Amazon.com: Marvel Graphic Novel #27 Emperor Doom Starring the Mighty Avengers (9780871352569): David Michelinie, Jim Salicrup, Jim Shooter, Bob Hall, Bill Oakley, Ken Lopez: Books" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Doctor Strange and Doctor Doom: Triumph and Torment (1989)
+                  của Rogers Stern và Mike Mignola, đây có lẽ là đầu truyện hay
+                  nhất của Dr Doom, trong suốt cuộc đời của Dr Doom, đây chính
+                  là lần duy nhất mà Doom tự đưa bản thân mình tới địa ngục, để
+                  giải cứu người phụ nữ mà hắn yêu thương, đỉnh cao của sự nỗ
+                  lực để đưa mẹ của mình khỏi Địa Ngục. Bên cạnh đó, bộ truyện
+                  còn có sự chấp bút của một nhà văn chuyên viết về những thứ kì
+                  dị bí ẩn như Mike Mignola, bằng bàn tay của mình, ông đã cho
+                  chúng ta thấy được những thứ phép thuật tuyệt vời của Dr
+                  Doom.</span
+                >
+              </p>
+              <p>
+                <img
+                  decoding="async"
+                  class="aligncenter"
+                  src="https://i.annihil.us/u/prod/marvel/i/mg/1/a0/5769971c557e4/clean.jpg"
+                  alt="Doctor Strange &amp; Doctor Doom: Triumph and Torment (1989) | Comic Issues | Marvel" />
+              </p>
+              <p>
+                <span style="font-weight: 400"
+                  >Ngoài ra còn nhiều storyline khác thú vị về Doom mà tôi chưa
+                  kể hết.</span
+                >
+              </p>
+              <div
+                class="code-block code-block-7"
+                style="margin: 8px 0; clear: both">
+                <a href="https://www.nshop.com.vn/pages/pokemon/" target="blank"
+                  ><img
+                    src="https://hiepsibaotap.com/wp-content/uploads/2023/08/3.png"
+                /></a>
+              </div>
+            </div>
+          </div>
+          <div class="d-none d-sm-block col-sm-3">{{template "same_list"}}</div>
+        </div>
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-6">
+            <div></div>
+            <div
+              class="fb-like pb-3 not-on-mobile fb_iframe_widget"
+              data-href="https://hiepsibaotap.com/doctor-doom-ba-chu-cua-the-gioi/"
+              data-width=""
+              data-layout="button_count"
+              data-action="like"
+              data-size="large"
+              data-share="true"
+              fb-xfbml-state="rendered"
+              fb-iframe-plugin-query="action=like&amp;app_id=613234082087212&amp;container_width=576&amp;href=https%3A%2F%2Fhiepsibaotap.com%2Fdoctor-doom-ba-chu-cua-the-gioi%2F&amp;layout=button_count&amp;locale=vi_VN&amp;sdk=joey&amp;share=true&amp;size=large&amp;width=">
+              <span style="vertical-align: bottom; width: 174px; height: 28px"
+                ><iframe
+                  name="f3ac6dc3944db5c"
+                  width="1000px"
+                  height="1000px"
+                  data-testid="fb:like Facebook Social Plugin"
+                  title="fb:like Facebook Social Plugin"
+                  frameborder="0"
+                  allowtransparency="true"
+                  allowfullscreen="true"
+                  scrolling="no"
+                  allow="encrypted-media"
+                  src="https://www.facebook.com/v9.0/plugins/like.php?action=like&amp;app_id=613234082087212&amp;channel=https%3A%2F%2Fstaticxx.facebook.com%2Fx%2Fconnect%2Fxd_arbiter%2F%3Fversion%3D46%23cb%3Df16e2cc801fa948%26domain%3Dhiepsibaotap.com%26is_canvas%3Dfalse%26origin%3Dhttps%253A%252F%252Fhiepsibaotap.com%252Ff266b7d7e4b2a78%26relation%3Dparent.parent&amp;container_width=576&amp;href=https%3A%2F%2Fhiepsibaotap.com%2Fdoctor-doom-ba-chu-cua-the-gioi%2F&amp;layout=button_count&amp;locale=vi_VN&amp;sdk=joey&amp;share=true&amp;size=large&amp;width="
+                  style="
+                    border: none;
+                    visibility: visible;
+                    width: 174px;
+                    height: 28px;
+                  "
+                  class=""></iframe
+              ></span>
+            </div>
+            <div class="d-sm-none">{{template "same_list"}}</div>
+            <div>
+              <div class="row">
+                <div class="col-sm-2 text-center text-sm-start">
+                  <a href="https://hiepsibaotap.com/author/nguyet/"
+                    ><img
+                      class="avatar-96"
+                      src="https://hiepsibaotap.com/wp-content/uploads/2020/07/MOON-KNIGHT-192-LEGACY-MARVEL-COMICS-01-03-18-6826-p.jpg"
+                  /></a>
+                </div>
+                <div class="col-sm-10 text-center text-sm-start ps-4">
+                  <a
+                    class="secondary-text"
+                    href="https://hiepsibaotap.com/author/nguyet/"
+                    >Nguyệt</a
+                  >
+                  <span class="author-card d-block"
+                    ><p class="meta-text badge badge-pill badge-legend">
+                      Huyền thoại&nbsp;★
+                    </p>
+                    &nbsp;&nbsp;</span
+                  >
+                  Lữ khách độc hành, trùng vạn dăm Dừng chân ghé lại, thưởng
+                  rượu ngon
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-4"></div>
+          </div>
+        </div>
+      </div>
+    </article>
+    {{template "comment" .}}
+  </main>
 </div>
 <!--  -->
 {{- end}}

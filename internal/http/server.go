@@ -127,28 +127,24 @@ func (s *Server) posts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) postDetails(w http.ResponseWriter, r *http.Request) {
-	slug := flow.Param(r.Context(), "slug")
+	// slug := flow.Param(r.Context(), "slug")
 
-	post, err := s.PostService.FindBySlug(r.Context(), slug)
-	if err != nil {
-		handleError(w, r, err)
-		return
-	}
+	// post, err := s.PostService.FindBySlug(r.Context(), slug)
+	// if err != nil {
+	// 	handleError(w, r, err)
+	// 	return
+	// }
 
-	comments, total, err := s.CommentService.FindBySlug(r.Context(), slug)
-	if err != nil {
-		handleError(w, r, err)
-		return
-	}
+	// comments, total, err := s.CommentService.FindBySlug(r.Context(), slug)
+	// if err != nil {
+	// 	handleError(w, r, err)
+	// 	return
+	// }
 
-	p := pagination.New(r.URL).SetTotal(total).Generate()
-	left, right := p.GetDataBound()
+	// p := pagination.New(r.URL).SetTotal(total).Generate()
+	// left, right := p.GetDataBound()
 
-	s.render(w, r, "posts.details.html", &templateData{
-		Post:       post,
-		Comments:   comments[left:right],
-		Pagination: p,
-	})
+	s.render(w, r, "posts.details.html", &templateData{})
 }
 
 func (s *Server) home(w http.ResponseWriter, r *http.Request) {

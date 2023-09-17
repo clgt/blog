@@ -1,0 +1,66 @@
+Body.login {
+  background-color: #35281e !important;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+.forgetmenot {
+  padding-top: 20px !important;
+  padding-bottom: 10px !important;
+}
+
+#login h1 a {
+  background-image: url('https://www.hiepsibaotap.com/wp-content/uploads/2019/10/hsbt-logo-newcolor.png');
+  height: 170px !important;
+  width: 200px !important;
+  background-size: 200px !important;
+}
+
+.login form {
+  box-shadow: none;
+  padding: 20px;
+  border: 0px solid #fff !important;
+}
+#login {
+  background: #fff;
+  margin: 50px auto;
+  padding: 40px 20px;
+  width: 400px;
+  border-radius: 15px;
+}
+.login label {
+  color: #555;
+  font-size: 14px;
+}
+.login form .forgetmenot {
+  float: none;
+}
+
+#login form p.submit {
+  margin-top: 15px;
+}
+.login.wp-core-ui .button-primary {
+  background: #ffd978;
+  border-color: #ffd978 !important;
+  box-shadow: 0 1px 0 #ffd978;
+  color: #333;
+  text-shadow: none;
+  float: none;
+  clear: both;
+  display: block;
+  width: 100%;
+  padding: 7px !important;
+  height: auto;
+  font-size: 15px;
+  font-weight: bolder;
+  border-radius: 30px;
+}
+
+p#nav {
+  display: none;
+}
+
+p#backtoblog {
+  display: none;
+}
