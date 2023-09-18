@@ -74,6 +74,14 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/blogs", s.posts, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.postDetails, "GET")
 	s.router.HandleFunc("/blogs/:slug/comments/new", use(s.createComment, s.isLogined), "POST")
+	// static pages
+	s.router.HandleFunc("/letter", s.letter, "GET")
+	s.router.HandleFunc("/about", s.about, "GET")
+	s.router.HandleFunc("/art", s.art, "GET")
+	s.router.HandleFunc("/contact", s.contact, "GET")
+	s.router.HandleFunc("/rules", s.rules, "GET")
+	s.router.HandleFunc("/dev-log", s.devLog, "GET")
+
 
 	// admin routes
 	s.router.HandleFunc("/admin", use(s.adminHome, s.isadmin), "GET")
@@ -703,10 +711,36 @@ func (s *Server) createComment(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Server) letter(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "letter.html", &templateData{})
+}
+
+func (s *Server) about(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "about.html", &templateData{})
+}
+
+func (s *Server) art(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "art.html", &templateData{})
+}
+
+func (s *Server) contact(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "contact.html", &templateData{})
+}
+
+func (s *Server) rules(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "rules.html", &templateData{})
+}
+
+func (s *Server) devLog(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "dev_log.html", &templateData{})
+}
+
 // admin
 func (s *Server) adminHome(w http.ResponseWriter, r *http.Request) {
 	s.adminRender(w, r, "home.html", &templateData{})
 }
+
+
 
 func (s *Server) adminPosts(w http.ResponseWriter, r *http.Request) {
 	posts, total, err := s.PostService.FindPosts(r.Context(), models.PostFilter{})
