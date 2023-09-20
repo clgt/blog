@@ -111,7 +111,7 @@ func (s *CommentService) FindComments(ctx context.Context, filter models.Comment
 		offset $5
 	`, strings.Join(commentColumes, ", "))
 
-	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.IsVisible, filter.Limit, filter.Offset)
+	rows, err := s.db.Conn.Query(ctx, q, filter.ID, filter.Slug, filter.IsVisible, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -170,7 +170,7 @@ func (s *CommentService) Create(ctx context.Context, comment *models.Comment) er
 		return err
 	}
 
-	row := s.db.conn.QueryRowContext(ctx, q,
+	row := s.db.Conn.QueryRow(ctx, q,
 		comment.AuthorID,
 		comment.ParentID,
 		comment.Slug,
@@ -192,7 +192,7 @@ func (s *CommentService) Hide(ctx context.Context, id int) error {
 			updated_at = now()
 		where id = $1 or parent_id = $1
 	`
-	_, err := s.db.conn.ExecContext(ctx, q, id)
+	_, err := s.db.Conn.Exec(ctx, q, id)
 	return err
 }
 
@@ -200,7 +200,7 @@ func (s *CommentService) Delete(ctx context.Context, id int) error {
 	const q = `
 		delete from comments where id = $1 or parent_id = $1
 	`
-	_, err := s.db.conn.ExecContext(ctx, q, id)
+	_, err := s.db.Conn.Exec(ctx, q, id)
 	return err
 }
 
@@ -208,7 +208,7 @@ func (s *CommentService) DeleteBySlug(ctx context.Context, slug string) error {
 	const q = `
 		delete from comments where slug = $1
 	`
-	_, err := s.db.conn.ExecContext(ctx, q, slug)
+	_, err := s.db.Conn.Exec(ctx, q, slug)
 	return err
 }
 
@@ -216,7 +216,7 @@ func (s *CommentService) DeleteByUserID(ctx context.Context, userId int) error {
 	const q = `
 		delete from comments where author_id = $1 returning id
 	`
-	rows, err := s.db.conn.QueryContext(ctx, q, userId)
+	rows, err := s.db.Conn.Query(ctx, q, userId)
 	if err != nil {
 		return err
 	}

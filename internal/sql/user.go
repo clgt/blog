@@ -114,7 +114,7 @@ func (s *UserService) FindUsers(ctx context.Context, filter models.UserFilter) (
 		offset $7
 	`, strings.Join(userColumes, ", "))
 
-	rows, err := s.db.conn.Query(ctx, q, filter.ID, filter.Username, filter.Email, filter.EmailToken, filter.ResetPasswordToken, filter.Limit, filter.Offset)
+	rows, err := s.db.Conn.Query(ctx, q, filter.ID, filter.Username, filter.Email, filter.EmailToken, filter.ResetPasswordToken, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -179,7 +179,7 @@ func (s *UserService) Create(ctx context.Context, user *models.User) (*models.Us
 		return nil, err
 	}
 
-	row := s.db.conn.QueryRowContext(ctx, q,
+	row := s.db.Conn.QueryRow(ctx, q,
 		user.Username,
 		user.Email,
 		hashedPassword,
@@ -208,7 +208,7 @@ func (s *UserService) UpdatePassword(ctx context.Context, user *models.User) err
 		WHERE id = $1
 	`
 
-	_, qerr := s.db.conn.ExecContext(ctx, q,
+	_, qerr := s.db.Conn.Exec(ctx, q,
 		user.ID,
 		hashedPassword,
 	)
@@ -226,7 +226,7 @@ func (s *UserService) LogSendVerifyEmail(ctx context.Context, user *models.User)
 			email_token = $3
 		where id = $1
 	`
-	_, err := s.db.conn.ExecContext(ctx, q, user.ID, user.Email, user.EmailToken)
+	_, err := s.db.Conn.Exec(ctx, q, user.ID, user.Email, user.EmailToken)
 	return err
 }
 
@@ -258,7 +258,7 @@ func (s *UserService) LogSendResetPassword(ctx context.Context, email string) (*
 		where id = $1
 		returning id
 	`
-	_, err = s.db.conn.ExecContext(ctx, q, user.ID, user.ResetPasswordToken)
+	_, err = s.db.Conn.Exec(ctx, q, user.ID, user.ResetPasswordToken)
 	if err != nil {
 		return nil, err
 	}
@@ -273,7 +273,7 @@ func (s *UserService) AddRole(ctx context.Context, user *models.User, role strin
 		}
 	}
 	q := `update users set roles = array_append(roles, $2) where id = $1`
-	_, err := s.db.conn.ExecContext(ctx, q, user.ID, role)
+	_, err := s.db.Conn.Exec(ctx, q, user.ID, role)
 	return err
 }
 
@@ -338,7 +338,7 @@ func (s *UserService) Block(ctx context.Context, id int) error {
 			updated_at = now()
 		where id = $1`
 
-	_, err = s.db.conn.ExecContext(ctx, q, id)
+	_, err = s.db.Conn.Exec(ctx, q, id)
 	return err
 }
 
@@ -356,6 +356,6 @@ func (s *UserService) Delete(ctx context.Context, id int) error {
 		delete from users
 		where id = $1
 	`
-	_, err = s.db.conn.ExecContext(ctx, q, id)
+	_, err = s.db.Conn.Exec(ctx, q, id)
 	return err
 }

@@ -1,1 +1,1 @@
-alter table posts add column if not exists author_username text not null default  '';
+alter table posts add column if not exists author_username text not null default '';

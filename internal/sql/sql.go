@@ -7,7 +7,7 @@ import (
 	"io/fs"
 	"sort"
 
-	"github.com/clgt/sport/internal/config"
+	"github.com/clgt/blog/internal/config"
 	"github.com/rs/xid"
 
 	"github.com/jackc/pgx/v5"
@@ -90,7 +90,7 @@ func (db *DB) Run(file string) error {
 	if buf, err := fs.ReadFile(migrationFS, file); err != nil {
 		return err
 	} else if _, err := tx.Exec(db.ctx, string(buf)); err != nil {
-		return err
+		return fmt.Errorf("failed to execute %s: %w", file, err)
 	}
 
 	if _, err := tx.Exec(db.ctx, `insert into migrations (name) values($1);`, file); err != nil {

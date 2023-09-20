@@ -100,7 +100,7 @@ func (s *PostService) FindPosts(ctx context.Context, filter models.PostFilter) (
 		offset $7
 	`, strings.Join(postColumes, ", "))
 
-	rows, err := s.db.conn.QueryContext(ctx, q, filter.ID, filter.Slug, filter.IsPublished, filter.IsEditorsPick, filter.InPublicationOrder, filter.Limit, filter.Offset)
+	rows, err := s.db.Conn.Query(ctx, q, filter.ID, filter.Slug, filter.IsPublished, filter.IsEditorsPick, filter.InPublicationOrder, filter.Limit, filter.Offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -158,7 +158,7 @@ func (s *PostService) Create(ctx context.Context, post *models.Post) error {
 		return err
 	}
 
-	row := s.db.conn.QueryRowContext(ctx, q,
+	row := s.db.Conn.QueryRow(ctx, q,
 		post.Title,
 		post.Slug,
 		post.Poster,
@@ -199,7 +199,7 @@ func (s *PostService) Update(ctx context.Context, post *models.Post) error {
 		return err
 	}
 
-	_, err := s.db.conn.ExecContext(ctx, q, post.ID, post.Title, post.Slug, post.Poster, pq.Array(post.Tags), post.Short, post.Body, post.PublishedAt, post.IsEditorsPick)
+	_, err := s.db.Conn.Exec(ctx, q, post.ID, post.Title, post.Slug, post.Poster, pq.Array(post.Tags), post.Short, post.Body, post.PublishedAt, post.IsEditorsPick)
 	return err
 }
 
@@ -207,7 +207,7 @@ func (s *PostService) Delete(ctx context.Context, id int) (string, error) {
 	const q = `
 		delete from posts where id = $1 returnning slug;
 	`
-	row := s.db.conn.QueryRowContext(ctx, q, id)
+	row := s.db.Conn.QueryRow(ctx, q, id)
 
 	// get slug of deleted post to delete its comments
 	var slug string
