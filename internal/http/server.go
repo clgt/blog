@@ -72,6 +72,7 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/verify-email", s.verifyEmailResult, "GET")
 	s.router.HandleFunc("/send-email", s.sendEmail, "POST")
 	s.router.HandleFunc("/blogs", s.posts, "GET")
+	s.router.HandleFunc("/search", s.search, "GET")
 	s.router.HandleFunc("/blogs/:slug", s.postDetails, "GET")
 	s.router.HandleFunc("/blogs/:slug/comments/new", use(s.createComment, s.isLogined), "POST")
 	// static pages
@@ -81,7 +82,6 @@ func NewServer(cfg *config.Config) *Server {
 	s.router.HandleFunc("/contact", s.contact, "GET")
 	s.router.HandleFunc("/rules", s.rules, "GET")
 	s.router.HandleFunc("/dev-log", s.devLog, "GET")
-
 
 	// admin routes
 	s.router.HandleFunc("/admin", use(s.adminHome, s.isadmin), "GET")
@@ -160,6 +160,10 @@ func (s *Server) postDetails(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) home(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, "home.html", &templateData{})
+}
+
+func (s *Server) search(w http.ResponseWriter, r *http.Request) {
+	s.render(w, r, "search.html", &templateData{})
 }
 
 func (s *Server) register(w http.ResponseWriter, r *http.Request) {
@@ -739,8 +743,6 @@ func (s *Server) devLog(w http.ResponseWriter, r *http.Request) {
 func (s *Server) adminHome(w http.ResponseWriter, r *http.Request) {
 	s.adminRender(w, r, "home.html", &templateData{})
 }
-
-
 
 func (s *Server) adminPosts(w http.ResponseWriter, r *http.Request) {
 	posts, total, err := s.PostService.FindPosts(r.Context(), models.PostFilter{})
